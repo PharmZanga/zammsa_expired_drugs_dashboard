@@ -18,6 +18,7 @@ commodities and salvage interventions in Zambia.
 - Lifecycle-stage KPIs and traffic-light action tracker
 - Moving product scoreboard showing commodity, quantity, and value
 - National Supply Chain Control Unit and Ministry of Health government header
+- Searchable national expiry register with month, status, risk-band, and sort controls
 - Responsive layout for desktop, tablet, and mobile
 - Print-friendly reporting view
 - Automated deployment to GitHub Pages
@@ -42,6 +43,10 @@ Historical state is represented by two related structures:
 
 Selecting a snapshot recalculates KPIs, monthly salvage progress, warning bands,
 the Zambia Army opportunity, and the cumulative salvage register.
+
+The national expiry register contains every commodity, batch, quantity, value,
+expiry date, days to expiry, risk band, and current status. Search covers
+commodity, batch, warehouse, province, facility, and engaged institution.
 
 ## Financial formulas
 

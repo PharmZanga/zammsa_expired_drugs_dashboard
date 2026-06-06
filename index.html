@@ -521,6 +521,14 @@
       border-bottom: 1px solid var(--line);
     }
 
+    .expiry-filter-toolbar {
+      grid-template-columns: minmax(220px, 1fr) repeat(3, minmax(145px, auto));
+    }
+
+    .expiry-sort-toolbar {
+      grid-template-columns: minmax(220px, 1fr) auto;
+    }
+
     .search-wrap {
       position: relative;
     }
@@ -1619,6 +1627,11 @@
         grid-template-columns: 1fr;
       }
 
+      .expiry-filter-toolbar,
+      .expiry-sort-toolbar {
+        grid-template-columns: 1fr;
+      }
+
       .insights-grid,
       .root-grid {
         grid-template-columns: 1fr;
@@ -1962,10 +1975,28 @@
     </section>
 
     <div class="section-heading">
-      <h2>Required national line-list fields</h2>
-      <p>These fields are the minimum data contract needed to replace the demonstration data and automate the dashboard.</p>
+      <h2>National expiring commodities register</h2>
+      <p>Search and filter all short-dated commodities by month, current status, and days-to-expiry risk band.</p>
     </div>
-    <section class="kpi-grid" id="required-fields"></section>
+    <section class="card tracker">
+      <div class="toolbar expiry-filter-toolbar">
+        <label class="search-wrap"><span class="sr-only">Search expiring commodities</span><input class="control" id="expiry-search" type="search" placeholder="Search commodity, batch or location..." autocomplete="off"></label>
+        <label><span class="sr-only">Filter expiry month</span><select class="control" id="expiry-month-filter"><option value="All">All months</option></select></label>
+        <label><span class="sr-only">Filter expiry status</span><select class="control" id="expiry-status-filter"><option value="All">All statuses</option><option value="Pending">Pending</option><option value="In Progress">In Progress</option><option value="Salvaged">Salvaged</option><option value="Expired">Expired</option></select></label>
+        <label><span class="sr-only">Filter risk band</span><select class="control" id="expiry-risk-filter"><option value="All">All risk bands</option><option value="Critical">Critical: ≤30 days</option><option value="High Risk">High Risk: 31-90 days</option><option value="Medium Risk">Medium Risk: 91-180 days</option><option value="Longer Term">Longer Term: >180 days</option></select></label>
+      </div>
+      <div class="toolbar expiry-sort-toolbar">
+        <div id="expiry-register-summary" class="metric-sub" style="align-self:center"></div>
+        <label><span class="sr-only">Sort expiring commodities</span><select class="control" id="expiry-sort"><option value="expiry">Sort: earliest expiry</option><option value="value">Sort: highest value</option><option value="quantity">Sort: highest quantity</option><option value="commodity">Sort: commodity A-Z</option></select></label>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Commodity</th><th>Batch</th><th>Quantity</th><th>Value</th><th>Expiry Date</th><th>Days</th><th>Risk</th><th>Status</th></tr></thead>
+          <tbody id="expiry-register-body"></tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span id="expiry-register-count"></span><span id="expiry-register-value"></span></div>
+    </section>
 
     <p class="source-note"><strong>Monitoring rules:</strong> Snapshot Remaining Risk = Snapshot Value at Risk - Cumulative Value Salvaged. The permanent salvage register only includes events recorded on or before the selected snapshot. Warning bands are calculated from snapshot date to expiry date: Critical at 30 days or less, High Risk at 31-90 days, and Medium Risk at 91-180 days.</p>
   </main>
@@ -2012,7 +2043,6 @@
       June: "2026-06-30", July: "2026-07-31", August: "2026-08-31", September: "2026-09-30",
       October: "2026-10-31", November: "2026-11-30", December: "2026-12-31"
     };
-    const fields = ["Snapshot Date", "Commodity Name", "Batch Number", "Expiry Date", "Quantity", "Unit Price", "Total Value", "Warehouse", "Province", "Facility", "Status", "Date Identified", "Date Salvaged", "Institution Engaged", "Summary: Total Value at Risk", "Summary: Total Value Salvaged", "Summary: Total Value Expired", "Summary: Total Commodities", "Summary: Critical Commodities"];
     const statusClass = { Salvaged: "badge-completed", "In Progress": "badge-progress", Pending: "badge-pending", Expired: "badge-overdue" };
     let selectedMonth = "October";
     let selectedCommodityId = "quet-oct";
@@ -2359,8 +2389,85 @@
         </div>`).join("");
     }
 
-    function renderFields() {
-      document.getElementById("required-fields").innerHTML = fields.map((field, index) => `<article class="card mini-kpi"><span>Field ${String(index + 1).padStart(2, "0")}</span><strong>${field}</strong></article>`).join("");
+    function expiryRiskBand(item) {
+      const days = daysToExpiry(item);
+      if (days <= 30) return "Critical";
+      if (days <= 90) return "High Risk";
+      if (days <= 180) return "Medium Risk";
+      return "Longer Term";
+    }
+
+    function currentRecordStatus(item) {
+      if (daysToExpiry(item) < 0 && salvagedForRecord(item.id) < item.value) return "Expired";
+      if (salvagedForRecord(item.id) >= item.value) return "Salvaged";
+      return item.status;
+    }
+
+    function riskBadgeClass(risk) {
+      if (risk === "Critical") return "badge-overdue";
+      if (risk === "High Risk") return "badge-progress";
+      if (risk === "Medium Risk") return "badge-completed";
+      return "badge-pending";
+    }
+
+    function renderExpiryRegister() {
+      const monthFilter = document.getElementById("expiry-month-filter");
+      if (monthFilter.options.length === 1) {
+        monthFilter.innerHTML += monthOrder.map(month => `<option value="${month}">${month} 2026</option>`).join("");
+      }
+      const query = document.getElementById("expiry-search").value.trim().toLowerCase();
+      const month = monthFilter.value;
+      const status = document.getElementById("expiry-status-filter").value;
+      const risk = document.getElementById("expiry-risk-filter").value;
+      const sort = document.getElementById("expiry-sort").value;
+      const records = expiryRecords
+        .filter(item => month === "All" || item.month === month)
+        .filter(item => status === "All" || currentRecordStatus(item) === status)
+        .filter(item => risk === "All" || expiryRiskBand(item) === risk)
+        .filter(item => [item.commodity, item.batch, item.warehouse, item.province, item.facility, item.institution]
+          .some(value => value.toLowerCase().includes(query)))
+        .sort((a, b) => {
+          if (sort === "value") return b.value - a.value;
+          if (sort === "quantity") return b.quantity - a.quantity;
+          if (sort === "commodity") return a.commodity.localeCompare(b.commodity);
+          return expiryDates[a.month].localeCompare(expiryDates[b.month]) || a.commodity.localeCompare(b.commodity);
+        });
+
+      document.getElementById("expiry-register-body").innerHTML = records.length ? records.map(item => {
+        const statusValue = currentRecordStatus(item);
+        const riskValue = expiryRiskBand(item);
+        const expiryDate = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+          .format(new Date(`${expiryDates[item.month]}T12:00:00+02:00`));
+        return `<tr>
+          <td class="commodity">${escapeHtml(item.commodity)}<br><span class="metric-sub">${escapeHtml(item.warehouse)} · ${escapeHtml(item.province)}</span></td>
+          <td>${escapeHtml(item.batch)}</td>
+          <td>${item.quantity.toLocaleString("en-ZM")}</td>
+          <td>${moneyExact(item.value)}</td>
+          <td>${expiryDate}</td>
+          <td>${daysToExpiry(item)}</td>
+          <td><span class="badge ${riskBadgeClass(riskValue)}">${riskValue}</span></td>
+          <td><span class="badge ${statusClass[statusValue]}">${statusValue}</span></td>
+        </tr>`;
+      }).join("") : `<tr><td colspan="8" class="empty-state" style="display:table-cell">No expiring commodities match the selected search and filters.</td></tr>`;
+
+      const quantity = records.reduce((total, item) => total + item.quantity, 0);
+      const value = records.reduce((total, item) => total + item.value, 0);
+      const activeParameters = [
+        month === "All" ? "All months" : `${month} 2026`,
+        status === "All" ? "All statuses" : status,
+        risk === "All" ? "All risk bands" : risk,
+        `Snapshot ${selectedSnapshot().label}`
+      ];
+      if (query) activeParameters.unshift(`Search: "${query}"`);
+      document.getElementById("expiry-register-summary").textContent = `Parameters: ${activeParameters.join(" · ")}`;
+      document.getElementById("expiry-register-count").textContent =
+        `${records.length} of ${expiryRecords.length} commodities · ${quantity.toLocaleString("en-ZM")} units`;
+      document.getElementById("expiry-register-value").textContent = `Combined value: ${moneyExact(value)}`;
+
+      ["expiry-search", "expiry-month-filter", "expiry-status-filter", "expiry-risk-filter", "expiry-sort"].forEach(id => {
+        const element = document.getElementById(id);
+        element[id === "expiry-search" ? "oninput" : "onchange"] = renderExpiryRegister;
+      });
     }
 
     function renderAllSnapshotViews() {
@@ -2377,12 +2484,12 @@
       renderChangesSinceReview();
       renderActionTracker();
       renderInterventionPortfolio();
+      renderExpiryRegister();
     }
 
     renderAllSnapshotViews();
     renderPerformance();
     renderRiskRanking();
-    renderFields();
   </script>
 </body>
 </html>
