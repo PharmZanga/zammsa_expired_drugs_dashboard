@@ -84,9 +84,21 @@
       transform: translateY(0);
     }
 
+    header {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(8, 48, 39, 0.96) 0%, rgba(12, 67, 54, 0.86) 43%, rgba(8, 48, 39, 0.4) 72%, rgba(8, 48, 39, 0.2) 100%),
+        url("assets/medical-supply-header.png") center / cover no-repeat;
+    }
+
     .topbar {
+      position: relative;
+      z-index: 2;
       color: #fff;
-      background: var(--green-950);
+      background: rgba(6, 38, 31, 0.76);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
     }
 
     .topbar-inner,
@@ -170,18 +182,15 @@
       position: relative;
       overflow: hidden;
       color: #fff;
-      background: linear-gradient(120deg, var(--green-950), var(--green-800));
+      background: transparent;
     }
 
     .hero::after {
       content: "";
       position: absolute;
-      width: 430px;
-      height: 430px;
-      right: -150px;
-      top: -260px;
-      border: 70px solid rgba(255, 255, 255, 0.06);
-      border-radius: 50%;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(5, 35, 28, 0.08), rgba(5, 35, 28, 0.3));
+      pointer-events: none;
     }
 
     .hero-inner {
@@ -233,9 +242,9 @@
     .reporting-card {
       padding: 22px;
       border: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(5, 40, 32, 0.58);
       border-radius: 16px;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(10px);
     }
 
     .reporting-card strong,
@@ -1987,6 +1996,10 @@
 
     @media print {
       body {
+        background: #fff;
+      }
+
+      header {
         background: #fff;
       }
 
