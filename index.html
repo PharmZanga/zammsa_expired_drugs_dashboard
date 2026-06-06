@@ -1032,7 +1032,7 @@
 
     .calendar {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
+      grid-template-columns: repeat(8, 1fr);
       gap: 9px;
     }
 
@@ -2071,7 +2071,7 @@
     <section class="change-grid" id="changes-since-review"></section>
     <section class="planning-grid" style="margin-top:18px">
       <article class="card"><div class="card-header"><div><h3>Value at risk vs salvage</h3><p>Bi-weekly national movement</p></div></div><div class="chart-body" id="executive-trend-chart"></div></article>
-      <article class="card"><div class="card-header"><div><h3>Expiry forecast by month</h3><p>June-December source coverage</p></div></div><div class="risk-list" id="executive-forecast-chart"></div></article>
+      <article class="card"><div class="card-header"><div><h3>Expiry forecast by month</h3><p>May-December source coverage</p></div></div><div class="risk-list" id="executive-forecast-chart"></div></article>
     </section>
     <section class="alerts" id="executive-alerts" style="margin-top:18px"></section>
     </div>
@@ -2080,14 +2080,14 @@
     <div class="view-header"><div><h2>Expiry Forecast</h2></div><p>How much is expiring by December, and which products drive each month?</p></div>
 
     <div class="section-heading">
-      <h2 id="month-detail-title">June 2026 expiry detail</h2>
+      <h2 id="month-detail-title">May 2026 expiry detail</h2>
       <p id="month-detail-copy">Batch-level exposure and salvage status for the selected month.</p>
     </div>
     <section class="card tracker">
       <div class="summary-metrics" id="month-summary"></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Commodity</th><th>Batch</th><th>Qty</th><th>Value</th><th>Warehouse / Province</th><th>Status</th></tr></thead>
+          <thead><tr><th>SKU / Commodity</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Expiry Date</th></tr></thead>
           <tbody id="expiry-table-body"></tbody>
         </table>
       </div>
@@ -2147,7 +2147,7 @@
     <div class="view-header"><div><h2>Salvage Tracker</h2></div><p>What value has been saved, when, and through which institution?</p></div>
     <section class="metrics" id="salvage-kpis"></section>
     <div class="section-heading">
-      <h2 id="salvage-register-title">June salvaged commodities register</h2>
+      <h2 id="salvage-register-title">May salvaged commodities register</h2>
       <p id="salvage-register-copy">Permanent cumulative evidence filtered to the selected expiry month. Historical records are never overwritten.</p>
     </div>
     <section class="card tracker">
@@ -2277,7 +2277,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Commodity</th><th>Batch</th><th>Quantity</th><th>Value</th><th>Expiry Date</th><th>Days</th><th>Risk</th><th>Status</th></tr></thead>
+          <thead><tr><th>SKU / Commodity</th><th>Batch</th><th>S.O.H Quantity</th><th>Unit Price</th><th>Value at Risk</th><th>Shipped Units</th><th>Salvaged Value</th><th>Expiry Date</th><th>Days</th><th>Risk</th></tr></thead>
           <tbody id="expiry-register-body"></tbody>
         </table>
       </div>
@@ -2285,7 +2285,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> Commodity quantities and expiry dates come from Short dated products.xlsx. May-July value-at-risk and salvaged-value totals, plus detailed shipment records, come from Salvaged Products-Merged_May26.xlsx. Fields not present in those files are intentionally blank. Warning bands are calculated from 26 May 2026 to each supplied expiry date.</p>
+    <p class="source-note"><strong>Source note:</strong> May-July shipped units, unit prices, salvaged values, stock on hand, values at risk, and expiry dates come from Salvaged Products-Merged_May26.xlsx. August-September quantities and expiry dates come from Short dated products.xlsx. Fields not present in those files are intentionally blank. Warning bands are calculated from 26 May 2026 to each supplied expiry date.</p>
   </main>
 
   <footer>
@@ -2351,7 +2351,7 @@
       expiryRecords.find(item => item.month === month)?.expiryDate || ""
     ]));
     const statusClass = { Salvaged: "badge-completed", "In Progress": "badge-progress", Pending: "badge-pending", Expired: "badge-overdue" };
-    let selectedMonth = "June";
+    let selectedMonth = "May";
     let selectedCommodityId = expiryRecords[0]?.id || "";
     let selectedSnapshotId = sourceData.sourceUpdated;
 
@@ -2398,7 +2398,7 @@
         ["Total Salvaged", moneyExact(snapshot.salvaged), "Supplied May-July shipped value", "success"],
         ["Remaining At Risk", moneyExact(snapshot.atRisk - snapshot.salvaged), "Risk minus salvaged", "warning"],
         ["Salvage Rate", `${preciseRate(snapshot.salvaged, snapshot.atRisk)}%`, "Salvaged ÷ value at risk", "success"],
-        ["Short-Dated Product Rows", expiryRecords.length, "June-September source register", ""]
+        ["Short-Dated Product Rows", expiryRecords.length, "May-September source register", ""]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
     }
@@ -2433,12 +2433,12 @@
       ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
       document.getElementById("expiry-table-body").innerHTML = stats.records.length ? stats.records.map(item => `
         <tr>
-          <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.commodity)}</button></td>
-          <td>${escapeHtml(item.batch)}</td>
+          <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.sku)}<br><span class="metric-sub">${escapeHtml(item.commodity)}</span></button></td>
+          <td>${isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""}</td>
+          <td>${moneyExact(item.salvagedValue)}</td>
           <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
           <td>${moneyExact(item.value)}</td>
-          <td>${escapeHtml(item.warehouse)}<br><span class="metric-sub">${escapeHtml(item.province)}</span></td>
-          <td>${item.status ? `<span class="badge ${statusClass[item.status] || "badge-pending"}">${escapeHtml(item.status)}</span>` : ""}</td>
+          <td>${formatDate(item.expiryDate)}</td>
         </tr>`).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">No source records supplied for ${selectedMonth} 2026.</td></tr>`;
       document.getElementById("month-record-count").textContent = `${stats.records.length} source row${stats.records.length === 1 ? "" : "s"}`;
       document.querySelectorAll(".commodity-button").forEach(button => button.addEventListener("click", () => {
@@ -2461,7 +2461,8 @@
       document.getElementById("timeline-subtitle").textContent = item.batch ? `${item.batch} intervention milestones` : "";
       const profile = [
         ["SKU", item.sku], ["Commodity", item.commodity], ["Batch", item.batch], ["Total Quantity", isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""],
-        ["Value at Risk", moneyExact(item.value)], ["Value Salvaged", ""], ["Expiry Date", formatDate(item.expiryDate)],
+        ["Unit Price", moneyExact(item.unitPrice)], ["Shipped Units", isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""],
+        ["Value at Risk", moneyExact(item.value)], ["Value Salvaged", moneyExact(item.salvagedValue)], ["Expiry Date", formatDate(item.expiryDate)],
         ["Lead Institution", item.institution], ["Status", item.status], ["Warehouse", item.warehouse], ["Province", item.province],
         ["Facility", item.facility], ["Date Identified", item.identified]
       ];
@@ -2503,7 +2504,7 @@
     }
 
     function renderSalvageRegister() {
-      const monthNumber = monthOrder.indexOf(selectedMonth) + 6;
+      const monthNumber = { May: 5, June: 6, July: 7, August: 8, September: 9, October: 10, November: 11, December: 12 }[selectedMonth];
       const events = eventsThroughSnapshot().filter(event => event.expiryDate && new Date(`${event.expiryDate}T12:00:00`).getMonth() + 1 === monthNumber);
       document.getElementById("salvage-register-title").textContent = `${selectedMonth} salvaged commodities register`;
       document.getElementById("salvage-register-copy").textContent =
@@ -2761,13 +2762,15 @@
           <td class="commodity">${escapeHtml(item.commodity)}<br><span class="metric-sub">${escapeHtml(item.sku)}</span></td>
           <td>${escapeHtml(item.batch)}</td>
           <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
+          <td>${moneyExact(item.unitPrice)}</td>
           <td>${moneyExact(item.value)}</td>
+          <td>${isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""}</td>
+          <td>${moneyExact(item.salvagedValue)}</td>
           <td>${formatDate(item.expiryDate)}</td>
           <td>${daysToExpiry(item) ?? ""}</td>
           <td>${riskValue ? `<span class="badge ${riskBadgeClass(riskValue)}">${riskValue}</span>` : ""}</td>
-          <td>${statusValue ? `<span class="badge ${statusClass[statusValue] || "badge-pending"}">${statusValue}</span>` : ""}</td>
         </tr>`;
-      }).join("") : `<tr><td colspan="8" class="empty-state" style="display:table-cell">No expiring commodities match the selected search and filters.</td></tr>`;
+      }).join("") : `<tr><td colspan="10" class="empty-state" style="display:table-cell">No expiring commodities match the selected search and filters.</td></tr>`;
 
       const quantity = sum(records, "quantity");
       const pricedRecords = records.filter(item => isNumber(item.value));

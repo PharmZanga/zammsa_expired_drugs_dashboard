@@ -10,7 +10,7 @@ commodities and salvage interventions in Zambia.
   Centre, Salvage Tracker, Action Tracker, Root Cause Analysis, Historical
   Snapshots, and Institution Performance views
 - Executive summary metrics calculated from batch-level records
-- Shared June-December expiry calendar visible on every dashboard page
+- Shared May-December expiry calendar visible on every dashboard page
 - Selectable historical bi-weekly snapshots
 - Month-level batch detail and calculated salvage summaries
 - Commodity profiles with intervention timelines
@@ -35,8 +35,8 @@ required.
 ## Data note
 
 The dashboard is loaded from `Short dated products.xlsx` and
-`Salvaged Products-Merged_May26.xlsx`. It contains 116 supplied short-dated
-product rows for June-September 2026 and detailed May-July shipment evidence.
+`Salvaged Products-Merged_May26.xlsx`. It contains 111 supplied short-dated
+product rows for May-September 2026 and detailed May-July shipment evidence.
 Fields absent from the source workbooks remain blank.
 
 Historical state is represented by two related structures:
