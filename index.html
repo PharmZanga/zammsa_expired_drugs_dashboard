@@ -974,6 +974,264 @@
       font-size: 22px;
     }
 
+    .demo-banner {
+      margin-bottom: 18px;
+      padding: 12px 16px;
+      color: #70531f;
+      background: #fff4db;
+      border: 1px solid #f0d08c;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 9px;
+    }
+
+    .month-card {
+      min-width: 0;
+      padding: 17px 12px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      text-align: left;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .month-card:hover {
+      transform: translateY(-2px);
+      border-color: #9fbcb1;
+      box-shadow: 0 9px 24px rgba(24, 39, 33, 0.08);
+    }
+
+    .month-card.active {
+      color: #fff;
+      background: var(--green-950);
+      border-color: var(--green-950);
+    }
+
+    .month-card span,
+    .month-card strong,
+    .month-card small {
+      display: block;
+    }
+
+    .month-card span {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .month-card strong {
+      margin-top: 9px;
+      font-size: 18px;
+    }
+
+    .month-card small {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 9px;
+    }
+
+    .month-card.active small {
+      color: rgba(255, 255, 255, 0.67);
+    }
+
+    .summary-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      padding: 20px 22px;
+    }
+
+    .summary-metric {
+      padding: 14px;
+      background: var(--surface-soft);
+      border-radius: 11px;
+    }
+
+    .summary-metric span,
+    .summary-metric strong {
+      display: block;
+    }
+
+    .summary-metric span {
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .summary-metric strong {
+      margin-top: 5px;
+      font-size: 20px;
+    }
+
+    .commodity-button {
+      padding: 0;
+      color: var(--green-800);
+      background: transparent;
+      border: 0;
+      font-weight: 800;
+      text-align: left;
+      text-decoration: underline;
+      text-decoration-color: #b5cdc4;
+      text-underline-offset: 3px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 0.78fr 1.22fr;
+      gap: 18px;
+    }
+
+    .profile-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      margin: 22px;
+      overflow: hidden;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .profile-item {
+      padding: 13px;
+      background: #fff;
+    }
+
+    .profile-item span,
+    .profile-item strong {
+      display: block;
+    }
+
+    .profile-item span {
+      color: var(--muted);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .profile-item strong {
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      gap: 18px;
+      padding: 22px 26px 26px 40px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 25px;
+      bottom: 30px;
+      left: 26px;
+      width: 2px;
+      background: var(--line);
+    }
+
+    .timeline-item {
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: -20px;
+      width: 9px;
+      height: 9px;
+      background: #fff;
+      border: 3px solid var(--green-700);
+      border-radius: 50%;
+    }
+
+    .timeline-item time {
+      display: block;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .timeline-item strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 12px;
+    }
+
+    .alerts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .alert-card {
+      padding: 18px;
+      border-left: 5px solid;
+    }
+
+    .alert-card.critical {
+      border-left-color: var(--red);
+    }
+
+    .alert-card.moderate {
+      border-left-color: #e0a328;
+    }
+
+    .alert-card.controlled {
+      border-left-color: var(--green-700);
+    }
+
+    .alert-card span,
+    .alert-card strong,
+    .alert-card small {
+      display: block;
+    }
+
+    .alert-card span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .alert-card strong {
+      margin-top: 7px;
+      font-size: 20px;
+    }
+
+    .alert-card small {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .trend-legend {
+      display: flex;
+      gap: 16px;
+      margin: 0 24px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .trend-legend span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .trend-legend i {
+      width: 16px;
+      height: 3px;
+      border-radius: 99px;
+    }
+
     footer {
       color: rgba(255, 255, 255, 0.7);
       background: var(--green-950);
@@ -1017,6 +1275,14 @@
       .change-grid,
       .kpi-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .calendar {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1081,6 +1347,11 @@
         grid-template-columns: 1fr;
       }
 
+      .summary-metrics,
+      .alerts {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
       .footer-inner {
         display: block;
       }
@@ -1130,6 +1401,13 @@
       .answer-strip,
       .change-grid,
       .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .calendar,
+      .summary-metrics,
+      .alerts,
+      .profile-list {
         grid-template-columns: 1fr;
       }
 
@@ -1206,118 +1484,84 @@
           </p>
         </div>
         <aside class="reporting-card" aria-label="Reporting period">
-          <span>Reporting period</span>
-          <strong>Review 01 &middot; June 2026</strong>
-          <p>Current review date: 6 June 2026. Comparison values remain flagged until the prior review dataset is loaded.</p>
+          <span>Demonstration horizon</span>
+          <strong>June-December 2026</strong>
+          <p>Interactive expiry-risk and salvage monitoring model for migration to the validated national commodity line list.</p>
         </aside>
       </div>
     </div>
   </header>
 
   <main id="main-content">
-    <section class="answer-strip" aria-label="Leadership questions">
-      <article class="answer-card"><span>Currently at risk</span><strong>ZMW 33.8M</strong><small>Latest validated position: April 2026</small></article>
-      <article class="answer-card"><span>Saved this review</span><strong class="placeholder">Value required</strong><small>2 interventions recorded as completed</small></article>
-      <article class="answer-card"><span>Needs intervention</span><strong id="answer-pending">10 commodities</strong><small>Active or pending salvage actions</small></article>
-      <article class="answer-card"><span>Actions overdue</span><strong id="answer-overdue">0 confirmed</strong><small>Due dates required to validate overdue status</small></article>
-    </section>
+    <div class="demo-banner"><strong>Demonstration dataset:</strong> Monthly values and sample batch records below implement the supplied control-tower concept. Replace them with validated national line-list data before operational use.</div>
+
+    <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
 
     <div class="section-heading">
-      <h2>Changes since last review</h2>
-      <p>This is the bi-weekly movement view. Items without validated monetary values remain explicitly flagged for update.</p>
+      <h2>Monthly expiry calendar</h2>
+      <p>Select a month to inspect expiring batches, salvage progress, remaining risk, and accountable institutions.</p>
     </div>
-    <section class="change-grid" aria-label="Changes since last review">
-      <article class="card change-card risk"><h3>New risks identified</h3><ul class="change-list"><li class="placeholder">No comparison dataset loaded</li><li><strong>Next update</strong><span>Add new commodity and ZMW value</span></li></ul></article>
-      <article class="card change-card"><h3>Successfully salvaged</h3><ul class="change-list"><li><strong>Amoxiclav</strong><span>120K+ units distributed &middot; value required</span></li><li><strong>TB commodities</strong><span>Uptake facilitated &middot; value required</span></li></ul></article>
-      <article class="card change-card expired"><h3>Expired</h3><ul class="change-list"><li class="placeholder">No validated expiry movement loaded</li><li><strong>Next update</strong><span>Add commodity and expired value</span></li></ul></article>
-      <article class="card change-card partner"><h3>New partners engaged</h3><ul class="change-list"><li><strong>Zambia Army</strong><span>Salvage initiative awaiting feedback</span></li><li><strong>UTH Adult</strong><span>TB commodity uptake</span></li><li><strong>Chainama Hospital</strong><span>Quetiapine engagement</span></li></ul></article>
-    </section>
+    <section class="calendar" id="month-calendar" aria-label="Clickable monthly expiry calendar"></section>
 
     <div class="section-heading">
-      <h2>Bi-weekly executive scorecard</h2>
-      <p>Current and previous period values are separated so leadership can see direction, not just the latest position.</p>
+      <h2 id="month-detail-title">October 2026 expiry detail</h2>
+      <p id="month-detail-copy">Batch-level exposure and salvage status for the selected month.</p>
     </div>
-    <section class="card period-table">
+    <section class="card tracker">
+      <div class="summary-metrics" id="month-summary"></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Indicator</th><th>Current period</th><th>Previous period</th><th>Trend</th></tr></thead>
-          <tbody id="scorecard-body"></tbody>
+          <thead><tr><th>Commodity</th><th>Batch</th><th>Qty</th><th>Value</th><th>Warehouse / Province</th><th>Status</th></tr></thead>
+          <tbody id="expiry-table-body"></tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span id="month-record-count"></span><span>Click a commodity to open its lifecycle profile</span></div>
+    </section>
+
+    <div class="section-heading">
+      <h2>Commodity drill-down</h2>
+      <p>Lifecycle view of the selected commodity, from identification through engagement and salvage outcome.</p>
+    </div>
+    <section class="detail-grid">
+      <article class="card">
+        <div class="card-header"><div><h3 id="profile-title">Commodity profile</h3><p>Risk ownership and batch attributes</p></div></div>
+        <div class="profile-list" id="commodity-profile"></div>
+      </article>
+      <article class="card">
+        <div class="card-header"><div><h3>Salvage timeline</h3><p id="timeline-subtitle">Recorded intervention milestones</p></div></div>
+        <div class="timeline" id="salvage-timeline"></div>
+      </article>
+    </section>
+
+    <div class="section-heading">
+      <h2>Control tower alerts</h2>
+      <p>Automatic severity classification based on remaining unsalvaged value by month.</p>
+    </div>
+    <section class="alerts" id="alert-panel"></section>
+
+    <div class="section-heading">
+      <h2>Salvage performance trend</h2>
+      <p>Bi-weekly movement shows whether remaining risk is declining while cumulative salvage increases.</p>
+    </div>
+    <section class="card">
+      <div class="card-header"><div><h3>TWG performance, May-June 2026</h3><p>Values in ZMW millions</p></div></div>
+      <div class="trend-legend"><span><i style="background:#b73a3a"></i>Remaining at risk</span><span><i style="background:#28715f"></i>Cumulative salvaged</span></div>
+      <div class="chart-body" id="performance-chart"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Review date</th><th>At risk</th><th>Salvaged</th><th>Movement</th></tr></thead>
+          <tbody id="performance-table"></tbody>
         </table>
       </div>
     </section>
 
     <div class="section-heading">
-      <h2>Planning outlook</h2>
-      <p>Forecast and salvage movement should become the core forward-planning view once period values are validated.</p>
+      <h2>Required national line-list fields</h2>
+      <p>These fields are the minimum data contract needed to replace the demonstration data and automate the dashboard.</p>
     </div>
-    <section class="planning-grid">
-      <article class="card">
-        <div class="card-header"><div><h3>Six-month expiry forecast</h3><p>Expected value at risk by expiry month</p></div></div>
-        <div class="forecast-list" id="forecast-list"></div>
-      </article>
-      <article class="card">
-        <div class="card-header"><div><h3>Salvage value trend</h3><p>Monthly value salvaged, April-August 2026</p></div></div>
-        <div class="chart-body" id="trend-chart"></div>
-      </article>
-    </section>
+    <section class="kpi-grid" id="required-fields"></section>
 
-    <div class="section-heading">
-      <h2>Action tracker</h2>
-      <p>Due-date discipline is central to the TWG. Actions without confirmed dates are highlighted for immediate completion.</p>
-    </div>
-    <section class="card tracker" aria-labelledby="tracker-title">
-      <h3 class="sr-only" id="tracker-title">Bi-weekly action tracker</h3>
-      <div class="toolbar">
-        <label class="search-wrap"><span class="sr-only">Search actions</span><input class="control" id="search-input" type="search" placeholder="Search actions..." autocomplete="off"></label>
-        <label><span class="sr-only">Filter by status</span><select class="control" id="status-filter"><option value="All">All statuses</option><option value="Completed">Completed</option><option value="In Progress">In progress</option><option value="Pending">Pending</option><option value="Overdue">Overdue</option></select></label>
-        <label><span class="sr-only">Sort actions</span><select class="control" id="sort-select"><option value="priority">Sort: action priority</option><option value="due">Sort: due date</option><option value="action">Sort: action A-Z</option></select></label>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Action</th><th>Lead</th><th>Due date</th><th>Status</th></tr></thead>
-          <tbody id="table-body"></tbody>
-        </table>
-        <div class="empty-state" id="empty-state">No actions match the selected filters.</div>
-      </div>
-      <div class="table-footer" aria-live="polite"><span id="result-count"></span><span>Review date: 6 June 2026</span></div>
-    </section>
-
-    <div class="section-heading">
-      <h2>Special initiative</h2>
-      <p>Dedicated visibility for high-impact salvage opportunities requiring cross-institutional coordination.</p>
-    </div>
-    <section class="card initiative" aria-label="Zambia Army salvage initiative">
-      <div class="initiative-main"><span class="eyebrow">Current focus</span><h3>Zambia Army Salvage Initiative</h3><p>Commodities expiring from June to November 2026 have been shared for potential uptake. Confirmation is needed before distribution planning can begin.</p></div>
-      <div class="initiative-meta">
-        <div><span>Status</span><strong>Awaiting feedback</strong></div>
-        <div><span>Potential impact</span><strong>Reduce national expiry burden</strong></div>
-        <div><span>Next step</span><strong>Distribution planning upon confirmation</strong></div>
-        <div><span>Action owner / due date</span><strong class="placeholder">To be confirmed</strong></div>
-      </div>
-    </section>
-
-    <div class="section-heading">
-      <h2>Operational KPIs</h2>
-      <p>Measures recommended for every bi-weekly review. Unknown values are left visible to drive data completion.</p>
-    </div>
-    <section class="kpi-grid" id="operational-kpis"></section>
-
-    <div class="section-heading">
-      <h2>Intervention portfolio</h2>
-      <p>Status counts are calculated directly from the 12 supplied commodity interventions.</p>
-    </div>
-    <section class="overview-grid">
-      <article class="card">
-        <div class="card-header"><div><h3>Intervention status</h3><p>Completed, active, and pending actions</p></div></div>
-        <div class="donut-wrap"><div class="donut" id="status-donut" role="img" aria-label="Intervention status chart"><div class="donut-label"><strong id="donut-total">12</strong><span>Total actions</span></div></div><div class="legend" id="status-legend"></div></div>
-      </article>
-      <article class="card">
-        <div class="card-header"><div><h3>Immediate intervention queue</h3><p>Actions awaiting recipient engagement or distribution completion</p></div></div>
-        <div class="risk-list" id="priority-list"></div>
-      </article>
-    </section>
-
-    <p class="source-note"><strong>Data governance note:</strong> The dashboard does not infer financial values, prior-period movements, expiry totals, or due dates. “Data required” identifies fields that should be completed before the next TWG review. The ZMW 33.8 million value-at-risk position remains labelled as reported in April 2026.</p>
+    <p class="source-note"><strong>Calculation rule:</strong> Remaining Value at Risk = Total Value Expiring - Value Salvaged. Alert thresholds apply to each month’s remaining value: Critical above ZMW 1M, Moderate from ZMW 500K to 1M, and Controlled below ZMW 500K.</p>
   </main>
 
   <footer>
@@ -1328,214 +1572,165 @@
   </footer>
 
   <script>
-    const reviewDate = new Date("2026-06-06T00:00:00+02:00");
-    const interventions = [
-      { commodity: "Amoxiclav", intervention: "Redistribution to high-consumption facilities; 120K+ units distributed", lead: "MoH / ZAMMSA", status: "Completed" },
-      { commodity: "TB commodities", intervention: "Engagement with UTH Adult Hospital to facilitate uptake", lead: "ZAMMSA / UTH Adult", status: "Completed" },
-      { commodity: "Kit Yamoyo", intervention: "Identification of facilities for stock redistribution", lead: "ZAMMSA", status: "Ongoing" },
-      { commodity: "UNFPA Kits", intervention: "Preparation of distribution plans and recipient facilities", lead: "ZAMMSA", status: "Ongoing" },
-      { commodity: "Insulin products", intervention: "Redistribution to UTH and facilities with demonstrated demand", lead: "ZAMMSA", status: "In Progress" },
-      { commodity: "Glimepiride / Metformin", intervention: "Provincial-level redistribution efforts", lead: "ZAMMSA", status: "In Progress" },
-      { commodity: "Laboratory commodities", intervention: "Engagement with first-level hospitals and diagnostic facilities", lead: "MoH / ZAMMSA", status: "In Progress" },
-      { commodity: "Prasugrel & Metolazone", intervention: "Engagement with National Heart Hospital", lead: "ZAMMSA", status: "Pending" },
-      { commodity: "Quetiapine", intervention: "Engagement with Chainama Hospital", lead: "MoH / ZAMMSA", status: "Pending" },
-      { commodity: "Coagulation Factor VIII", intervention: "Engagement with Chongwe District and Provincial Pharmacists", lead: "ZAMMSA", status: "Pending" },
-      { commodity: "Anti-D Immunoglobulin", intervention: "Engagement with Kabwe Women and Newborn Hospital", lead: "ZAMMSA", status: "Pending" },
-      { commodity: "Lamotrigine", intervention: "Engagement with Pediatric Centre of Excellence to absorb stock", lead: "ZAMMSA", status: "In Progress" }
+    const monthOrder = ["June", "July", "August", "September", "October", "November", "December"];
+    const monthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
+    const expiryRecords = [
+      { id: "amox-jun", month: "June", commodity: "Amoxiclav", batch: "AMX0626", quantity: 120000, value: 1600000, salvaged: 800000, status: "In Progress", warehouse: "Lusaka Hub", province: "Lusaka", facility: "Multiple high-consumption facilities", institution: "MoH / ZAMMSA", identified: "01 Apr 2026", salvagedDate: "30 May 2026", timeline: [["01 Apr 2026", "Identified"], ["15 Apr 2026", "Added to TWG review"], ["01 May 2026", "Facilities matched"], ["30 May 2026", "Partial redistribution completed"]] },
+      { id: "tb-jun", month: "June", commodity: "TB commodities", batch: "TB0626", quantity: 42000, value: 800000, salvaged: 450000, status: "In Progress", warehouse: "Lusaka Hub", province: "Lusaka", facility: "UTH Adult", institution: "ZAMMSA / UTH Adult", identified: "05 Apr 2026", salvagedDate: null, timeline: [["05 Apr 2026", "Identified"], ["20 Apr 2026", "Added to TWG review"], ["15 May 2026", "UTH Adult engaged"], ["01 Jun 2026", "Uptake in progress"]] },
+      { id: "kit-jul", month: "July", commodity: "Kit Yamoyo", batch: "KY0726", quantity: 25000, value: 2100000, salvaged: 500000, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "To be allocated", institution: "ZAMMSA", identified: "12 Apr 2026", salvagedDate: null, timeline: [["12 Apr 2026", "Identified"], ["01 May 2026", "Added to TWG review"], ["20 May 2026", "Recipient mapping started"]] },
+      { id: "unfpa-jul", month: "July", commodity: "UNFPA Kits", batch: "UN0726", quantity: 18000, value: 2000000, salvaged: 300000, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "To be allocated", institution: "ZAMMSA / UNFPA", identified: "15 Apr 2026", salvagedDate: null, timeline: [["15 Apr 2026", "Identified"], ["05 May 2026", "Distribution plan requested"], ["01 Jun 2026", "Recipient confirmation pending"]] },
+      { id: "ins-aug", month: "August", commodity: "Insulin products", batch: "INS0826", quantity: 36000, value: 3300000, salvaged: 900000, status: "In Progress", warehouse: "Cold Chain Hub", province: "Lusaka", facility: "UTH and high-demand facilities", institution: "ZAMMSA / UTH", identified: "20 Apr 2026", salvagedDate: null, timeline: [["20 Apr 2026", "Identified"], ["01 May 2026", "Added to TWG review"], ["20 May 2026", "UTH demand confirmed"], ["05 Jun 2026", "Redistribution in progress"]] },
+      { id: "lab-aug", month: "August", commodity: "Laboratory commodities", batch: "LAB0826", quantity: 14500, value: 3000000, salvaged: 450000, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "First-level hospitals", institution: "MoH / ZAMMSA", identified: "24 Apr 2026", salvagedDate: null, timeline: [["24 Apr 2026", "Identified"], ["10 May 2026", "Diagnostic facilities mapped"], ["01 Jun 2026", "Facility engagement underway"]] },
+      { id: "lam-sep", month: "September", commodity: "Lamotrigine", batch: "LAM0926", quantity: 27000, value: 2800000, salvaged: 600000, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "Pediatric Centre of Excellence", institution: "ZAMMSA / PCOE", identified: "01 May 2026", salvagedDate: null, timeline: [["01 May 2026", "Identified"], ["15 May 2026", "Added to TWG review"], ["01 Jun 2026", "PCOE engaged"]] },
+      { id: "factor-sep", month: "September", commodity: "Coagulation Factor VIII", batch: "FVIII0926", quantity: 8000, value: 3000000, salvaged: 250000, status: "Pending", warehouse: "Cold Chain Hub", province: "Lusaka", facility: "Chongwe referral network", institution: "ZAMMSA / Chongwe", identified: "03 May 2026", salvagedDate: null, timeline: [["03 May 2026", "Identified"], ["20 May 2026", "Provincial pharmacist engaged"], ["05 Jun 2026", "Awaiting uptake plan"]] },
+      { id: "benz-oct", month: "October", commodity: "Benzhexol", batch: "B123", quantity: 50000, value: 200000, salvaged: 0, status: "Pending", warehouse: "Central Warehouse", province: "Lusaka", facility: "To be allocated", institution: "ZAMMSA", identified: "28 May 2026", salvagedDate: null, timeline: [["28 May 2026", "Identified"], ["01 Jun 2026", "Added to TWG review"], ["05 Jun 2026", "Recipient mapping pending"]] },
+      { id: "quet-oct", month: "October", commodity: "Quetiapine", batch: "B456", quantity: 15000, value: 300000, salvaged: 0, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "Chainama Hospital", institution: "Chainama Hospital", identified: "01 Jun 2026", salvagedDate: null, timeline: [["01 Jun 2026", "Identified"], ["15 Jun 2026", "Added to TWG review"], ["01 Jul 2026", "Chainama engaged"], ["15 Jul 2026", "Awaiting response"]] },
+      { id: "dex-oct", month: "October", commodity: "Dextrose", batch: "B789", quantity: 5000, value: 50000, salvaged: 50000, status: "Salvaged", warehouse: "Lusaka Hub", province: "Lusaka", facility: "UTH Adult", institution: "ZAMMSA / UTH Adult", identified: "20 May 2026", salvagedDate: "04 Jun 2026", timeline: [["20 May 2026", "Identified"], ["25 May 2026", "UTH Adult engaged"], ["04 Jun 2026", "Full quantity salvaged"]] },
+      { id: "other-oct", month: "October", commodity: "Other October portfolio", batch: "OCT-MULTI", quantity: 98000, value: 6650000, salvaged: 1450000, status: "In Progress", warehouse: "Multiple warehouses", province: "Multiple provinces", facility: "Multiple facilities", institution: "MoH / ZAMMSA", identified: "May 2026", salvagedDate: null, timeline: [["May 2026", "Portfolio identified"], ["01 Jun 2026", "Batch verification initiated"], ["05 Jun 2026", "Redistribution planning underway"]] },
+      { id: "anti-nov", month: "November", commodity: "Anti-D Immunoglobulin", batch: "AD1126", quantity: 11000, value: 1900000, salvaged: 350000, status: "In Progress", warehouse: "Cold Chain Hub", province: "Lusaka", facility: "Kabwe Women and Newborn Hospital", institution: "ZAMMSA / Kabwe WNH", identified: "02 May 2026", salvagedDate: null, timeline: [["02 May 2026", "Identified"], ["20 May 2026", "Kabwe WNH engaged"], ["05 Jun 2026", "Uptake confirmation pending"]] },
+      { id: "cardio-nov", month: "November", commodity: "Prasugrel & Metolazone", batch: "PM1126", quantity: 22000, value: 2100000, salvaged: 200000, status: "Pending", warehouse: "Central Warehouse", province: "Lusaka", facility: "National Heart Hospital", institution: "ZAMMSA / NHH", identified: "05 May 2026", salvagedDate: null, timeline: [["05 May 2026", "Identified"], ["25 May 2026", "NHH engagement requested"], ["05 Jun 2026", "Awaiting response"]] },
+      { id: "mental-dec", month: "December", commodity: "Mental health commodities", batch: "MH1226", quantity: 44000, value: 2200000, salvaged: 300000, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "Chainama network", institution: "MoH / Chainama", identified: "10 May 2026", salvagedDate: null, timeline: [["10 May 2026", "Identified"], ["25 May 2026", "Demand review initiated"], ["05 Jun 2026", "Facility allocation underway"]] },
+      { id: "iv-dec", month: "December", commodity: "IV fluids", batch: "IV1226", quantity: 60000, value: 1800000, salvaged: 300000, status: "In Progress", warehouse: "Multiple warehouses", province: "Multiple provinces", facility: "High-consumption hospitals", institution: "MoH / ZAMMSA", identified: "12 May 2026", salvagedDate: null, timeline: [["12 May 2026", "Identified"], ["28 May 2026", "Consumption analysis completed"], ["06 Jun 2026", "Redistribution planning underway"]] }
     ];
-
-    const actions = [
-      { action: "Zambia Army feedback", lead: "Zambia Army / MoH", dueDate: null, status: "Pending" },
-      ...interventions.map(item => ({
-        action: item.status === "Completed" ? `${item.commodity} salvage close-out` : item.intervention,
-        lead: item.lead,
-        dueDate: null,
-        status: item.status === "Ongoing" ? "In Progress" : item.status
-      }))
+    const reviewTrend = [
+      { date: "1 May", atRisk: 33.8, salvaged: 0.1 },
+      { date: "15 May", atRisk: 32.5, salvaged: 0.4 },
+      { date: "1 Jun", atRisk: 31.9, salvaged: 0.8 },
+      { date: "15 Jun", atRisk: 30.2, salvaged: 1.2 }
     ];
+    const fields = ["Commodity", "Batch Number", "Expiry Date", "Quantity", "Value", "Warehouse", "Province", "Facility", "Salvage Status", "Date Identified", "Date Salvaged", "Institution Engaged"];
+    const statusClass = { Salvaged: "badge-completed", "In Progress": "badge-progress", Pending: "badge-pending", Expired: "badge-overdue" };
+    let selectedMonth = "October";
+    let selectedCommodityId = "quet-oct";
 
-    const scorecard = [
-      { indicator: "Total Value at Risk", current: "ZMW 33.8M", previous: null, direction: "lower" },
-      { indicator: "Value Salvaged", current: null, previous: null, direction: "higher" },
-      { indicator: "Commodities Under Salvage", current: 10, previous: null, direction: "lower" },
-      { indicator: "Commodities Expired", current: null, previous: null, direction: "lower" },
-      { indicator: "Salvage Success Rate", current: "17%", previous: null, direction: "higher" }
-    ];
-
-    const forecast = ["July", "August", "September", "October", "November", "December"]
-      .map(month => ({ month, value: null }));
-    const salvageTrend = ["April", "May", "June", "July", "August"]
-      .map(month => ({ month, value: null }));
-
-    const operationalKpis = [
-      ["Value at Risk", "ZMW 33.8M"],
-      ["Value Salvaged", null],
-      ["Value Expired", null],
-      ["Salvage Rate", "17%"],
-      ["Average Days to Salvage", null],
-      ["Commodities Reviewed", "12"],
-      ["Facilities Engaged", null],
-      ["Provinces Engaged", null]
-    ];
-
-    const statusConfig = {
-      "Completed": { color: "#28715f", badge: "badge-completed", priority: 4 },
-      "Ongoing": { color: "#2c6fa5", badge: "badge-ongoing", priority: 2 },
-      "In Progress": { color: "#a46213", badge: "badge-progress", priority: 1 },
-      "Pending": { color: "#8b948f", badge: "badge-pending", priority: 0 },
-      "Overdue": { color: "#b73a3a", badge: "badge-overdue", priority: -1 }
+    const sum = (items, field) => items.reduce((total, item) => total + item[field], 0);
+    const money = value => `ZMW ${(value / 1000000).toLocaleString("en-ZM", { minimumFractionDigits: 1, maximumFractionDigits: 2 })}M`;
+    const moneyExact = value => `ZMW ${value.toLocaleString("en-ZM")}`;
+    const rate = (salvaged, total) => total ? Math.round((salvaged / total) * 100) : 0;
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
+    const monthRecords = month => expiryRecords.filter(item => item.month === month);
+    const monthStats = month => {
+      const records = monthRecords(month);
+      const total = sum(records, "value");
+      const salvaged = sum(records, "salvaged");
+      return { records, total, salvaged, remaining: total - salvaged, rate: rate(salvaged, total) };
     };
+    const alertLevel = value => value > 1000000 ? "Critical" : value >= 500000 ? "Moderate" : "Controlled";
 
-    const portfolioStatusOrder = ["Completed", "Ongoing", "In Progress", "Pending"];
-    const counts = Object.fromEntries(portfolioStatusOrder.map(status => [
-      status, interventions.filter(item => item.status === status).length
-    ]));
-
-    const percent = value => Math.round((value / interventions.length) * 100);
-    const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#039;"
-    })[character]);
-
-    const displayValue = value => value === null ? '<span class="placeholder">Data required</span>' : escapeHtml(value);
-
-    function effectiveStatus(action) {
-      if (action.status !== "Completed" && action.dueDate && new Date(`${action.dueDate}T23:59:59+02:00`) < reviewDate) return "Overdue";
-      return action.status;
+    function renderExecutive() {
+      const total = sum(expiryRecords, "value");
+      const salvaged = sum(expiryRecords, "salvaged");
+      const remaining = total - salvaged;
+      const active = new Set(expiryRecords.filter(item => item.status !== "Salvaged").map(item => item.commodity)).size;
+      const metrics = [
+        ["Total Value Expiring Jun-Dec 2026", money(total), "Full demonstration horizon", "danger"],
+        ["Total Salvaged", money(salvaged), `${rate(salvaged, total)}% of expiring value`, "success"],
+        ["Remaining At Risk", money(remaining), "Expiring minus salvaged", "warning"],
+        ["Salvage Rate", `${rate(salvaged, total)}%`, "Value-based performance", "success"],
+        ["Commodities Under Active Salvage", active, "Pending or in progress", ""]
+      ];
+      document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
     }
 
-    function formatDate(value) {
-      if (!value) return '<span class="placeholder">Date required</span>';
-      return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-        .format(new Date(`${value}T12:00:00+02:00`));
+    function renderCalendar() {
+      document.getElementById("month-calendar").innerHTML = monthOrder.map(month => {
+        const stats = monthStats(month);
+        return `<button class="month-card ${month === selectedMonth ? "active" : ""}" type="button" data-month="${month}" aria-pressed="${month === selectedMonth}"><span>${month}</span><strong>${money(stats.total)}</strong><small>${money(stats.remaining)} remaining</small></button>`;
+      }).join("");
+      document.querySelectorAll(".month-card").forEach(button => button.addEventListener("click", () => {
+        selectedMonth = button.dataset.month;
+        selectedCommodityId = monthRecords(selectedMonth)[0].id;
+        renderCalendar();
+        renderMonthDetail();
+        renderCommodity();
+      }));
     }
 
-    function trendFor(row) {
-      if (row.current === null || row.previous === null) return { symbol: "—", className: "trend-flat", label: "Comparison required" };
-      const current = Number(String(row.current).replace(/[^0-9.-]/g, ""));
-      const previous = Number(String(row.previous).replace(/[^0-9.-]/g, ""));
-      if (current === previous) return { symbol: "→", className: "trend-flat", label: "No change" };
-      const increased = current > previous;
-      const positive = row.direction === "higher" ? increased : !increased;
-      return { symbol: increased ? "↑" : "↓", className: positive ? "trend-down" : "trend-up", label: increased ? "Increased" : "Decreased" };
+    function renderMonthDetail() {
+      const stats = monthStats(selectedMonth);
+      document.getElementById("month-detail-title").textContent = `${selectedMonth} 2026 expiry detail`;
+      document.getElementById("month-detail-copy").textContent = `${alertLevel(stats.remaining)} exposure: ${money(stats.remaining)} remains unsalvaged.`;
+      document.getElementById("month-summary").innerHTML = [
+        ["Total Expiring", money(stats.total)],
+        ["Salvaged", money(stats.salvaged)],
+        ["Remaining Risk", money(stats.remaining)],
+        ["Salvage Rate", `${stats.rate}%`]
+      ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
+      document.getElementById("expiry-table-body").innerHTML = stats.records.map(item => `
+        <tr>
+          <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.commodity)}</button></td>
+          <td>${escapeHtml(item.batch)}</td>
+          <td>${item.quantity.toLocaleString("en-ZM")}</td>
+          <td>${moneyExact(item.value)}</td>
+          <td>${escapeHtml(item.warehouse)}<br><span class="metric-sub">${escapeHtml(item.province)}</span></td>
+          <td><span class="badge ${statusClass[item.status]}">${escapeHtml(item.status)}</span></td>
+        </tr>`).join("");
+      document.getElementById("month-record-count").textContent = `${stats.records.length} batch record${stats.records.length === 1 ? "" : "s"}`;
+      document.querySelectorAll(".commodity-button").forEach(button => button.addEventListener("click", () => {
+        selectedCommodityId = button.dataset.id;
+        renderCommodity();
+        document.getElementById("profile-title").scrollIntoView({ behavior: "smooth", block: "start" });
+      }));
     }
 
-    function renderScorecard() {
-      document.getElementById("scorecard-body").innerHTML = scorecard.map(row => {
-        const trend = trendFor(row);
-        return `<tr><td class="commodity">${escapeHtml(row.indicator)}</td><td>${displayValue(row.current)}</td><td>${displayValue(row.previous)}</td><td><span class="trend ${trend.className}" title="${trend.label}">${trend.symbol}</span></td></tr>`;
+    function renderCommodity() {
+      const item = expiryRecords.find(record => record.id === selectedCommodityId) || monthRecords(selectedMonth)[0];
+      document.getElementById("profile-title").textContent = `${item.commodity} profile`;
+      document.getElementById("timeline-subtitle").textContent = `${item.batch} intervention milestones`;
+      const profile = [
+        ["Commodity", item.commodity], ["Batch", item.batch], ["Total Quantity", item.quantity.toLocaleString("en-ZM")],
+        ["Value at Risk", moneyExact(item.value)], ["Value Salvaged", moneyExact(item.salvaged)], ["Expiry Month", `${item.month} 2026`],
+        ["Lead Institution", item.institution], ["Status", item.status], ["Warehouse", item.warehouse], ["Province", item.province],
+        ["Facility", item.facility], ["Date Identified", item.identified]
+      ];
+      document.getElementById("commodity-profile").innerHTML = profile.map(([label, value]) => `<div class="profile-item"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("");
+      document.getElementById("salvage-timeline").innerHTML = item.timeline.map(([date, event]) => `<div class="timeline-item"><time>${escapeHtml(date)}</time><strong>${escapeHtml(event)}</strong></div>`).join("");
+    }
+
+    function renderAlerts() {
+      const grouped = { Critical: [], Moderate: [], Controlled: [] };
+      monthOrder.forEach(month => {
+        const stats = monthStats(month);
+        grouped[alertLevel(stats.remaining)].push(`${month} (${money(stats.remaining)})`);
+      });
+      const config = [
+        ["Critical", "critical", "> ZMW 1M not salvaged"],
+        ["Moderate", "moderate", "ZMW 500K-1M"],
+        ["Controlled", "controlled", "< ZMW 500K"]
+      ];
+      document.getElementById("alert-panel").innerHTML = config.map(([level, className, threshold]) => `<article class="card alert-card ${className}"><span>${level}</span><strong>${grouped[level].length} month${grouped[level].length === 1 ? "" : "s"}</strong><small>${threshold}<br>${grouped[level].join(", ") || "None"}</small></article>`).join("");
+    }
+
+    function renderPerformance() {
+      const width = 720, height = 250, left = 55, right = 690, top = 24, bottom = 205, max = 36;
+      const x = index => left + index * ((right - left) / (reviewTrend.length - 1));
+      const y = value => bottom - (value / max) * (bottom - top);
+      const line = field => reviewTrend.map((item, index) => `${x(index)},${y(item[field])}`).join(" ");
+      document.getElementById("performance-chart").innerHTML = `
+        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly at-risk and salvaged value trend">
+          ${[0, 10, 20, 30].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="18" y="${y(value) + 4}">${value}M</text>`).join("")}
+          <polyline points="${line("atRisk")}" fill="none" stroke="#b73a3a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="${line("salvaged")}" fill="none" stroke="#28715f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          ${reviewTrend.map((item, index) => `<circle cx="${x(index)}" cy="${y(item.atRisk)}" r="5" fill="#fff" stroke="#b73a3a" stroke-width="3"/><circle cx="${x(index)}" cy="${y(item.salvaged)}" r="5" fill="#fff" stroke="#28715f" stroke-width="3"/><text x="${x(index)}" y="232" text-anchor="middle">${item.date}</text>`).join("")}
+        </svg>`;
+      document.getElementById("performance-table").innerHTML = reviewTrend.map((item, index) => {
+        const previous = reviewTrend[index - 1];
+        const movement = previous ? `${(item.atRisk - previous.atRisk).toFixed(1)}M risk / +${(item.salvaged - previous.salvaged).toFixed(1)}M saved` : "Baseline";
+        return `<tr><td class="commodity">${item.date} 2026</td><td>ZMW ${item.atRisk.toFixed(1)}M</td><td>ZMW ${item.salvaged.toFixed(1)}M</td><td class="${previous ? "trend-down" : "trend-flat"}">${movement}</td></tr>`;
       }).join("");
     }
 
-    function renderForecast() {
-      document.getElementById("forecast-list").innerHTML = forecast.map(item => `
-        <div class="forecast-row">
-          <strong>${item.month}</strong>
-          <span class="forecast-bar"><span></span></span>
-          <span class="placeholder">${item.value === null ? "Value required" : escapeHtml(item.value)}</span>
-        </div>`).join("");
+    function renderFields() {
+      document.getElementById("required-fields").innerHTML = fields.map((field, index) => `<article class="card mini-kpi"><span>Field ${String(index + 1).padStart(2, "0")}</span><strong>${field}</strong></article>`).join("");
     }
 
-    function renderTrend() {
-      const hasValues = salvageTrend.some(item => item.value !== null);
-      if (!hasValues) {
-        document.getElementById("trend-chart").innerHTML = `
-          <svg class="line-chart" viewBox="0 0 500 230" role="img" aria-label="Salvage value trend awaiting monthly values">
-            <line x1="48" y1="30" x2="48" y2="190" stroke="#dce5df"/>
-            <line x1="48" y1="190" x2="475" y2="190" stroke="#dce5df"/>
-            ${salvageTrend.map((item, index) => `<text x="${55 + index * 98}" y="215">${item.month}</text><circle cx="${75 + index * 98}" cy="110" r="6" fill="#fff" stroke="#a46213" stroke-width="2"/>`).join("")}
-            <text x="250" y="75" text-anchor="middle" style="font-size:13px;font-weight:700">Monthly salvage values required</text>
-            <text x="250" y="96" text-anchor="middle">Add validated ZMW values to activate the trend line</text>
-          </svg>`;
-      }
-    }
-
-    function renderOperationalKpis() {
-      document.getElementById("operational-kpis").innerHTML = operationalKpis.map(([label, value]) => `
-        <article class="card mini-kpi"><span>${escapeHtml(label)}</span><strong>${displayValue(value)}</strong></article>
-      `).join("");
-    }
-
-    function initialisePortfolio() {
-      const openCommodities = interventions.length - counts.Completed;
-      const overdue = actions.filter(action => effectiveStatus(action) === "Overdue").length;
-      document.getElementById("answer-pending").textContent = `${openCommodities} commodities`;
-      document.getElementById("answer-overdue").textContent = `${overdue} confirmed`;
-      document.getElementById("donut-total").textContent = interventions.length;
-
-      let cursor = 0;
-      const stops = portfolioStatusOrder.map(status => {
-        const start = cursor;
-        cursor += (counts[status] / interventions.length) * 100;
-        return `${statusConfig[status].color} ${start}% ${cursor}%`;
-      });
-
-      const donut = document.getElementById("status-donut");
-      donut.style.background = `conic-gradient(${stops.join(",")})`;
-      donut.setAttribute("aria-label", portfolioStatusOrder
-        .map(status => `${status}: ${counts[status]} interventions`)
-        .join(", "));
-
-      document.getElementById("status-legend").innerHTML = portfolioStatusOrder.map(status => `
-        <div class="legend-item">
-          <span class="legend-dot" style="background:${statusConfig[status].color}"></span>
-          <span>${status}</span>
-          <strong>${counts[status]} &middot; ${percent(counts[status])}%</strong>
-        </div>
-      `).join("");
-
-      const priorities = interventions.filter(item => item.status !== "Completed").slice(0, 7);
-      document.getElementById("priority-list").innerHTML = priorities.map((item, index) => `
-        <div class="risk-row">
-          <span class="risk-name" title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span>
-          <span class="risk-track"><span class="risk-fill" style="--score:${10 - index * 0.6}"></span></span>
-          <span class="risk-score">${escapeHtml(["Ongoing", "In Progress"].includes(item.status) ? "Active" : item.status)}</span>
-        </div>
-      `).join("");
-    }
-
-    function renderTable() {
-      const query = document.getElementById("search-input").value.trim().toLowerCase();
-      const status = document.getElementById("status-filter").value;
-      const sort = document.getElementById("sort-select").value;
-
-      const rows = actions
-        .map(item => ({ ...item, effectiveStatus: effectiveStatus(item) }))
-        .filter(item => status === "All" || item.effectiveStatus === status)
-        .filter(item => [item.action, item.lead, item.effectiveStatus]
-          .some(value => value.toLowerCase().includes(query)))
-        .sort((a, b) => {
-          if (sort === "action") return a.action.localeCompare(b.action);
-          if (sort === "due") return (a.dueDate || "9999-12-31").localeCompare(b.dueDate || "9999-12-31");
-          return statusConfig[a.effectiveStatus].priority - statusConfig[b.effectiveStatus].priority || a.action.localeCompare(b.action);
-        });
-
-      document.getElementById("table-body").innerHTML = rows.map(item => `
-        <tr>
-          <td class="commodity">${escapeHtml(item.action)}</td>
-          <td class="lead">${escapeHtml(item.lead)}</td>
-          <td>${formatDate(item.dueDate)}</td>
-          <td><span class="badge ${statusConfig[item.effectiveStatus].badge}">${escapeHtml(item.effectiveStatus)}</span></td>
-        </tr>
-      `).join("");
-
-      document.getElementById("empty-state").style.display = rows.length ? "none" : "block";
-      document.getElementById("result-count").textContent = `Showing ${rows.length} of ${actions.length} actions`;
-    }
-
-    renderScorecard();
-    renderForecast();
-    renderTrend();
-    renderOperationalKpis();
-    initialisePortfolio();
-    renderTable();
-
-    ["search-input", "status-filter", "sort-select"].forEach(id => {
-      document.getElementById(id).addEventListener(id === "search-input" ? "input" : "change", renderTable);
-    });
+    renderExecutive();
+    renderCalendar();
+    renderMonthDetail();
+    renderCommodity();
+    renderAlerts();
+    renderPerformance();
+    renderFields();
   </script>
 </body>
 </html>

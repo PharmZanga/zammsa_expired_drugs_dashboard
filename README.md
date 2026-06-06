@@ -5,13 +5,12 @@ commodities and salvage interventions in Zambia.
 
 ## Features
 
-- Executive summary metrics calculated from the intervention tracker
-- Bi-weekly current-period, previous-period, and trend scorecard
-- Changes-since-last-review leadership brief
-- Six-month expiry forecast and salvage value trend views
-- Due-date-aware action tracker with overdue detection
-- Zambia Army special initiative panel
-- Interactive search, status filtering, and priority sorting
+- Executive summary metrics calculated from batch-level records
+- Clickable June-December expiry calendar
+- Month-level batch detail and calculated salvage summaries
+- Commodity profiles with intervention timelines
+- Automatic critical, moderate, and controlled risk alerts
+- Bi-weekly at-risk and cumulative-salvage trend
 - Responsive layout for desktop, tablet, and mobile
 - Print-friendly reporting view
 - Automated deployment to GitHub Pages
@@ -23,8 +22,8 @@ required.
 
 ## Data note
 
-The dashboard reflects the supplied June 2026 intervention tracker. The stated
-ZMW 33.8 million value at risk is reported as of April 2026. Missing financial
-values, prior-period comparisons, expiry forecasts, and due dates are displayed
-as `Data required` rather than estimated. Complete these fields with validated
-TWG data before each bi-weekly review.
+The current June-December 2026 monthly values and batch records are a
+demonstration dataset implementing the supplied control-tower concept. Replace
+them with the validated national commodity line list before operational use.
+All month totals, salvage values, remaining risk, salvage rates, and alerts are
+calculated from the batch records in `index.html`.
