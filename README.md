@@ -14,6 +14,8 @@ commodities and salvage interventions in Zambia.
 - Append-only salvaged commodities register
 - Zambia Army initiative tracker
 - Bi-weekly at-risk and cumulative-salvage trend
+- Commodity value-at-risk Pareto ranking and top-10 list
+- Lifecycle-stage KPIs and traffic-light action tracker
 - Responsive layout for desktop, tablet, and mobile
 - Print-friendly reporting view
 - Automated deployment to GitHub Pages
@@ -38,3 +40,17 @@ Historical state is represented by two related structures:
 
 Selecting a snapshot recalculates KPIs, monthly salvage progress, warning bands,
 the Zambia Army opportunity, and the cumulative salvage register.
+
+## Financial formulas
+
+- `Total Value at Risk = SUM(Extended Price)`
+- `Remaining Risk = Total Value at Risk - Total Salvaged Value`
+- `Salvage Rate = Total Salvaged Value / Total Value at Risk * 100`
+- `Extended Price = Total Units * Unit Price`
+
+The current demonstration baseline uses:
+
+- Total value at risk: `ZMW 33,836,176.68`
+- Total salvaged: `ZMW 359,266.25`
+- Remaining risk: `ZMW 33,476,910.43`
+- Salvage rate: `1.06%`

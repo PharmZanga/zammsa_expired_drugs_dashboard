@@ -1346,6 +1346,14 @@
       font-size: 11px;
     }
 
+    .pareto-list .risk-row {
+      grid-template-columns: 155px minmax(0, 1fr) 92px;
+    }
+
+    .pareto-list .risk-score {
+      white-space: nowrap;
+    }
+
     footer {
       color: rgba(255, 255, 255, 0.7);
       background: var(--green-950);
@@ -1715,6 +1723,40 @@
     </section>
 
     <div class="section-heading">
+      <h2>Commodity risk ranking</h2>
+      <p>Pareto-style ranking of the commodities contributing most to total financial exposure.</p>
+    </div>
+    <section class="planning-grid">
+      <article class="card">
+        <div class="card-header"><div><h3>Value-at-risk Pareto</h3><p>Descending commodity exposure</p></div></div>
+        <div class="risk-list" id="pareto-ranking"></div>
+      </article>
+      <article class="card tracker">
+        <div class="card-header"><div><h3>Top 10 commodities expiring</h3><p>Executive attention list</p></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Rank</th><th>Commodity</th><th>Expiry</th><th>Value at Risk</th></tr></thead>
+            <tbody id="top-ten-table"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <div class="section-heading">
+      <h2>Commodity status and actions</h2>
+      <p>Lifecycle stage and accountable next action for each commodity requiring intervention.</p>
+    </div>
+    <section class="kpi-grid" id="lifecycle-kpis"></section>
+    <section class="card tracker" style="margin-top:14px">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Commodity</th><th>Lead</th><th>Lifecycle Status</th><th>Action</th><th>Traffic Light</th></tr></thead>
+          <tbody id="commodity-actions"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="section-heading">
       <h2>Required national line-list fields</h2>
       <p>These fields are the minimum data contract needed to replace the demonstration data and automate the dashboard.</p>
     </div>
@@ -1745,23 +1787,21 @@
       { id: "benz-oct", month: "October", commodity: "Benzhexol", batch: "B123", quantity: 50000, value: 200000, salvaged: 0, status: "Pending", warehouse: "Central Warehouse", province: "Lusaka", facility: "To be allocated", institution: "ZAMMSA", identified: "28 May 2026", salvagedDate: null, timeline: [["28 May 2026", "Identified"], ["01 Jun 2026", "Added to TWG review"], ["05 Jun 2026", "Recipient mapping pending"]] },
       { id: "quet-oct", month: "October", commodity: "Quetiapine", batch: "B456", quantity: 15000, value: 300000, salvaged: 0, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "Chainama Hospital", institution: "Chainama Hospital", identified: "01 Jun 2026", salvagedDate: null, timeline: [["01 Jun 2026", "Identified"], ["15 Jun 2026", "Added to TWG review"], ["01 Jul 2026", "Chainama engaged"], ["15 Jul 2026", "Awaiting response"]] },
       { id: "dex-oct", month: "October", commodity: "Dextrose", batch: "B789", quantity: 5000, value: 50000, salvaged: 50000, status: "Salvaged", warehouse: "Lusaka Hub", province: "Lusaka", facility: "UTH Adult", institution: "ZAMMSA / UTH Adult", identified: "20 May 2026", salvagedDate: "04 Jun 2026", timeline: [["20 May 2026", "Identified"], ["25 May 2026", "UTH Adult engaged"], ["04 Jun 2026", "Full quantity salvaged"]] },
-      { id: "other-oct", month: "October", commodity: "Other October portfolio", batch: "OCT-MULTI", quantity: 98000, value: 6650000, salvaged: 1450000, status: "In Progress", warehouse: "Multiple warehouses", province: "Multiple provinces", facility: "Multiple facilities", institution: "MoH / ZAMMSA", identified: "May 2026", salvagedDate: null, timeline: [["May 2026", "Portfolio identified"], ["01 Jun 2026", "Batch verification initiated"], ["05 Jun 2026", "Redistribution planning underway"]] },
+      { id: "other-oct", month: "October", commodity: "Other October portfolio", batch: "OCT-MULTI", quantity: 98000, value: 6686176.68, salvaged: 1450000, status: "In Progress", warehouse: "Multiple warehouses", province: "Multiple provinces", facility: "Multiple facilities", institution: "MoH / ZAMMSA", identified: "May 2026", salvagedDate: null, timeline: [["May 2026", "Portfolio identified"], ["01 Jun 2026", "Batch verification initiated"], ["05 Jun 2026", "Redistribution planning underway"]] },
       { id: "anti-nov", month: "November", commodity: "Anti-D Immunoglobulin", batch: "AD1126", quantity: 11000, value: 1900000, salvaged: 350000, status: "In Progress", warehouse: "Cold Chain Hub", province: "Lusaka", facility: "Kabwe Women and Newborn Hospital", institution: "ZAMMSA / Kabwe WNH", identified: "02 May 2026", salvagedDate: null, timeline: [["02 May 2026", "Identified"], ["20 May 2026", "Kabwe WNH engaged"], ["05 Jun 2026", "Uptake confirmation pending"]] },
       { id: "cardio-nov", month: "November", commodity: "Prasugrel & Metolazone", batch: "PM1126", quantity: 22000, value: 2100000, salvaged: 200000, status: "Pending", warehouse: "Central Warehouse", province: "Lusaka", facility: "National Heart Hospital", institution: "ZAMMSA / NHH", identified: "05 May 2026", salvagedDate: null, timeline: [["05 May 2026", "Identified"], ["25 May 2026", "NHH engagement requested"], ["05 Jun 2026", "Awaiting response"]] },
       { id: "mental-dec", month: "December", commodity: "Mental health commodities", batch: "MH1226", quantity: 44000, value: 2200000, salvaged: 300000, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "Chainama network", institution: "MoH / Chainama", identified: "10 May 2026", salvagedDate: null, timeline: [["10 May 2026", "Identified"], ["25 May 2026", "Demand review initiated"], ["05 Jun 2026", "Facility allocation underway"]] },
       { id: "iv-dec", month: "December", commodity: "IV fluids", batch: "IV1226", quantity: 60000, value: 1800000, salvaged: 300000, status: "In Progress", warehouse: "Multiple warehouses", province: "Multiple provinces", facility: "High-consumption hospitals", institution: "MoH / ZAMMSA", identified: "12 May 2026", salvagedDate: null, timeline: [["12 May 2026", "Identified"], ["28 May 2026", "Consumption analysis completed"], ["06 Jun 2026", "Redistribution planning underway"]] }
     ];
     const snapshots = [
-      { id: "2026-05-01", label: "01 May 2026", atRisk: 33800000, salvaged: 0, expired: 0, totalCommodities: 16 },
-      { id: "2026-05-15", label: "15 May 2026", atRisk: 32500000, salvaged: 300000, expired: 0, totalCommodities: 16 },
-      { id: "2026-06-01", label: "01 Jun 2026", atRisk: 31900000, salvaged: 800000, expired: 0, totalCommodities: 16 },
-      { id: "2026-06-15", label: "15 Jun 2026", atRisk: 30200000, salvaged: 1200000, expired: 0, totalCommodities: 16 }
+      { id: "2026-05-01", label: "01 May 2026", atRisk: 33836176.68, salvaged: 0, expired: 0, totalCommodities: 16 },
+      { id: "2026-05-15", label: "15 May 2026", atRisk: 33200000, salvaged: 200000, expired: 0, totalCommodities: 16 },
+      { id: "2026-06-01", label: "01 Jun 2026", atRisk: 33836176.68, salvaged: 359266.25, expired: 0, totalCommodities: 16 }
     ];
     const salvageEvents = [
-      { recordId: "amox-jun", value: 300000, date: "2026-05-15", label: "15 May 2026", institution: "MoH / ZAMMSA" },
-      { recordId: "amox-jun", value: 500000, date: "2026-06-01", label: "01 Jun 2026", institution: "MoH / ZAMMSA" },
-      { recordId: "tb-jun", value: 350000, date: "2026-06-15", label: "15 Jun 2026", institution: "ZAMMSA / UTH Adult" },
-      { recordId: "dex-oct", value: 50000, date: "2026-06-15", label: "15 Jun 2026", institution: "ZAMMSA / UTH Adult" }
+      { recordId: "amox-jun", value: 200000, date: "2026-05-15", label: "15 May 2026", institution: "MoH / ZAMMSA" },
+      { recordId: "amox-jun", value: 109266.25, date: "2026-06-01", label: "01 Jun 2026", institution: "MoH / ZAMMSA" },
+      { recordId: "dex-oct", value: 50000, date: "2026-06-01", label: "01 Jun 2026", institution: "ZAMMSA / UTH Adult" }
     ];
     const expiryDates = {
       June: "2026-06-30", July: "2026-07-31", August: "2026-08-31", September: "2026-09-30",
@@ -1771,12 +1811,13 @@
     const statusClass = { Salvaged: "badge-completed", "In Progress": "badge-progress", Pending: "badge-pending", Expired: "badge-overdue" };
     let selectedMonth = "October";
     let selectedCommodityId = "quet-oct";
-    let selectedSnapshotId = "2026-06-15";
+    let selectedSnapshotId = "2026-06-01";
 
     const sum = (items, field) => items.reduce((total, item) => total + item[field], 0);
     const money = value => `ZMW ${(value / 1000000).toLocaleString("en-ZM", { minimumFractionDigits: 1, maximumFractionDigits: 2 })}M`;
-    const moneyExact = value => `ZMW ${value.toLocaleString("en-ZM")}`;
+    const moneyExact = value => `ZMW ${value.toLocaleString("en-ZM", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     const rate = (salvaged, total) => total ? Math.round((salvaged / total) * 100) : 0;
+    const preciseRate = (salvaged, total) => total ? ((salvaged / total) * 100).toFixed(2) : "0.00";
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
     const selectedSnapshot = () => snapshots.find(item => item.id === selectedSnapshotId);
     const eventsThroughSnapshot = () => salvageEvents.filter(event => event.date <= selectedSnapshotId);
@@ -1795,9 +1836,9 @@
       select.innerHTML = snapshots.map(snapshot => `<option value="${snapshot.id}" ${snapshot.id === selectedSnapshotId ? "selected" : ""}>${snapshot.label}</option>`).join("");
       const snapshot = selectedSnapshot();
       document.getElementById("snapshot-summary").innerHTML = `
-        <div><span>Value at risk</span><strong>${money(snapshot.atRisk)}</strong></div>
-        <div><span>Value salvaged</span><strong>${money(snapshot.salvaged)}</strong></div>
-        <div><span>Remaining risk</span><strong>${money(snapshot.atRisk - snapshot.salvaged)}</strong></div>`;
+        <div><span>Value at risk</span><strong>${moneyExact(snapshot.atRisk)}</strong></div>
+        <div><span>Value salvaged</span><strong>${moneyExact(snapshot.salvaged)}</strong></div>
+        <div><span>Remaining risk</span><strong>${moneyExact(snapshot.atRisk - snapshot.salvaged)}</strong></div>`;
       select.addEventListener("change", () => {
         selectedSnapshotId = select.value;
         renderAllSnapshotViews();
@@ -1809,11 +1850,11 @@
       const snapshot = selectedSnapshot();
       const active = new Set(expiryRecords.filter(item => salvagedForRecord(item.id) < item.value).map(item => item.commodity)).size;
       const metrics = [
-        ["Projected Expiry by December 2026", money(projected), "If no further intervention occurs", "danger"],
-        ["Value at Risk", money(snapshot.atRisk), `Snapshot: ${snapshot.label}`, "warning"],
-        ["Already Salvaged", money(snapshot.salvaged), "Cumulative permanent register", "success"],
-        ["Remaining At Risk", money(snapshot.atRisk - snapshot.salvaged), "At risk minus salvaged", "warning"],
-        ["Salvage Rate", `${rate(snapshot.salvaged, snapshot.atRisk)}%`, "Snapshot performance", "success"],
+        ["Projected Expiry by December 2026", moneyExact(projected), "If no further intervention occurs", "danger"],
+        ["Total Value at Risk", moneyExact(snapshot.atRisk), `SUM(Extended Price) · ${snapshot.label}`, "warning"],
+        ["Total Salvaged", moneyExact(snapshot.salvaged), "Successfully redistributed value", "success"],
+        ["Remaining At Risk", moneyExact(snapshot.atRisk - snapshot.salvaged), "Risk minus salvaged", "warning"],
+        ["Salvage Rate", `${preciseRate(snapshot.salvaged, snapshot.atRisk)}%`, "Salvaged ÷ value at risk", "success"],
         ["Commodities Under Active Salvage", active, "Pending or in progress", ""]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
@@ -1909,7 +1950,7 @@
       const x = index => left + index * ((right - left) / (snapshots.length - 1));
       const y = value => bottom - (value / max) * (bottom - top);
       const line = field => snapshots.map((item, index) => `${x(index)},${y(item[field] / 1000000)}`).join(" ");
-      const rateY = item => bottom - (rate(item.salvaged, item.atRisk) / 100) * (bottom - top);
+      const rateY = item => bottom - (Number(preciseRate(item.salvaged, item.atRisk)) / 100) * (bottom - top);
       document.getElementById("performance-chart").innerHTML = `
         <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly value at risk, value salvaged, and salvage rate trend">
           ${[0, 10, 20, 30].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="18" y="${y(value) + 4}">${value}M</text>`).join("")}
@@ -1919,8 +1960,61 @@
           ${snapshots.map((item, index) => `<circle cx="${x(index)}" cy="${y(item.atRisk / 1000000)}" r="5" fill="#fff" stroke="#b73a3a" stroke-width="3"/><circle cx="${x(index)}" cy="${y(item.salvaged / 1000000)}" r="5" fill="#fff" stroke="#28715f" stroke-width="3"/><circle cx="${x(index)}" cy="${rateY(item)}" r="4" fill="#fff" stroke="#2c6fa5" stroke-width="2"/><text x="${x(index)}" y="232" text-anchor="middle">${item.label.replace(" 2026", "")}</text>`).join("")}
         </svg>`;
       document.getElementById("performance-table").innerHTML = snapshots.map(item => {
-        return `<tr><td class="commodity">${item.label}</td><td>${money(item.atRisk)}</td><td>${money(item.salvaged)}</td><td>${money(item.atRisk - item.salvaged)}</td><td>${rate(item.salvaged, item.atRisk)}%</td></tr>`;
+        return `<tr><td class="commodity">${item.label}</td><td>${moneyExact(item.atRisk)}</td><td>${moneyExact(item.salvaged)}</td><td>${moneyExact(item.atRisk - item.salvaged)}</td><td>${preciseRate(item.salvaged, item.atRisk)}%</td></tr>`;
       }).join("");
+    }
+
+    function lifecycleStatus(item) {
+      const salvaged = salvagedForRecord(item.id);
+      if (salvaged >= item.value) return "Salvaged";
+      if (salvaged > 0) return "Redistribution Approved";
+      if (item.facility !== "To be allocated" && item.institution !== "ZAMMSA") return "Facility Engaged";
+      if (item.status === "In Progress") return "Under Review";
+      return "Identified";
+    }
+
+    function trafficStatus(item) {
+      if (salvagedForRecord(item.id) >= item.value) return { label: "Complete", badge: "badge-completed" };
+      if (daysToExpiry(item) <= 30) return { label: "Overdue", badge: "badge-overdue" };
+      return { label: "Ongoing", badge: "badge-progress" };
+    }
+
+    function nextAction(item) {
+      const lifecycle = lifecycleStatus(item);
+      if (lifecycle === "Salvaged") return "Close and retain evidence";
+      if (lifecycle === "Redistribution Approved") return "Complete remaining redistribution";
+      if (lifecycle === "Facility Engaged") return "Obtain uptake confirmation";
+      if (lifecycle === "Under Review") return "Approve recipient and distribution plan";
+      return "Identify and engage recipient institution";
+    }
+
+    function renderRiskRanking() {
+      const ranked = [...expiryRecords].sort((a, b) => b.value - a.value);
+      const maximum = ranked[0].value;
+      document.getElementById("pareto-ranking").classList.add("pareto-list");
+      document.getElementById("pareto-ranking").innerHTML = ranked.slice(0, 10).map(item => `
+        <div class="risk-row">
+          <span class="risk-name" title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span>
+          <span class="risk-track"><span class="risk-fill" style="--score:${(item.value / maximum) * 10}"></span></span>
+          <span class="risk-score">${money(item.value)}</span>
+        </div>`).join("");
+      document.getElementById("top-ten-table").innerHTML = ranked.slice(0, 10).map((item, index) => `
+        <tr><td>${index + 1}</td><td class="commodity">${escapeHtml(item.commodity)}</td><td>${item.month} 2026</td><td>${moneyExact(item.value)}</td></tr>
+      `).join("");
+    }
+
+    function renderLifecycleAndActions() {
+      const stages = ["Identified", "Under Review", "Facility Engaged", "Redistribution Approved", "Salvaged", "Expired"];
+      const counts = Object.fromEntries(stages.map(stage => [stage, expiryRecords.filter(item => lifecycleStatus(item) === stage).length]));
+      document.getElementById("lifecycle-kpis").innerHTML = stages.map(stage => `
+        <article class="card mini-kpi"><span>${stage}</span><strong>${counts[stage]}</strong></article>
+      `).join("");
+      document.getElementById("commodity-actions").innerHTML = [...expiryRecords]
+        .sort((a, b) => daysToExpiry(a) - daysToExpiry(b))
+        .map(item => {
+          const traffic = trafficStatus(item);
+          return `<tr><td class="commodity">${escapeHtml(item.commodity)}</td><td>${escapeHtml(item.institution)}</td><td>${lifecycleStatus(item)}</td><td>${nextAction(item)}</td><td><span class="badge ${traffic.badge}">${traffic.label}</span></td></tr>`;
+        }).join("");
     }
 
     function renderFields() {
@@ -1936,10 +2030,12 @@
       renderWarningCentre();
       renderSalvageRegister();
       renderArmyTracker();
+      renderLifecycleAndActions();
     }
 
     renderAllSnapshotViews();
     renderPerformance();
+    renderRiskRanking();
     renderFields();
   </script>
 </body>
