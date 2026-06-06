@@ -1394,7 +1394,8 @@
 
     .ticker-shell {
       position: relative;
-      margin: 0 0 26px;
+      height: 86px;
+      margin: 0 0 18px;
       overflow: hidden;
       background: var(--green-950);
       border-radius: 14px;
@@ -1406,27 +1407,26 @@
       content: "";
       position: absolute;
       z-index: 2;
-      top: 0;
-      bottom: 0;
-      width: 48px;
+      right: 0;
+      left: 0;
+      height: 22px;
       pointer-events: none;
     }
 
     .ticker-shell::before {
-      left: 0;
-      background: linear-gradient(90deg, var(--green-950), transparent);
+      top: 0;
+      background: linear-gradient(180deg, var(--green-950), transparent);
     }
 
     .ticker-shell::after {
-      right: 0;
-      background: linear-gradient(270deg, var(--green-950), transparent);
+      bottom: 0;
+      background: linear-gradient(0deg, var(--green-950), transparent);
     }
 
     .ticker-track {
-      display: flex;
-      width: max-content;
-      padding: 11px 0;
-      animation: productTicker 55s linear infinite;
+      display: block;
+      width: 100%;
+      animation: productTicker 90s linear infinite;
     }
 
     .ticker-shell:hover .ticker-track,
@@ -1436,13 +1436,13 @@
 
     .ticker-item {
       display: grid;
-      grid-template-columns: minmax(140px, 1.3fr) auto auto;
+      grid-template-columns: minmax(220px, 1.5fr) minmax(110px, .6fr) minmax(150px, .8fr) minmax(130px, .7fr);
       align-items: center;
       gap: 16px;
-      min-width: 390px;
-      padding: 8px 22px;
+      min-height: 86px;
+      padding: 12px 24px;
       color: #fff;
-      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .ticker-item span,
@@ -1473,8 +1473,21 @@
     }
 
     @keyframes productTicker {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
+      from { transform: translateY(0); }
+      to { transform: translateY(-50%); }
+    }
+
+    .shared-monitor {
+      margin-bottom: 22px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .shared-monitor .section-heading {
+      margin-top: 0;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2009,9 +2022,9 @@
           </p>
         </div>
         <aside class="reporting-card" aria-label="Reporting period">
-          <span>Demonstration horizon</span>
-          <strong>June-December 2026</strong>
-          <p>Interactive expiry-risk and salvage monitoring model for migration to the validated national commodity line list.</p>
+          <span>Source reporting period</span>
+          <strong>May-September 2026</strong>
+          <p>Loaded from the supplied short-dated product and salvaged-product workbooks.</p>
         </aside>
       </div>
     </div>
@@ -2034,14 +2047,22 @@
     </nav>
     <div class="dashboard-content">
   <main id="main-content">
+    <section class="shared-monitor" aria-label="Monthly expiry calendar and commodity scoreboard">
+      <div class="section-heading">
+        <h2>Monthly expiry calendar</h2>
+        <p>Source values remain blank where no monetary value was supplied. Select a month to update the expiry detail.</p>
+      </div>
+      <section class="calendar" id="month-calendar" aria-label="Clickable monthly expiry calendar"></section>
+      <section class="ticker-shell" aria-label="Moving product scoreboard">
+        <div class="ticker-track" id="product-ticker"></div>
+      </section>
+    </section>
+
     <div class="dashboard-view active" id="view-executive-summary" data-view="executive-summary">
       <div class="view-header"><div><h2>Executive Summary</h2></div><p>What is happening across the national short-expiry portfolio?</p></div>
-    <div class="demo-banner"><strong>Demonstration dataset:</strong> Monthly values and sample batch records below implement the supplied control-tower concept. Replace them with validated national line-list data before operational use.</div>
+    <div class="demo-banner"><strong>Source data loaded:</strong> Short dated products.xlsx and Salvaged Products-Merged_May26.xlsx. Missing source fields are intentionally blank.</div>
 
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
-    <section class="ticker-shell" aria-label="Moving product scoreboard">
-      <div class="ticker-track" id="product-ticker"></div>
-    </section>
 
     <div class="section-heading">
       <h2>Changes since last review</h2>
@@ -2050,21 +2071,16 @@
     <section class="change-grid" id="changes-since-review"></section>
     <section class="planning-grid" style="margin-top:18px">
       <article class="card"><div class="card-header"><div><h3>Value at risk vs salvage</h3><p>Bi-weekly national movement</p></div></div><div class="chart-body" id="executive-trend-chart"></div></article>
-      <article class="card"><div class="card-header"><div><h3>Expiry forecast by month</h3><p>Projected June-December exposure</p></div></div><div class="risk-list" id="executive-forecast-chart"></div></article>
+      <article class="card"><div class="card-header"><div><h3>Expiry forecast by month</h3><p>June-December source coverage</p></div></div><div class="risk-list" id="executive-forecast-chart"></div></article>
     </section>
     <section class="alerts" id="executive-alerts" style="margin-top:18px"></section>
     </div>
 
     <div class="dashboard-view" id="view-expiry-forecast" data-view="expiry-forecast">
     <div class="view-header"><div><h2>Expiry Forecast</h2></div><p>How much is expiring by December, and which products drive each month?</p></div>
-    <div class="section-heading">
-      <h2>Monthly expiry calendar</h2>
-      <p>Select a month to inspect expiring batches, salvage progress, remaining risk, and accountable institutions.</p>
-    </div>
-    <section class="calendar" id="month-calendar" aria-label="Clickable monthly expiry calendar"></section>
 
     <div class="section-heading">
-      <h2 id="month-detail-title">October 2026 expiry detail</h2>
+      <h2 id="month-detail-title">June 2026 expiry detail</h2>
       <p id="month-detail-copy">Batch-level exposure and salvage status for the selected month.</p>
     </div>
     <section class="card tracker">
@@ -2131,13 +2147,13 @@
     <div class="view-header"><div><h2>Salvage Tracker</h2></div><p>What value has been saved, when, and through which institution?</p></div>
     <section class="metrics" id="salvage-kpis"></section>
     <div class="section-heading">
-      <h2 id="salvage-register-title">October salvaged commodities register</h2>
+      <h2 id="salvage-register-title">June salvaged commodities register</h2>
       <p id="salvage-register-copy">Permanent cumulative evidence filtered to the selected expiry month. Historical records are never overwritten.</p>
     </div>
     <section class="card tracker">
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Commodity</th><th>Batch</th><th>Value Salvaged</th><th>Date Salvaged</th><th>Institution</th></tr></thead>
+          <thead><tr><th>Commodity</th><th>Batch</th><th>Quantity Shipped</th><th>Value Salvaged</th><th>Shipped Date</th><th>Expiry Date</th><th>Recipient Institution</th></tr></thead>
           <tbody id="salvage-register"></tbody>
         </table>
       </div>
@@ -2161,7 +2177,7 @@
       </div>
     </section>
     <div class="section-heading"><h2>Engagement performance</h2><p>Commodity count, portfolio value, and current intervention status by institution.</p></div>
-    <section class="card tracker"><div class="table-wrap"><table><thead><tr><th>Institution</th><th>Commodities</th><th>Portfolio Value</th><th>Remaining Risk</th><th>Status</th></tr></thead><tbody id="institution-table"></tbody></table></div></section>
+    <section class="card tracker"><div class="table-wrap"><table><thead><tr><th>Recipient Institution</th><th>Shipment Records</th><th>Quantity Shipped</th><th>Province(s)</th><th>Value</th></tr></thead><tbody id="institution-table"></tbody></table></div></section>
     </div>
 
     <div class="dashboard-view" id="view-historical-snapshots" data-view="historical-snapshots">
@@ -2269,7 +2285,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Monitoring rules:</strong> Snapshot Remaining Risk = Snapshot Value at Risk - Cumulative Value Salvaged. The permanent salvage register only includes events recorded on or before the selected snapshot. Warning bands are calculated from snapshot date to expiry date: Critical at 30 days or less, High Risk at 31-90 days, and Medium Risk at 91-180 days.</p>
+    <p class="source-note"><strong>Source note:</strong> Commodity quantities and expiry dates come from Short dated products.xlsx. May-July value-at-risk and salvaged-value totals, plus detailed shipment records, come from Salvaged Products-Merged_May26.xlsx. Fields not present in those files are intentionally blank. Warning bands are calculated from 26 May 2026 to each supplied expiry date.</p>
   </main>
 
   <footer>
@@ -2281,10 +2297,11 @@
     </div>
   </div>
 
+  <script src="assets/dashboard-data.js"></script>
   <script>
-    const monthOrder = ["June", "July", "August", "September", "October", "November", "December"];
-    const monthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
-    const expiryRecords = [
+    const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
+    const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
+    const demoExpiryRecords = [
       { id: "amox-jun", month: "June", commodity: "Amoxiclav", batch: "AMX0626", quantity: 120000, value: 1600000, salvaged: 800000, status: "In Progress", warehouse: "Lusaka Hub", province: "Lusaka", facility: "Multiple high-consumption facilities", institution: "MoH / ZAMMSA", identified: "01 Apr 2026", salvagedDate: "30 May 2026", timeline: [["01 Apr 2026", "Identified"], ["15 Apr 2026", "Added to TWG review"], ["01 May 2026", "Facilities matched"], ["30 May 2026", "Partial redistribution completed"]] },
       { id: "tb-jun", month: "June", commodity: "TB commodities", batch: "TB0626", quantity: 42000, value: 800000, salvaged: 450000, status: "In Progress", warehouse: "Lusaka Hub", province: "Lusaka", facility: "UTH Adult", institution: "ZAMMSA / UTH Adult", identified: "05 Apr 2026", salvagedDate: null, timeline: [["05 Apr 2026", "Identified"], ["20 Apr 2026", "Added to TWG review"], ["15 May 2026", "UTH Adult engaged"], ["01 Jun 2026", "Uptake in progress"]] },
       { id: "kit-jul", month: "July", commodity: "Kit Yamoyo", batch: "KY0726", quantity: 25000, value: 2100000, salvaged: 500000, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "To be allocated", institution: "ZAMMSA", identified: "12 Apr 2026", salvagedDate: null, timeline: [["12 Apr 2026", "Identified"], ["01 May 2026", "Added to TWG review"], ["20 May 2026", "Recipient mapping started"]] },
@@ -2302,42 +2319,62 @@
       { id: "mental-dec", month: "December", commodity: "Mental health commodities", batch: "MH1226", quantity: 44000, value: 2200000, salvaged: 300000, status: "In Progress", warehouse: "Central Warehouse", province: "Lusaka", facility: "Chainama network", institution: "MoH / Chainama", identified: "10 May 2026", salvagedDate: null, timeline: [["10 May 2026", "Identified"], ["25 May 2026", "Demand review initiated"], ["05 Jun 2026", "Facility allocation underway"]] },
       { id: "iv-dec", month: "December", commodity: "IV fluids", batch: "IV1226", quantity: 60000, value: 1800000, salvaged: 300000, status: "In Progress", warehouse: "Multiple warehouses", province: "Multiple provinces", facility: "High-consumption hospitals", institution: "MoH / ZAMMSA", identified: "12 May 2026", salvagedDate: null, timeline: [["12 May 2026", "Identified"], ["28 May 2026", "Consumption analysis completed"], ["06 Jun 2026", "Redistribution planning underway"]] }
     ];
-    const snapshots = [
+    const demoSnapshots = [
       { id: "2026-05-01", label: "01 May 2026", atRisk: 33836176.68, salvaged: 0, expired: 0, totalCommodities: 16 },
       { id: "2026-05-15", label: "15 May 2026", atRisk: 33200000, salvaged: 200000, expired: 0, totalCommodities: 16 },
       { id: "2026-06-01", label: "01 Jun 2026", atRisk: 33836176.68, salvaged: 359266.25, expired: 0, totalCommodities: 16 }
     ];
-    const salvageEvents = [
+    const demoSalvageEvents = [
       { recordId: "amox-jun", value: 200000, date: "2026-05-15", label: "15 May 2026", institution: "MoH / ZAMMSA" },
       { recordId: "amox-jun", value: 109266.25, date: "2026-06-01", label: "01 Jun 2026", institution: "MoH / ZAMMSA" },
       { recordId: "dex-oct", value: 50000, date: "2026-06-01", label: "01 Jun 2026", institution: "ZAMMSA / UTH Adult" }
     ];
-    const expiryDates = {
+    const demoExpiryDates = {
       June: "2026-06-30", July: "2026-07-31", August: "2026-08-31", September: "2026-09-30",
       October: "2026-10-31", November: "2026-11-30", December: "2026-12-31"
     };
+    const sourceData = window.ZAMMSA_SOURCE_DATA;
+    const monthOrder = sourceData.monthOrder;
+    const monthlyTargets = sourceData.monthlyValueAtRisk;
+    const expiryRecords = sourceData.expiryRecords;
+    const salvageEvents = sourceData.salvageShipments;
+    const snapshots = [{
+      id: sourceData.sourceUpdated,
+      label: "26 May 2026",
+      atRisk: sourceData.summary.valueAtRisk,
+      salvaged: sourceData.summary.valueSalvaged,
+      expired: null,
+      totalCommodities: expiryRecords.length
+    }];
+    const expiryDates = Object.fromEntries(monthOrder.map(month => [
+      month,
+      expiryRecords.find(item => item.month === month)?.expiryDate || ""
+    ]));
     const statusClass = { Salvaged: "badge-completed", "In Progress": "badge-progress", Pending: "badge-pending", Expired: "badge-overdue" };
-    let selectedMonth = "October";
-    let selectedCommodityId = "quet-oct";
-    let selectedSnapshotId = "2026-06-01";
+    let selectedMonth = "June";
+    let selectedCommodityId = expiryRecords[0]?.id || "";
+    let selectedSnapshotId = sourceData.sourceUpdated;
 
-    const sum = (items, field) => items.reduce((total, item) => total + item[field], 0);
-    const money = value => `ZMW ${(value / 1000000).toLocaleString("en-ZM", { minimumFractionDigits: 1, maximumFractionDigits: 2 })}M`;
-    const moneyExact = value => `ZMW ${value.toLocaleString("en-ZM", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    const rate = (salvaged, total) => total ? Math.round((salvaged / total) * 100) : 0;
-    const preciseRate = (salvaged, total) => total ? ((salvaged / total) * 100).toFixed(2) : "0.00";
+    const isNumber = value => typeof value === "number" && Number.isFinite(value);
+    const sum = (items, field) => items.reduce((total, item) => total + (isNumber(item[field]) ? item[field] : 0), 0);
+    const money = value => isNumber(value) ? `ZMW ${(value / 1000000).toLocaleString("en-ZM", { minimumFractionDigits: 1, maximumFractionDigits: 2 })}M` : "";
+    const moneyExact = value => isNumber(value) ? `ZMW ${value.toLocaleString("en-ZM", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "";
+    const rate = (salvaged, total) => isNumber(salvaged) && total ? Math.round((salvaged / total) * 100) : "";
+    const preciseRate = (salvaged, total) => isNumber(salvaged) && total ? ((salvaged / total) * 100).toFixed(2) : "";
+    const formatDate = value => value ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${value}T12:00:00+02:00`)) : "";
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
     const selectedSnapshot = () => snapshots.find(item => item.id === selectedSnapshotId);
-    const eventsThroughSnapshot = () => salvageEvents.filter(event => event.date <= selectedSnapshotId);
-    const salvagedForRecord = recordId => sum(eventsThroughSnapshot().filter(event => event.recordId === recordId), "value");
+    const eventsThroughSnapshot = () => salvageEvents;
+    const salvagedForRecord = () => null;
     const monthRecords = month => expiryRecords.filter(item => item.month === month);
     const monthStats = month => {
       const records = monthRecords(month);
-      const total = sum(records, "value");
-      const salvaged = records.reduce((totalValue, item) => totalValue + salvagedForRecord(item.id), 0);
-      return { records, total, salvaged, remaining: total - salvaged, rate: rate(salvaged, total) };
+      const total = monthlyTargets[month];
+      const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
+      const remaining = isNumber(total) && isNumber(salvaged) ? total - salvaged : null;
+      return { records, total, salvaged, remaining, rate: rate(salvaged, total) };
     };
-    const alertLevel = value => value > 1000000 ? "Critical" : value >= 500000 ? "Moderate" : "Controlled";
+    const alertLevel = value => !isNumber(value) ? "" : value > 1000000 ? "Critical" : value >= 500000 ? "Moderate" : "Controlled";
 
     function renderSnapshotSelector() {
       const select = document.getElementById("snapshot-select");
@@ -2354,16 +2391,14 @@
     }
 
     function renderExecutive() {
-      const projected = sum(expiryRecords, "value");
       const snapshot = selectedSnapshot();
-      const active = new Set(expiryRecords.filter(item => salvagedForRecord(item.id) < item.value).map(item => item.commodity)).size;
       const metrics = [
-        ["Projected Expiry by December 2026", moneyExact(projected), "If no further intervention occurs", "danger"],
-        ["Total Value at Risk", moneyExact(snapshot.atRisk), `SUM(Extended Price) · ${snapshot.label}`, "warning"],
-        ["Total Salvaged", moneyExact(snapshot.salvaged), "Successfully redistributed value", "success"],
+        ["Projected Expiry by December 2026", "", "October-December values not supplied", "danger"],
+        ["Total Value at Risk", moneyExact(snapshot.atRisk), "Priced May-July expiry records", "warning"],
+        ["Total Salvaged", moneyExact(snapshot.salvaged), "Supplied May-July shipped value", "success"],
         ["Remaining At Risk", moneyExact(snapshot.atRisk - snapshot.salvaged), "Risk minus salvaged", "warning"],
         ["Salvage Rate", `${preciseRate(snapshot.salvaged, snapshot.atRisk)}%`, "Salvaged ÷ value at risk", "success"],
-        ["Commodities Under Active Salvage", active, "Pending or in progress", ""]
+        ["Short-Dated Product Rows", expiryRecords.length, "June-September source register", ""]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
     }
@@ -2371,11 +2406,12 @@
     function renderCalendar() {
       document.getElementById("month-calendar").innerHTML = monthOrder.map(month => {
         const stats = monthStats(month);
-        return `<button class="month-card ${month === selectedMonth ? "active" : ""}" type="button" data-month="${month}" aria-pressed="${month === selectedMonth}"><span>${month}</span><strong>${money(stats.total)}</strong><small>${money(stats.remaining)} remaining</small></button>`;
+        const quantity = sum(stats.records, "quantity");
+        return `<button class="month-card ${month === selectedMonth ? "active" : ""}" type="button" data-month="${month}" aria-pressed="${month === selectedMonth}"><span>${month}</span><strong>${money(stats.total)}</strong><small>${stats.records.length ? `${stats.records.length} rows · ${quantity.toLocaleString("en-ZM")} units` : ""}</small></button>`;
       }).join("");
       document.querySelectorAll(".month-card").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.month;
-        selectedCommodityId = monthRecords(selectedMonth)[0].id;
+        selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
         renderCalendar();
         renderMonthDetail();
         renderCommodity();
@@ -2386,23 +2422,25 @@
     function renderMonthDetail() {
       const stats = monthStats(selectedMonth);
       document.getElementById("month-detail-title").textContent = `${selectedMonth} 2026 expiry detail`;
-      document.getElementById("month-detail-copy").textContent = `${alertLevel(stats.remaining)} exposure: ${money(stats.remaining)} remains unsalvaged.`;
+      document.getElementById("month-detail-copy").textContent = isNumber(stats.total)
+        ? `Supplied value at risk: ${moneyExact(stats.total)}.`
+        : "No monetary value was supplied for this month.";
       document.getElementById("month-summary").innerHTML = [
         ["Total Expiring", money(stats.total)],
         ["Salvaged", money(stats.salvaged)],
         ["Remaining Risk", money(stats.remaining)],
-        ["Salvage Rate", `${stats.rate}%`]
+        ["Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
       ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
-      document.getElementById("expiry-table-body").innerHTML = stats.records.map(item => `
+      document.getElementById("expiry-table-body").innerHTML = stats.records.length ? stats.records.map(item => `
         <tr>
           <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.commodity)}</button></td>
           <td>${escapeHtml(item.batch)}</td>
-          <td>${item.quantity.toLocaleString("en-ZM")}</td>
+          <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
           <td>${moneyExact(item.value)}</td>
           <td>${escapeHtml(item.warehouse)}<br><span class="metric-sub">${escapeHtml(item.province)}</span></td>
-          <td><span class="badge ${statusClass[salvagedForRecord(item.id) >= item.value ? "Salvaged" : item.status]}">${escapeHtml(salvagedForRecord(item.id) >= item.value ? "Salvaged" : item.status)}</span></td>
-        </tr>`).join("");
-      document.getElementById("month-record-count").textContent = `${stats.records.length} batch record${stats.records.length === 1 ? "" : "s"}`;
+          <td>${item.status ? `<span class="badge ${statusClass[item.status] || "badge-pending"}">${escapeHtml(item.status)}</span>` : ""}</td>
+        </tr>`).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">No source records supplied for ${selectedMonth} 2026.</td></tr>`;
+      document.getElementById("month-record-count").textContent = `${stats.records.length} source row${stats.records.length === 1 ? "" : "s"}`;
       document.querySelectorAll(".commodity-button").forEach(button => button.addEventListener("click", () => {
         selectedCommodityId = button.dataset.id;
         renderCommodity();
@@ -2412,20 +2450,30 @@
 
     function renderCommodity() {
       const item = expiryRecords.find(record => record.id === selectedCommodityId) || monthRecords(selectedMonth)[0];
+      if (!item) {
+        document.getElementById("profile-title").textContent = "Commodity profile";
+        document.getElementById("timeline-subtitle").textContent = "";
+        document.getElementById("commodity-profile").innerHTML = "";
+        document.getElementById("salvage-timeline").innerHTML = '<div class="warning-empty">No source record supplied for this month.</div>';
+        return;
+      }
       document.getElementById("profile-title").textContent = `${item.commodity} profile`;
-      document.getElementById("timeline-subtitle").textContent = `${item.batch} intervention milestones`;
+      document.getElementById("timeline-subtitle").textContent = item.batch ? `${item.batch} intervention milestones` : "";
       const profile = [
-        ["Commodity", item.commodity], ["Batch", item.batch], ["Total Quantity", item.quantity.toLocaleString("en-ZM")],
-        ["Value at Risk", moneyExact(item.value)], ["Value Salvaged", moneyExact(salvagedForRecord(item.id))], ["Expiry Date", new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${expiryDates[item.month]}T12:00:00+02:00`))],
-        ["Lead Institution", item.institution], ["Status", salvagedForRecord(item.id) >= item.value ? "Salvaged" : item.status], ["Warehouse", item.warehouse], ["Province", item.province],
+        ["SKU", item.sku], ["Commodity", item.commodity], ["Batch", item.batch], ["Total Quantity", isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""],
+        ["Value at Risk", moneyExact(item.value)], ["Value Salvaged", ""], ["Expiry Date", formatDate(item.expiryDate)],
+        ["Lead Institution", item.institution], ["Status", item.status], ["Warehouse", item.warehouse], ["Province", item.province],
         ["Facility", item.facility], ["Date Identified", item.identified]
       ];
       document.getElementById("commodity-profile").innerHTML = profile.map(([label, value]) => `<div class="profile-item"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("");
-      document.getElementById("salvage-timeline").innerHTML = item.timeline.map(([date, event]) => `<div class="timeline-item"><time>${escapeHtml(date)}</time><strong>${escapeHtml(event)}</strong></div>`).join("");
+      document.getElementById("salvage-timeline").innerHTML = item.timeline.length
+        ? item.timeline.map(([date, event]) => `<div class="timeline-item"><time>${escapeHtml(date)}</time><strong>${escapeHtml(event)}</strong></div>`).join("")
+        : '<div class="warning-empty">No intervention timeline was supplied.</div>';
     }
 
     function daysToExpiry(item) {
-      return Math.ceil((new Date(`${expiryDates[item.month]}T12:00:00+02:00`) - new Date(`${selectedSnapshotId}T12:00:00+02:00`)) / 86400000);
+      if (!item.expiryDate) return null;
+      return Math.ceil((new Date(`${item.expiryDate}T12:00:00+02:00`) - new Date(`${selectedSnapshotId}T12:00:00+02:00`)) / 86400000);
     }
 
     function renderWarningCentre() {
@@ -2435,59 +2483,49 @@
         { title: "Medium Risk", subtitle: "91-180 days", className: "controlled", filter: days => days >= 91 && days <= 180 }
       ];
       document.getElementById("warning-centre").innerHTML = groups.map(group => {
-        const items = expiryRecords.filter(item => salvagedForRecord(item.id) < item.value && group.filter(daysToExpiry(item)));
-        return `<article class="card warning-card"><div class="warning-head"><strong>${group.title}</strong><span>${group.subtitle} from ${selectedSnapshot().label}</span></div><div class="warning-list">${items.length ? items.map(item => `<div class="warning-item"><strong>${escapeHtml(item.commodity)}</strong><span>${item.month} 2026 &middot; ${daysToExpiry(item)} days &middot; ${moneyExact(item.value - salvagedForRecord(item.id))}</span></div>`).join("") : '<div class="warning-empty">No commodities in this band.</div>'}</div></article>`;
+        const items = expiryRecords.filter(item => daysToExpiry(item) !== null && group.filter(daysToExpiry(item)));
+        return `<article class="card warning-card"><div class="warning-head"><strong>${group.title}</strong><span>${group.subtitle} from ${selectedSnapshot().label}</span></div><div class="warning-list">${items.length ? items.map(item => `<div class="warning-item"><strong>${escapeHtml(item.commodity)}</strong><span>${formatDate(item.expiryDate)} &middot; ${daysToExpiry(item)} days</span></div>`).join("") : '<div class="warning-empty">No commodities in this band.</div>'}</div></article>`;
       }).join("");
     }
 
     function renderWarningTop() {
-      const ranked = expiryRecords
-        .map(item => ({
-          ...item,
-          remaining: item.value - salvagedForRecord(item.id),
-          risk: expiryRiskBand(item)
-        }))
-        .filter(item => item.remaining > 0)
-        .sort((a, b) => b.remaining - a.remaining)
+      const ranked = [...expiryRecords]
+        .sort((a, b) => daysToExpiry(a) - daysToExpiry(b))
         .slice(0, 20);
       document.getElementById("warning-top-table").innerHTML = ranked.map((item, index) => `
         <tr>
           <td>${index + 1}</td>
           <td class="commodity">${escapeHtml(item.commodity)}</td>
-          <td>${item.month} 2026<br><span class="metric-sub">${daysToExpiry(item)} days</span></td>
-          <td>${moneyExact(item.remaining)}</td>
-          <td><span class="badge ${riskBadgeClass(item.risk)}">${item.risk}</span></td>
+          <td>${formatDate(item.expiryDate)}<br><span class="metric-sub">${daysToExpiry(item)} days</span></td>
+          <td></td>
+          <td><span class="badge ${riskBadgeClass(expiryRiskBand(item))}">${expiryRiskBand(item)}</span></td>
         </tr>`).join("");
     }
 
     function renderSalvageRegister() {
-      const events = eventsThroughSnapshot().filter(event => {
-        const item = expiryRecords.find(record => record.id === event.recordId);
-        return item && item.month === selectedMonth;
-      });
+      const monthNumber = monthOrder.indexOf(selectedMonth) + 6;
+      const events = eventsThroughSnapshot().filter(event => event.expiryDate && new Date(`${event.expiryDate}T12:00:00`).getMonth() + 1 === monthNumber);
       document.getElementById("salvage-register-title").textContent = `${selectedMonth} salvaged commodities register`;
       document.getElementById("salvage-register-copy").textContent =
-        `Permanent cumulative evidence for commodities expiring in ${selectedMonth} 2026. Historical records are never overwritten.`;
-      document.getElementById("salvage-register").innerHTML = events.length ? events.map(event => {
-        const item = expiryRecords.find(record => record.id === event.recordId);
-        return `<tr><td class="commodity">${escapeHtml(item.commodity)}</td><td>${escapeHtml(item.batch)}</td><td>${moneyExact(event.value)}</td><td>${event.label}</td><td>${escapeHtml(event.institution)}</td></tr>`;
-      }).join("") : `<tr><td colspan="5" class="empty-state" style="display:table-cell">No salvage events recorded for commodities expiring in ${selectedMonth} through ${selectedSnapshot().label}.</td></tr>`;
+        `Shipment evidence for products expiring in ${selectedMonth} 2026. Monetary value is blank because it is not supplied at shipment-row level.`;
+      document.getElementById("salvage-register").innerHTML = events.length ? events.map(event =>
+        `<tr><td class="commodity">${escapeHtml(event.commodity)}</td><td>${escapeHtml(event.batch)}</td><td>${isNumber(event.quantity) ? event.quantity.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(event.value)}</td><td>${formatDate(event.shippedDate)}</td><td>${formatDate(event.expiryDate)}</td><td>${escapeHtml(event.institution)}</td></tr>`
+      ).join("") : `<tr><td colspan="7" class="empty-state" style="display:table-cell">No shipment records were supplied for products expiring in ${selectedMonth} 2026.</td></tr>`;
       document.getElementById("salvage-register-count").textContent =
-        `${events.length} ${selectedMonth} salvage event${events.length === 1 ? "" : "s"}`;
+        `${events.length} ${selectedMonth} shipment record${events.length === 1 ? "" : "s"}`;
       document.getElementById("salvage-register-scope").textContent =
-        `Filtered by ${selectedMonth} expiry · cumulative through ${selectedSnapshot().label}`;
+        `Filtered by ${selectedMonth} expiry`;
     }
 
     function renderSalvageKpis() {
       const events = eventsThroughSnapshot();
-      const total = sum(events, "value");
-      const commodities = new Set(events.map(event => event.recordId)).size;
-      const institutions = new Set(events.map(event => event.institution)).size;
+      const commodities = new Set(events.map(event => event.sku).filter(Boolean)).size;
+      const institutions = new Set(events.map(event => event.institution).filter(Boolean)).size;
       const metrics = [
-        ["Total Value Salvaged", moneyExact(total), `Cumulative through ${selectedSnapshot().label}`, "success"],
+        ["Total Value Salvaged", moneyExact(sourceData.summary.valueSalvaged), "Supplied May-July summary", "success"],
         ["Salvage Rate", `${preciseRate(selectedSnapshot().salvaged, selectedSnapshot().atRisk)}%`, "Against selected snapshot value at risk", "success"],
-        ["Commodities Salvaged", commodities, `${events.length} permanent salvage events`, ""],
-        ["Institutions Contributing", institutions, "Recorded recipient or lead institutions", ""]
+        ["Products Shipped", commodities, `${events.length} detailed shipment records`, ""],
+        ["Recipient Institutions", institutions, "From the supplied raw shipment register", ""]
       ];
       document.getElementById("salvage-kpis").innerHTML = metrics.map(([label, value, sub, tone]) =>
         `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`
@@ -2495,48 +2533,29 @@
     }
 
     function renderArmyTracker() {
-      const potential = expiryRecords.filter(item => ["June", "July", "August", "September", "October", "November"].includes(item.month)).reduce((total, item) => total + item.value - salvagedForRecord(item.id), 0);
-      document.getElementById("army-tracker").innerHTML = `<tr><td class="commodity">Zambia Army</td><td>Multiple commodities, June-November 2026</td><td>${money(potential)}</td><td><span class="badge badge-pending">Awaiting Feedback</span></td><td>Confirm uptake, then prepare distribution plan</td></tr>`;
+      document.getElementById("army-tracker").innerHTML = '<tr><td class="commodity">Zambia Army</td><td></td><td></td><td></td><td></td></tr>';
     }
 
     function renderInstitutionPerformance() {
-      const groups = new Map();
-      expiryRecords.forEach(item => {
-        const key = item.institution;
-        const current = groups.get(key) || { institution: key, records: 0, value: 0, remaining: 0 };
-        current.records += 1;
-        current.value += item.value;
-        current.remaining += item.value - salvagedForRecord(item.id);
-        groups.set(key, current);
-      });
-      const rows = [...groups.values()].sort((a, b) => b.remaining - a.remaining);
-      const focusInstitutions = [
-        ["Zambia Army", expiryRecords.filter(item => ["June", "July", "August", "September", "October", "November"].includes(item.month)).length, "Awaiting feedback"],
-        ["UTH network", expiryRecords.filter(item => /UTH/i.test(`${item.institution} ${item.facility}`)).length, "Active uptake"],
-        ["Chainama network", expiryRecords.filter(item => /Chainama/i.test(`${item.institution} ${item.facility}`)).length, "Engagement active"],
-        ["National Heart Hospital", expiryRecords.filter(item => /NHH|National Heart/i.test(`${item.institution} ${item.facility}`)).length, "Awaiting response"]
-      ];
-      document.getElementById("institution-summary").innerHTML = focusInstitutions.map(([name, count, status]) => `
+      const rows = sourceData.institutionPerformance;
+      document.getElementById("institution-summary").innerHTML = rows.slice(0, 4).map(item => `
         <article class="card">
-          <span class="metric-label">${escapeHtml(name)}</span>
-          <strong class="metric-value">${count}</strong>
-          <span class="metric-sub">${count === 1 ? "commodity" : "commodities"} · ${escapeHtml(status)}</span>
+          <span class="metric-label">${escapeHtml(item.institution)}</span>
+          <strong class="metric-value">${item.quantity.toLocaleString("en-ZM")}</strong>
+          <span class="metric-sub">${item.shipments} shipment records</span>
         </article>`).join("");
-      document.getElementById("institution-table").innerHTML = rows.map(item => {
-        const status = item.remaining <= 0 ? "Complete" : item.remaining > 1000000 ? "Ongoing" : "Pending";
-        const badge = status === "Complete" ? "badge-completed" : status === "Ongoing" ? "badge-progress" : "badge-pending";
-        return `<tr>
+      document.getElementById("institution-table").innerHTML = rows.map(item => `<tr>
           <td class="commodity">${escapeHtml(item.institution)}</td>
-          <td>${item.records}</td>
-          <td>${moneyExact(item.value)}</td>
-          <td>${moneyExact(item.remaining)}</td>
-          <td><span class="badge ${badge}">${status}</span></td>
-        </tr>`;
-      }).join("");
+          <td>${item.shipments}</td>
+          <td>${item.quantity.toLocaleString("en-ZM")}</td>
+          <td>${escapeHtml(item.provinces)}</td>
+          <td></td>
+        </tr>`).join("");
     }
 
     function renderExecutiveCharts() {
-      const width = 680, height = 220, left = 52, right = 650, top = 20, bottom = 178, max = 36;
+      const width = 680, height = 220, left = 52, right = 650, top = 20, bottom = 178;
+      const max = Math.ceil(Math.max(...snapshots.map(item => item.atRisk / 1000000), 10) / 10) * 10;
       const x = index => snapshots.length === 1 ? left : left + index * ((right - left) / (snapshots.length - 1));
       const y = value => bottom - (value / max) * (bottom - top);
       document.getElementById("executive-trend-chart").innerHTML = `
@@ -2547,55 +2566,44 @@
           ${snapshots.map((item, index) => `<circle cx="${x(index)}" cy="${y(item.atRisk / 1000000)}" r="5" fill="#fff" stroke="#b73a3a" stroke-width="3"/><circle cx="${x(index)}" cy="${y(item.salvaged / 1000000)}" r="5" fill="#fff" stroke="#28715f" stroke-width="3"/><text x="${x(index)}" y="205" text-anchor="middle">${item.label.replace(" 2026", "")}</text>`).join("")}
         </svg>`;
       const monthData = monthOrder.map(month => ({ month, ...monthStats(month) }));
-      const maximum = Math.max(...monthData.map(item => item.total));
+      const maximum = Math.max(...monthData.map(item => isNumber(item.total) ? item.total : 0), 1);
       document.getElementById("executive-forecast-chart").innerHTML = monthData.map(item => `
         <button class="risk-row forecast-link" type="button" data-forecast-month="${item.month}">
           <span class="risk-name">${item.month}</span>
-          <span class="risk-track"><span class="risk-fill" style="--score:${item.total / maximum * 10}"></span></span>
+          <span class="risk-track"><span class="risk-fill" style="--score:${isNumber(item.total) ? item.total / maximum * 10 : 0}"></span></span>
           <span class="risk-score">${money(item.total)}</span>
         </button>`).join("");
       document.querySelectorAll("[data-forecast-month]").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.forecastMonth;
-        selectedCommodityId = monthRecords(selectedMonth)[0].id;
+        selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
         window.location.hash = "expiry-forecast";
         renderCalendar();
         renderMonthDetail();
         renderCommodity();
         renderSalvageRegister();
       }));
-      const critical = expiryRecords.filter(item => item.value > salvagedForRecord(item.id) && daysToExpiry(item) <= 30);
-      const high = expiryRecords.filter(item => item.value > salvagedForRecord(item.id) && daysToExpiry(item) > 30 && daysToExpiry(item) <= 90);
+      const critical = expiryRecords.filter(item => daysToExpiry(item) !== null && daysToExpiry(item) <= 30);
+      const high = expiryRecords.filter(item => daysToExpiry(item) > 30 && daysToExpiry(item) <= 90);
       document.getElementById("executive-alerts").innerHTML = `
         <article class="alert-card critical"><span>Critical alert</span><strong>${critical.length}</strong><small>Commodities expiring within 30 days of ${selectedSnapshot().label}</small></article>
         <article class="alert-card moderate"><span>High-risk alert</span><strong>${high.length}</strong><small>Commodities expiring within 31-90 days</small></article>`;
     }
 
     function renderRootCauseAnalysis() {
-      const causes = [
-        ["Procurement Issues", 6, "Long lead times and quantities exceeding current demand"],
-        ["Quality Control Delays", 4, "Release delays reducing the usable distribution window"],
-        ["Forecasting", 3, "Demand variance and slower-than-planned consumption"],
-        ["Guideline Changes", 2, "Treatment or product preference changes affecting uptake"]
-      ];
-      const total = causes.reduce((value, item) => value + item[1], 0);
-      document.getElementById("root-cause-kpis").innerHTML = causes.map(([label, count, note]) => `
-        <article class="card cause-card">
-          <span class="metric-label">${label}</span>
-          <strong>${count}</strong>
-          <div class="risk-track"><span class="risk-fill" style="--score:${count / causes[0][1] * 10}"></span></div>
-          <p>${Math.round(count / total * 100)}% of indicative causes · ${note}</p>
-        </article>`).join("");
+      document.getElementById("root-cause-kpis").innerHTML =
+        '<article class="card cause-card"><span class="metric-label">Root cause data</span><strong></strong><p>No root-cause fields were supplied in the source workbooks.</p></article>';
     }
 
     function renderPerformance() {
-      const width = 720, height = 250, left = 55, right = 690, top = 24, bottom = 205, max = 36;
-      const x = index => left + index * ((right - left) / (snapshots.length - 1));
+      const width = 720, height = 250, left = 55, right = 690, top = 24, bottom = 205;
+      const max = Math.ceil(Math.max(...snapshots.map(item => item.atRisk / 1000000), 10) / 10) * 10;
+      const x = index => snapshots.length === 1 ? (left + right) / 2 : left + index * ((right - left) / (snapshots.length - 1));
       const y = value => bottom - (value / max) * (bottom - top);
       const line = field => snapshots.map((item, index) => `${x(index)},${y(item[field] / 1000000)}`).join(" ");
       const rateY = item => bottom - (Number(preciseRate(item.salvaged, item.atRisk)) / 100) * (bottom - top);
       document.getElementById("performance-chart").innerHTML = `
         <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly value at risk, value salvaged, and salvage rate trend">
-          ${[0, 10, 20, 30].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="18" y="${y(value) + 4}">${value}M</text>`).join("")}
+          ${[0, max / 3, max * 2 / 3, max].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="18" y="${y(value) + 4}">${Math.round(value)}M</text>`).join("")}
           <polyline points="${line("atRisk")}" fill="none" stroke="#b73a3a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
           <polyline points="${line("salvaged")}" fill="none" stroke="#28715f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
           <polyline points="${snapshots.map((item, index) => `${x(index)},${rateY(item)}`).join(" ")}" fill="none" stroke="#2c6fa5" stroke-width="3" stroke-dasharray="7 5"/>
@@ -2607,104 +2615,56 @@
     }
 
     function lifecycleStatus(item) {
-      const salvaged = salvagedForRecord(item.id);
-      if (salvaged >= item.value) return "Salvaged";
-      if (salvaged > 0) return "Redistribution Approved";
-      if (item.facility !== "To be allocated" && item.institution !== "ZAMMSA") return "Facility Engaged";
-      if (item.status === "In Progress") return "Under Review";
-      return "Identified";
+      return item.status || "";
     }
 
     function trafficStatus(item) {
-      if (salvagedForRecord(item.id) >= item.value) return { label: "Complete", badge: "badge-completed" };
-      if (daysToExpiry(item) <= 30) return { label: "Overdue", badge: "badge-overdue" };
-      return { label: "Ongoing", badge: "badge-progress" };
+      return item.status ? { label: item.status, badge: statusClass[item.status] || "badge-pending" } : { label: "", badge: "" };
     }
 
-    function nextAction(item) {
-      const lifecycle = lifecycleStatus(item);
-      if (lifecycle === "Salvaged") return "Close and retain evidence";
-      if (lifecycle === "Redistribution Approved") return "Complete remaining redistribution";
-      if (lifecycle === "Facility Engaged") return "Obtain uptake confirmation";
-      if (lifecycle === "Under Review") return "Approve recipient and distribution plan";
-      return "Identify and engage recipient institution";
-    }
+    function nextAction() { return ""; }
 
     function renderRiskRanking() {
-      const ranked = [...expiryRecords].sort((a, b) => b.value - a.value);
-      const maximum = ranked[0].value;
+      const ranked = expiryRecords.filter(item => isNumber(item.value)).sort((a, b) => b.value - a.value);
       document.getElementById("pareto-ranking").classList.add("pareto-list");
-      document.getElementById("pareto-ranking").innerHTML = ranked.slice(0, 10).map(item => `
+      document.getElementById("pareto-ranking").innerHTML = ranked.length ? ranked.slice(0, 10).map(item => `
         <div class="risk-row">
           <span class="risk-name" title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span>
-          <span class="risk-track"><span class="risk-fill" style="--score:${(item.value / maximum) * 10}"></span></span>
+          <span class="risk-track"><span class="risk-fill" style="--score:${(item.value / ranked[0].value) * 10}"></span></span>
           <span class="risk-score">${money(item.value)}</span>
-        </div>`).join("");
-      document.getElementById("top-ten-table").innerHTML = ranked.slice(0, 10).map((item, index) => `
+        </div>`).join("") : '<div class="warning-empty">Commodity-level values were not supplied in the short-dated register.</div>';
+      document.getElementById("top-ten-table").innerHTML = ranked.length ? ranked.slice(0, 10).map((item, index) => `
         <tr><td>${index + 1}</td><td class="commodity">${escapeHtml(item.commodity)}</td><td>${item.month} 2026</td><td>${moneyExact(item.value)}</td></tr>
-      `).join("");
+      `).join("") : '<tr><td colspan="4" class="empty-state" style="display:table-cell">Commodity-level values were not supplied.</td></tr>';
     }
 
     function renderLifecycleAndActions() {
       const stages = ["Identified", "Under Review", "Facility Engaged", "Redistribution Approved", "Salvaged", "Expired"];
-      const counts = Object.fromEntries(stages.map(stage => [stage, expiryRecords.filter(item => lifecycleStatus(item) === stage).length]));
       document.getElementById("lifecycle-kpis").innerHTML = stages.map(stage => `
-        <article class="card mini-kpi"><span>${stage}</span><strong>${counts[stage]}</strong></article>
+        <article class="card mini-kpi"><span>${stage}</span><strong></strong></article>
       `).join("");
-      document.getElementById("commodity-actions").innerHTML = [...expiryRecords]
-        .sort((a, b) => daysToExpiry(a) - daysToExpiry(b))
-        .map(item => {
-          const traffic = trafficStatus(item);
-          return `<tr><td class="commodity">${escapeHtml(item.commodity)}</td><td>${escapeHtml(item.institution)}</td><td>${lifecycleStatus(item)}</td><td>${nextAction(item)}</td><td><span class="badge ${traffic.badge}">${traffic.label}</span></td></tr>`;
-        }).join("");
+      document.getElementById("commodity-actions").innerHTML =
+        '<tr><td colspan="5" class="empty-state" style="display:table-cell">Lifecycle, action, lead, due-date, and status fields were not supplied.</td></tr>';
     }
 
     function renderProductTicker() {
-      const items = [...expiryRecords].sort((a, b) => b.value - a.value);
+      const items = [...expiryRecords].sort((a, b) => a.expiryDate.localeCompare(b.expiryDate) || a.commodity.localeCompare(b.commodity));
       const markup = items.map(item => `
         <div class="ticker-item">
           <div><small>Product</small><span title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span></div>
-          <div><small>Quantity</small><strong>${item.quantity.toLocaleString("en-ZM")}</strong></div>
+          <div><small>Quantity</small><strong>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</strong></div>
           <div><small>Value</small><strong>${moneyExact(item.value)}</strong></div>
+          <div><small>Expiry Date</small><strong>${formatDate(item.expiryDate)}</strong></div>
         </div>`).join("");
       document.getElementById("product-ticker").innerHTML = markup + markup;
     }
 
     function renderChangesSinceReview() {
-      const currentIndex = snapshots.findIndex(item => item.id === selectedSnapshotId);
-      const previous = currentIndex > 0 ? snapshots[currentIndex - 1] : null;
-      const current = selectedSnapshot();
-      const periodEvents = salvageEvents.filter(event => event.date <= selectedSnapshotId && (!previous || event.date > previous.id));
-      const atRiskChange = previous ? current.atRisk - previous.atRisk : 0;
-      const partnerNames = [...new Set(periodEvents.map(event => event.institution))];
       const cards = [
-        {
-          className: "risk",
-          title: "New risks identified",
-          lines: previous && atRiskChange > 0
-            ? [[`Risk increase`, moneyExact(atRiskChange)]]
-            : [["No new risk increase", previous ? `Compared with ${previous.label}` : "Baseline snapshot"]]
-        },
-        {
-          className: "",
-          title: "Successfully salvaged",
-          lines: periodEvents.length
-            ? periodEvents.map(event => {
-                const item = expiryRecords.find(record => record.id === event.recordId);
-                return [item.commodity, moneyExact(event.value)];
-              })
-            : [["No salvage events", "Recorded in this review period"]]
-        },
-        {
-          className: "expired",
-          title: "Expired",
-          lines: current.expired > 0 ? [["Expired value", moneyExact(current.expired)]] : [["No validated expiries", "Current snapshot"]]
-        },
-        {
-          className: "partner",
-          title: "Partners engaged",
-          lines: partnerNames.length ? partnerNames.map(name => [name, "Salvage intervention"]) : [["No new partner event", "Current review period"]]
-        }
+        { className: "risk", title: "New risks identified", lines: [["", "No previous review snapshot supplied"]] },
+        { className: "", title: "Successfully salvaged", lines: [["", "Bi-weekly comparison not supplied"]] },
+        { className: "expired", title: "Expired", lines: [["", "Expired value not supplied"]] },
+        { className: "partner", title: "Partners engaged", lines: [["", "Engagement status not supplied"]] }
       ];
       document.getElementById("changes-since-review").innerHTML = cards.map(card => `
         <article class="card change-card ${card.className}">
@@ -2714,18 +2674,7 @@
     }
 
     function actionRows() {
-      return expiryRecords.map(item => {
-        const traffic = trafficStatus(item);
-        return {
-          commodity: item.commodity,
-          action: nextAction(item),
-          lead: item.institution,
-          dueDate: null,
-          status: traffic.label,
-          badge: traffic.badge,
-          priority: traffic.label === "Overdue" ? 0 : traffic.label === "Ongoing" ? 1 : 2
-        };
-      });
+      return [];
     }
 
     function renderActionTracker() {
@@ -2740,54 +2689,31 @@
           if (sort === "lead") return a.lead.localeCompare(b.lead);
           return a.priority - b.priority || a.commodity.localeCompare(b.commodity);
         });
-      document.getElementById("action-tracker-body").innerHTML = rows.map(item => `
+      document.getElementById("action-tracker-body").innerHTML = rows.length ? rows.map(item => `
         <tr>
           <td><strong>${escapeHtml(item.action)}</strong><br><span class="metric-sub">${escapeHtml(item.commodity)}</span></td>
           <td>${escapeHtml(item.lead)}</td>
           <td><span class="placeholder">Date required</span></td>
           <td><span class="badge ${item.badge}">${item.status}</span></td>
-        </tr>`).join("");
-      document.getElementById("action-result-count").textContent = `Showing ${rows.length} of ${expiryRecords.length} actions`;
+        </tr>`).join("") : '<tr><td colspan="4" class="empty-state" style="display:table-cell">Action, lead, due-date, and status fields were not supplied.</td></tr>';
+      document.getElementById("action-result-count").textContent = `${rows.length} supplied actions`;
       document.getElementById("action-search").oninput = renderActionTracker;
       document.getElementById("action-status").onchange = renderActionTracker;
       document.getElementById("action-sort").onchange = renderActionTracker;
     }
 
     function renderInterventionPortfolio() {
-      const statuses = [
-        { label: "Completed", color: "#28715f", records: expiryRecords.filter(item => trafficStatus(item).label === "Complete") },
-        { label: "Active", color: "#a46213", records: expiryRecords.filter(item => trafficStatus(item).label === "Ongoing") },
-        { label: "Pending / overdue", color: "#b73a3a", records: expiryRecords.filter(item => trafficStatus(item).label === "Overdue") }
-      ];
-      let cursor = 0;
-      const stops = statuses.map(status => {
-        const start = cursor;
-        cursor += (status.records.length / expiryRecords.length) * 100;
-        return `${status.color} ${start}% ${cursor}%`;
-      });
       const donut = document.getElementById("intervention-donut");
-      donut.style.background = `conic-gradient(${stops.join(",")})`;
-      donut.setAttribute("aria-label", statuses.map(status => `${status.label}: ${status.records.length}`).join(", "));
-      document.getElementById("intervention-total").textContent = expiryRecords.length;
-      document.getElementById("intervention-legend").innerHTML = statuses.map(status => `
-        <div class="legend-item"><span class="legend-dot" style="background:${status.color}"></span><span>${status.label}</span><strong>${status.records.length} · ${Math.round(status.records.length / expiryRecords.length * 100)}%</strong></div>
-      `).join("");
-      const queue = expiryRecords
-        .map(item => ({ ...item, remaining: item.value - salvagedForRecord(item.id) }))
-        .filter(item => item.remaining > 0)
-        .sort((a, b) => b.remaining - a.remaining)
-        .slice(0, 7);
-      const maximum = queue[0]?.remaining || 1;
-      document.getElementById("intervention-queue").innerHTML = queue.map(item => `
-        <div class="risk-row">
-          <span class="risk-name" title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span>
-          <span class="risk-track"><span class="risk-fill" style="--score:${item.remaining / maximum * 10}"></span></span>
-          <span class="risk-score">${money(item.remaining)}</span>
-        </div>`).join("");
+      donut.style.background = "#edf2ef";
+      donut.setAttribute("aria-label", "Intervention status not supplied");
+      document.getElementById("intervention-total").textContent = "";
+      document.getElementById("intervention-legend").innerHTML = '<div class="warning-empty">Intervention status was not supplied.</div>';
+      document.getElementById("intervention-queue").innerHTML = '<div class="warning-empty">Priority and action fields were not supplied.</div>';
     }
 
     function expiryRiskBand(item) {
       const days = daysToExpiry(item);
+      if (days === null) return "";
       if (days <= 30) return "Critical";
       if (days <= 90) return "High Risk";
       if (days <= 180) return "Medium Risk";
@@ -2795,9 +2721,7 @@
     }
 
     function currentRecordStatus(item) {
-      if (daysToExpiry(item) < 0 && salvagedForRecord(item.id) < item.value) return "Expired";
-      if (salvagedForRecord(item.id) >= item.value) return "Salvaged";
-      return item.status;
+      return item.status || "";
     }
 
     function riskBadgeClass(risk) {
@@ -2821,34 +2745,33 @@
         .filter(item => month === "All" || item.month === month)
         .filter(item => status === "All" || currentRecordStatus(item) === status)
         .filter(item => risk === "All" || expiryRiskBand(item) === risk)
-        .filter(item => [item.commodity, item.batch, item.warehouse, item.province, item.facility, item.institution]
-          .some(value => value.toLowerCase().includes(query)))
+        .filter(item => [item.sku, item.commodity, item.batch, item.warehouse, item.province, item.facility, item.institution]
+          .some(value => String(value || "").toLowerCase().includes(query)))
         .sort((a, b) => {
-          if (sort === "value") return b.value - a.value;
-          if (sort === "quantity") return b.quantity - a.quantity;
+          if (sort === "value") return (b.value || 0) - (a.value || 0);
+          if (sort === "quantity") return (b.quantity || 0) - (a.quantity || 0);
           if (sort === "commodity") return a.commodity.localeCompare(b.commodity);
-          return expiryDates[a.month].localeCompare(expiryDates[b.month]) || a.commodity.localeCompare(b.commodity);
+          return a.expiryDate.localeCompare(b.expiryDate) || a.commodity.localeCompare(b.commodity);
         });
 
       document.getElementById("expiry-register-body").innerHTML = records.length ? records.map(item => {
         const statusValue = currentRecordStatus(item);
         const riskValue = expiryRiskBand(item);
-        const expiryDate = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-          .format(new Date(`${expiryDates[item.month]}T12:00:00+02:00`));
         return `<tr>
-          <td class="commodity">${escapeHtml(item.commodity)}<br><span class="metric-sub">${escapeHtml(item.warehouse)} · ${escapeHtml(item.province)}</span></td>
+          <td class="commodity">${escapeHtml(item.commodity)}<br><span class="metric-sub">${escapeHtml(item.sku)}</span></td>
           <td>${escapeHtml(item.batch)}</td>
-          <td>${item.quantity.toLocaleString("en-ZM")}</td>
+          <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
           <td>${moneyExact(item.value)}</td>
-          <td>${expiryDate}</td>
-          <td>${daysToExpiry(item)}</td>
-          <td><span class="badge ${riskBadgeClass(riskValue)}">${riskValue}</span></td>
-          <td><span class="badge ${statusClass[statusValue]}">${statusValue}</span></td>
+          <td>${formatDate(item.expiryDate)}</td>
+          <td>${daysToExpiry(item) ?? ""}</td>
+          <td>${riskValue ? `<span class="badge ${riskBadgeClass(riskValue)}">${riskValue}</span>` : ""}</td>
+          <td>${statusValue ? `<span class="badge ${statusClass[statusValue] || "badge-pending"}">${statusValue}</span>` : ""}</td>
         </tr>`;
       }).join("") : `<tr><td colspan="8" class="empty-state" style="display:table-cell">No expiring commodities match the selected search and filters.</td></tr>`;
 
-      const quantity = records.reduce((total, item) => total + item.quantity, 0);
-      const value = records.reduce((total, item) => total + item.value, 0);
+      const quantity = sum(records, "quantity");
+      const pricedRecords = records.filter(item => isNumber(item.value));
+      const value = pricedRecords.length ? sum(pricedRecords, "value") : null;
       const activeParameters = [
         month === "All" ? "All months" : `${month} 2026`,
         status === "All" ? "All statuses" : status,
@@ -2859,7 +2782,7 @@
       document.getElementById("expiry-register-summary").textContent = `Parameters: ${activeParameters.join(" · ")}`;
       document.getElementById("expiry-register-count").textContent =
         `${records.length} of ${expiryRecords.length} commodities · ${quantity.toLocaleString("en-ZM")} units`;
-      document.getElementById("expiry-register-value").textContent = `Combined value: ${moneyExact(value)}`;
+      document.getElementById("expiry-register-value").textContent = value === null ? "Combined value:" : `Combined value: ${moneyExact(value)}`;
 
       ["expiry-search", "expiry-month-filter", "expiry-status-filter", "expiry-risk-filter", "expiry-sort"].forEach(id => {
         const element = document.getElementById(id);

@@ -10,7 +10,7 @@ commodities and salvage interventions in Zambia.
   Centre, Salvage Tracker, Action Tracker, Root Cause Analysis, Historical
   Snapshots, and Institution Performance views
 - Executive summary metrics calculated from batch-level records
-- Clickable June-December expiry calendar
+- Shared June-December expiry calendar visible on every dashboard page
 - Selectable historical bi-weekly snapshots
 - Month-level batch detail and calculated salvage summaries
 - Commodity profiles with intervention timelines
@@ -20,7 +20,7 @@ commodities and salvage interventions in Zambia.
 - Bi-weekly at-risk and cumulative-salvage trend
 - Commodity value-at-risk Pareto ranking and top-10 list
 - Lifecycle-stage KPIs and traffic-light action tracker
-- Moving product scoreboard showing commodity, quantity, and value
+- Upward-moving product scoreboard showing commodity, quantity, value, and expiry date
 - National Supply Chain Control Unit and Ministry of Health government header
 - Searchable national expiry register with month, status, risk-band, and sort controls
 - Responsive layout for desktop, tablet, and mobile
@@ -34,11 +34,10 @@ required.
 
 ## Data note
 
-The current June-December 2026 monthly values and batch records are a
-demonstration dataset implementing the supplied control-tower concept. Replace
-them with the validated national commodity line list before operational use.
-All month totals, salvage values, remaining risk, salvage rates, and alerts are
-calculated from the batch records in `index.html`.
+The dashboard is loaded from `Short dated products.xlsx` and
+`Salvaged Products-Merged_May26.xlsx`. It contains 116 supplied short-dated
+product rows for June-September 2026 and detailed May-July shipment evidence.
+Fields absent from the source workbooks remain blank.
 
 Historical state is represented by two related structures:
 
@@ -60,12 +59,12 @@ commodity, batch, warehouse, province, facility, and engaged institution.
 - `Salvage Rate = Total Salvaged Value / Total Value at Risk * 100`
 - `Extended Price = Total Units * Unit Price`
 
-The current demonstration baseline uses:
+The supplied priced May-July summary uses:
 
-- Total value at risk: `ZMW 33,836,176.68`
-- Total salvaged: `ZMW 359,266.25`
-- Remaining risk: `ZMW 33,476,910.43`
-- Salvage rate: `1.06%`
+- Total value at risk: `ZMW 49,725,881.51`
+- Total salvaged: `ZMW 4,177,687.58`
+- Remaining risk: `ZMW 45,548,193.93`
+- Salvage rate: `8.40%`
 
 The Zambia coat of arms asset is the public-domain SVG from
 [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Zambia.svg).
