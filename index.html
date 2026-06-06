@@ -1496,6 +1496,151 @@
       background: var(--green-950);
     }
 
+    .app-shell {
+      display: grid;
+      grid-template-columns: 245px minmax(0, 1fr);
+      width: min(1480px, 100%);
+      margin: 0 auto;
+      align-items: start;
+    }
+
+    .side-nav {
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      height: 100vh;
+      padding: 22px 14px;
+      color: #fff;
+      background: #0e342c;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      overflow-y: auto;
+    }
+
+    .side-nav-title {
+      display: block;
+      margin: 0 10px 14px;
+      color: #a8c9bd;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .nav-list {
+      display: grid;
+      gap: 5px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 42px;
+      padding: 10px 12px;
+      color: #dcebe6;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.11);
+    }
+
+    .nav-icon {
+      width: 20px;
+      color: #67dfd7;
+      font-size: 15px;
+      text-align: center;
+    }
+
+    .dashboard-content {
+      min-width: 0;
+    }
+
+    .dashboard-content main {
+      margin-top: -30px;
+    }
+
+    .dashboard-view {
+      display: none;
+    }
+
+    .dashboard-view.active {
+      display: block;
+      animation: viewIn 180ms ease-out;
+    }
+
+    .view-header {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 18px;
+      padding: 23px 25px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .view-header h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 30px;
+      font-weight: 500;
+    }
+
+    .view-header p {
+      max-width: 520px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    @keyframes viewIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .root-cause-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .cause-card {
+      padding: 20px;
+    }
+
+    .cause-card span,
+    .cause-card strong {
+      display: block;
+    }
+
+    .cause-card span {
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+
+    .cause-card strong {
+      margin-top: 8px;
+      font-size: 23px;
+    }
+
+    .institution-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
     .footer-inner {
       display: flex;
       justify-content: space-between;
@@ -1509,6 +1654,31 @@
     }
 
     @media (max-width: 980px) {
+      .app-shell {
+        grid-template-columns: 82px minmax(0, 1fr);
+      }
+
+      .side-nav {
+        padding-inline: 8px;
+      }
+
+      .side-nav-title,
+      .nav-text {
+        display: none;
+      }
+
+      .nav-link {
+        justify-content: center;
+      }
+
+      .nav-icon {
+        font-size: 18px;
+      }
+
+      .root-cause-grid,
+      .institution-summary {
+        grid-template-columns: repeat(2, 1fr);
+      }
       .metrics {
         grid-template-columns: repeat(3, 1fr);
       }
@@ -1550,6 +1720,47 @@
     }
 
     @media (max-width: 720px) {
+      .app-shell {
+        display: block;
+      }
+
+      .side-nav {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        height: auto;
+        padding: 8px 10px;
+        overflow-x: auto;
+        overflow-y: hidden;
+      }
+
+      .nav-list {
+        display: flex;
+        width: max-content;
+      }
+
+      .nav-link {
+        min-height: 38px;
+        padding: 8px 11px;
+      }
+
+      .nav-text {
+        display: inline;
+        white-space: nowrap;
+      }
+
+      .dashboard-content main {
+        margin-top: -20px;
+      }
+
+      .view-header {
+        display: block;
+      }
+
+      .view-header p {
+        margin-top: 7px;
+        text-align: left;
+      }
       .topbar-meta {
         display: none;
       }
@@ -1667,6 +1878,10 @@
     }
 
     @media (max-width: 500px) {
+      .root-cause-grid,
+      .institution-summary {
+        grid-template-columns: 1fr;
+      }
       .topbar-inner,
       .hero-inner,
       main,
@@ -1802,13 +2017,26 @@
     </div>
   </header>
 
+  <div class="app-shell">
+    <nav class="side-nav" aria-label="Dashboard pages">
+      <span class="side-nav-title">Dashboard Pages</span>
+      <div class="nav-list">
+        <a class="nav-link active" href="#executive-summary" data-view="executive-summary"><span class="nav-icon">▦</span><span class="nav-text">Executive Summary</span></a>
+        <a class="nav-link" href="#expiry-forecast" data-view="expiry-forecast"><span class="nav-icon">▣</span><span class="nav-text">Expiry Forecast</span></a>
+        <a class="nav-link" href="#commodity-register" data-view="commodity-register"><span class="nav-icon">Rx</span><span class="nav-text">Commodity Register</span></a>
+        <a class="nav-link" href="#warning-centre" data-view="warning-centre"><span class="nav-icon">!</span><span class="nav-text">Warning Centre</span></a>
+        <a class="nav-link" href="#salvage-tracker" data-view="salvage-tracker"><span class="nav-icon">↻</span><span class="nav-text">Salvage Tracker</span></a>
+        <a class="nav-link" href="#action-tracker" data-view="action-tracker"><span class="nav-icon">☷</span><span class="nav-text">Action Tracker</span></a>
+        <a class="nav-link" href="#root-cause-analysis" data-view="root-cause-analysis"><span class="nav-icon">↗</span><span class="nav-text">Root Cause Analysis</span></a>
+        <a class="nav-link" href="#historical-snapshots" data-view="historical-snapshots"><span class="nav-icon">◷</span><span class="nav-text">Historical Snapshots</span></a>
+        <a class="nav-link" href="#institution-performance" data-view="institution-performance"><span class="nav-icon">H</span><span class="nav-text">Institution Performance</span></a>
+      </div>
+    </nav>
+    <div class="dashboard-content">
   <main id="main-content">
+    <div class="dashboard-view active" id="view-executive-summary" data-view="executive-summary">
+      <div class="view-header"><div><h2>Executive Summary</h2></div><p>What is happening across the national short-expiry portfolio?</p></div>
     <div class="demo-banner"><strong>Demonstration dataset:</strong> Monthly values and sample batch records below implement the supplied control-tower concept. Replace them with validated national line-list data before operational use.</div>
-
-    <section class="snapshot-bar" aria-label="Historical snapshot selector">
-      <label><span>View historical snapshot</span><select class="control" id="snapshot-select"></select></label>
-      <div class="snapshot-summary" id="snapshot-summary"></div>
-    </section>
 
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
     <section class="ticker-shell" aria-label="Moving product scoreboard">
@@ -1820,7 +2048,15 @@
       <p>Bi-weekly movement in new risk, salvage, expiry outcomes, and institutional engagement.</p>
     </div>
     <section class="change-grid" id="changes-since-review"></section>
+    <section class="planning-grid" style="margin-top:18px">
+      <article class="card"><div class="card-header"><div><h3>Value at risk vs salvage</h3><p>Bi-weekly national movement</p></div></div><div class="chart-body" id="executive-trend-chart"></div></article>
+      <article class="card"><div class="card-header"><div><h3>Expiry forecast by month</h3><p>Projected June-December exposure</p></div></div><div class="risk-list" id="executive-forecast-chart"></div></article>
+    </section>
+    <section class="alerts" id="executive-alerts" style="margin-top:18px"></section>
+    </div>
 
+    <div class="dashboard-view" id="view-expiry-forecast" data-view="expiry-forecast">
+    <div class="view-header"><div><h2>Expiry Forecast</h2></div><p>How much is expiring by December, and which products drive each month?</p></div>
     <div class="section-heading">
       <h2>Monthly expiry calendar</h2>
       <p>Select a month to inspect expiring batches, salvage progress, remaining risk, and accountable institutions.</p>
@@ -1856,13 +2092,21 @@
         <div class="timeline" id="salvage-timeline"></div>
       </article>
     </section>
+    </div>
 
+    <div class="dashboard-view" id="view-warning-centre" data-view="warning-centre">
+    <div class="view-header"><div><h2>Warning Centre</h2></div><p>Which commodities need intervention now, within 90 days, or within 180 days?</p></div>
     <div class="section-heading">
       <h2>Warning centre</h2>
       <p>Days-to-expiry alerts recalculate against the selected historical snapshot date.</p>
     </div>
     <section class="warning-grid" id="warning-centre"></section>
+    <div class="section-heading"><h2>Top commodities at risk</h2><p>Highest remaining financial exposure at the selected snapshot.</p></div>
+    <section class="card tracker"><div class="table-wrap"><table><thead><tr><th>Rank</th><th>Commodity</th><th>Expiry</th><th>Remaining Value</th><th>Risk</th></tr></thead><tbody id="warning-top-table"></tbody></table></div></section>
+    </div>
 
+    <div class="dashboard-view" id="view-action-tracker" data-view="action-tracker">
+    <div class="view-header"><div><h2>Action Tracker</h2></div><p>What is open, who owns it, and which actions are overdue?</p></div>
     <div class="section-heading">
       <h2>Action tracker</h2>
       <p>Commodity-level responsibilities and interventions, with status filtering and priority sorting.</p>
@@ -1881,7 +2125,11 @@
       </div>
       <div class="table-footer"><span id="action-result-count"></span><span>Due dates remain flagged until confirmed</span></div>
     </section>
+    </div>
 
+    <div class="dashboard-view" id="view-salvage-tracker" data-view="salvage-tracker">
+    <div class="view-header"><div><h2>Salvage Tracker</h2></div><p>What value has been saved, when, and through which institution?</p></div>
+    <section class="metrics" id="salvage-kpis"></section>
     <div class="section-heading">
       <h2 id="salvage-register-title">October salvaged commodities register</h2>
       <p id="salvage-register-copy">Permanent cumulative evidence filtered to the selected expiry month. Historical records are never overwritten.</p>
@@ -1895,7 +2143,11 @@
       </div>
       <div class="table-footer"><span id="salvage-register-count"></span><span id="salvage-register-scope"></span></div>
     </section>
+    </div>
 
+    <div class="dashboard-view" id="view-institution-performance" data-view="institution-performance">
+    <div class="view-header"><div><h2>Institution Performance</h2></div><p>Which institutions and provinces hold responsibility for active interventions?</p></div>
+    <section class="institution-summary" id="institution-summary"></section>
     <div class="section-heading">
       <h2>Zambia Army initiative tracker</h2>
       <p>Dedicated institutional follow-up for the June-November 2026 salvage opportunity.</p>
@@ -1908,7 +2160,16 @@
         </table>
       </div>
     </section>
+    <div class="section-heading"><h2>Engagement performance</h2><p>Commodity count, portfolio value, and current intervention status by institution.</p></div>
+    <section class="card tracker"><div class="table-wrap"><table><thead><tr><th>Institution</th><th>Commodities</th><th>Portfolio Value</th><th>Remaining Risk</th><th>Status</th></tr></thead><tbody id="institution-table"></tbody></table></div></section>
+    </div>
 
+    <div class="dashboard-view" id="view-historical-snapshots" data-view="historical-snapshots">
+    <div class="view-header"><div><h2>Historical Snapshots</h2></div><p>Reconstruct the national position as it existed on any bi-weekly review date.</p></div>
+    <section class="snapshot-bar" aria-label="Historical snapshot selector">
+      <label><span>View historical snapshot</span><select class="control" id="snapshot-select"></select></label>
+      <div class="snapshot-summary" id="snapshot-summary"></div>
+    </section>
     <div class="section-heading">
       <h2>Salvage performance trend</h2>
       <p>Bi-weekly movement shows whether remaining risk is declining while cumulative salvage increases.</p>
@@ -1924,7 +2185,11 @@
         </table>
       </div>
     </section>
+    </div>
 
+    <div class="dashboard-view" id="view-root-cause-analysis" data-view="root-cause-analysis">
+    <div class="view-header"><div><h2>Root Cause Analysis</h2></div><p>Why is expiry risk occurring, and which commodities contribute most?</p></div>
+    <section class="root-cause-grid" id="root-cause-kpis"></section>
     <div class="section-heading">
       <h2>Commodity risk ranking</h2>
       <p>Pareto-style ranking of the commodities contributing most to total financial exposure.</p>
@@ -1944,7 +2209,9 @@
         </div>
       </article>
     </section>
+    </div>
 
+    <div class="dashboard-view" id="view-action-portfolio" data-view="action-tracker">
     <div class="section-heading">
       <h2>Commodity status and actions</h2>
       <p>Lifecycle stage and accountable next action for each commodity requiring intervention.</p>
@@ -1973,7 +2240,10 @@
         <div class="risk-list" id="intervention-queue"></div>
       </article>
     </section>
+    </div>
 
+    <div class="dashboard-view" id="view-commodity-register" data-view="commodity-register">
+    <div class="view-header"><div><h2>Commodity Register</h2></div><p>Search the full line list by month, product, status, province, institution, or risk band.</p></div>
     <div class="section-heading">
       <h2>National expiring commodities register</h2>
       <p>Search and filter all short-dated commodities by month, current status, and days-to-expiry risk band.</p>
@@ -1997,6 +2267,7 @@
       </div>
       <div class="table-footer"><span id="expiry-register-count"></span><span id="expiry-register-value"></span></div>
     </section>
+    </div>
 
     <p class="source-note"><strong>Monitoring rules:</strong> Snapshot Remaining Risk = Snapshot Value at Risk - Cumulative Value Salvaged. The permanent salvage register only includes events recorded on or before the selected snapshot. Warning bands are calculated from snapshot date to expiry date: Critical at 30 days or less, High Risk at 31-90 days, and Medium Risk at 91-180 days.</p>
   </main>
@@ -2007,6 +2278,8 @@
       <span>Bi-Weekly Review &middot; Ministry of Health &middot; ZAMMSA &middot; Control Tower</span>
     </div>
   </footer>
+    </div>
+  </div>
 
   <script>
     const monthOrder = ["June", "July", "August", "September", "October", "November", "December"];
@@ -2167,6 +2440,26 @@
       }).join("");
     }
 
+    function renderWarningTop() {
+      const ranked = expiryRecords
+        .map(item => ({
+          ...item,
+          remaining: item.value - salvagedForRecord(item.id),
+          risk: expiryRiskBand(item)
+        }))
+        .filter(item => item.remaining > 0)
+        .sort((a, b) => b.remaining - a.remaining)
+        .slice(0, 20);
+      document.getElementById("warning-top-table").innerHTML = ranked.map((item, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td class="commodity">${escapeHtml(item.commodity)}</td>
+          <td>${item.month} 2026<br><span class="metric-sub">${daysToExpiry(item)} days</span></td>
+          <td>${moneyExact(item.remaining)}</td>
+          <td><span class="badge ${riskBadgeClass(item.risk)}">${item.risk}</span></td>
+        </tr>`).join("");
+    }
+
     function renderSalvageRegister() {
       const events = eventsThroughSnapshot().filter(event => {
         const item = expiryRecords.find(record => record.id === event.recordId);
@@ -2185,9 +2478,113 @@
         `Filtered by ${selectedMonth} expiry · cumulative through ${selectedSnapshot().label}`;
     }
 
+    function renderSalvageKpis() {
+      const events = eventsThroughSnapshot();
+      const total = sum(events, "value");
+      const commodities = new Set(events.map(event => event.recordId)).size;
+      const institutions = new Set(events.map(event => event.institution)).size;
+      const metrics = [
+        ["Total Value Salvaged", moneyExact(total), `Cumulative through ${selectedSnapshot().label}`, "success"],
+        ["Salvage Rate", `${preciseRate(selectedSnapshot().salvaged, selectedSnapshot().atRisk)}%`, "Against selected snapshot value at risk", "success"],
+        ["Commodities Salvaged", commodities, `${events.length} permanent salvage events`, ""],
+        ["Institutions Contributing", institutions, "Recorded recipient or lead institutions", ""]
+      ];
+      document.getElementById("salvage-kpis").innerHTML = metrics.map(([label, value, sub, tone]) =>
+        `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`
+      ).join("");
+    }
+
     function renderArmyTracker() {
       const potential = expiryRecords.filter(item => ["June", "July", "August", "September", "October", "November"].includes(item.month)).reduce((total, item) => total + item.value - salvagedForRecord(item.id), 0);
       document.getElementById("army-tracker").innerHTML = `<tr><td class="commodity">Zambia Army</td><td>Multiple commodities, June-November 2026</td><td>${money(potential)}</td><td><span class="badge badge-pending">Awaiting Feedback</span></td><td>Confirm uptake, then prepare distribution plan</td></tr>`;
+    }
+
+    function renderInstitutionPerformance() {
+      const groups = new Map();
+      expiryRecords.forEach(item => {
+        const key = item.institution;
+        const current = groups.get(key) || { institution: key, records: 0, value: 0, remaining: 0 };
+        current.records += 1;
+        current.value += item.value;
+        current.remaining += item.value - salvagedForRecord(item.id);
+        groups.set(key, current);
+      });
+      const rows = [...groups.values()].sort((a, b) => b.remaining - a.remaining);
+      const focusInstitutions = [
+        ["Zambia Army", expiryRecords.filter(item => ["June", "July", "August", "September", "October", "November"].includes(item.month)).length, "Awaiting feedback"],
+        ["UTH network", expiryRecords.filter(item => /UTH/i.test(`${item.institution} ${item.facility}`)).length, "Active uptake"],
+        ["Chainama network", expiryRecords.filter(item => /Chainama/i.test(`${item.institution} ${item.facility}`)).length, "Engagement active"],
+        ["National Heart Hospital", expiryRecords.filter(item => /NHH|National Heart/i.test(`${item.institution} ${item.facility}`)).length, "Awaiting response"]
+      ];
+      document.getElementById("institution-summary").innerHTML = focusInstitutions.map(([name, count, status]) => `
+        <article class="card">
+          <span class="metric-label">${escapeHtml(name)}</span>
+          <strong class="metric-value">${count}</strong>
+          <span class="metric-sub">${count === 1 ? "commodity" : "commodities"} · ${escapeHtml(status)}</span>
+        </article>`).join("");
+      document.getElementById("institution-table").innerHTML = rows.map(item => {
+        const status = item.remaining <= 0 ? "Complete" : item.remaining > 1000000 ? "Ongoing" : "Pending";
+        const badge = status === "Complete" ? "badge-completed" : status === "Ongoing" ? "badge-progress" : "badge-pending";
+        return `<tr>
+          <td class="commodity">${escapeHtml(item.institution)}</td>
+          <td>${item.records}</td>
+          <td>${moneyExact(item.value)}</td>
+          <td>${moneyExact(item.remaining)}</td>
+          <td><span class="badge ${badge}">${status}</span></td>
+        </tr>`;
+      }).join("");
+    }
+
+    function renderExecutiveCharts() {
+      const width = 680, height = 220, left = 52, right = 650, top = 20, bottom = 178, max = 36;
+      const x = index => snapshots.length === 1 ? left : left + index * ((right - left) / (snapshots.length - 1));
+      const y = value => bottom - (value / max) * (bottom - top);
+      document.getElementById("executive-trend-chart").innerHTML = `
+        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly value at risk and salvage trend">
+          ${[0, 10, 20, 30].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="12" y="${y(value) + 4}">${value}M</text>`).join("")}
+          <polyline points="${snapshots.map((item, index) => `${x(index)},${y(item.atRisk / 1000000)}`).join(" ")}" fill="none" stroke="#b73a3a" stroke-width="4"/>
+          <polyline points="${snapshots.map((item, index) => `${x(index)},${y(item.salvaged / 1000000)}`).join(" ")}" fill="none" stroke="#28715f" stroke-width="4"/>
+          ${snapshots.map((item, index) => `<circle cx="${x(index)}" cy="${y(item.atRisk / 1000000)}" r="5" fill="#fff" stroke="#b73a3a" stroke-width="3"/><circle cx="${x(index)}" cy="${y(item.salvaged / 1000000)}" r="5" fill="#fff" stroke="#28715f" stroke-width="3"/><text x="${x(index)}" y="205" text-anchor="middle">${item.label.replace(" 2026", "")}</text>`).join("")}
+        </svg>`;
+      const monthData = monthOrder.map(month => ({ month, ...monthStats(month) }));
+      const maximum = Math.max(...monthData.map(item => item.total));
+      document.getElementById("executive-forecast-chart").innerHTML = monthData.map(item => `
+        <button class="risk-row forecast-link" type="button" data-forecast-month="${item.month}">
+          <span class="risk-name">${item.month}</span>
+          <span class="risk-track"><span class="risk-fill" style="--score:${item.total / maximum * 10}"></span></span>
+          <span class="risk-score">${money(item.total)}</span>
+        </button>`).join("");
+      document.querySelectorAll("[data-forecast-month]").forEach(button => button.addEventListener("click", () => {
+        selectedMonth = button.dataset.forecastMonth;
+        selectedCommodityId = monthRecords(selectedMonth)[0].id;
+        window.location.hash = "expiry-forecast";
+        renderCalendar();
+        renderMonthDetail();
+        renderCommodity();
+        renderSalvageRegister();
+      }));
+      const critical = expiryRecords.filter(item => item.value > salvagedForRecord(item.id) && daysToExpiry(item) <= 30);
+      const high = expiryRecords.filter(item => item.value > salvagedForRecord(item.id) && daysToExpiry(item) > 30 && daysToExpiry(item) <= 90);
+      document.getElementById("executive-alerts").innerHTML = `
+        <article class="alert-card critical"><span>Critical alert</span><strong>${critical.length}</strong><small>Commodities expiring within 30 days of ${selectedSnapshot().label}</small></article>
+        <article class="alert-card moderate"><span>High-risk alert</span><strong>${high.length}</strong><small>Commodities expiring within 31-90 days</small></article>`;
+    }
+
+    function renderRootCauseAnalysis() {
+      const causes = [
+        ["Procurement Issues", 6, "Long lead times and quantities exceeding current demand"],
+        ["Quality Control Delays", 4, "Release delays reducing the usable distribution window"],
+        ["Forecasting", 3, "Demand variance and slower-than-planned consumption"],
+        ["Guideline Changes", 2, "Treatment or product preference changes affecting uptake"]
+      ];
+      const total = causes.reduce((value, item) => value + item[1], 0);
+      document.getElementById("root-cause-kpis").innerHTML = causes.map(([label, count, note]) => `
+        <article class="card cause-card">
+          <span class="metric-label">${label}</span>
+          <strong>${count}</strong>
+          <div class="risk-track"><span class="risk-fill" style="--score:${count / causes[0][1] * 10}"></span></div>
+          <p>${Math.round(count / total * 100)}% of indicative causes · ${note}</p>
+        </article>`).join("");
     }
 
     function renderPerformance() {
@@ -2473,12 +2870,16 @@
     function renderAllSnapshotViews() {
       renderSnapshotSelector();
       renderExecutive();
+      renderExecutiveCharts();
       renderCalendar();
       renderMonthDetail();
       renderCommodity();
       renderWarningCentre();
+      renderWarningTop();
+      renderSalvageKpis();
       renderSalvageRegister();
       renderArmyTracker();
+      renderInstitutionPerformance();
       renderLifecycleAndActions();
       renderProductTicker();
       renderChangesSinceReview();
@@ -2487,9 +2888,46 @@
       renderExpiryRegister();
     }
 
+    const dashboardViews = [
+      "executive-summary",
+      "expiry-forecast",
+      "commodity-register",
+      "warning-centre",
+      "salvage-tracker",
+      "action-tracker",
+      "root-cause-analysis",
+      "historical-snapshots",
+      "institution-performance"
+    ];
+
+    function activateView(viewName, updateHash = false) {
+      const view = dashboardViews.includes(viewName) ? viewName : "executive-summary";
+      document.querySelectorAll(".dashboard-view").forEach(section => {
+        section.classList.toggle("active", section.dataset.view === view);
+      });
+      document.querySelectorAll(".nav-link").forEach(link => {
+        const active = link.dataset.view === view;
+        link.classList.toggle("active", active);
+        if (active) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+      });
+      const activeLink = document.querySelector(`.nav-link[data-view="${view}"]`);
+      document.title = `${activeLink?.querySelector(".nav-text")?.textContent || "Dashboard"} | National Short Expiry and Salvage Dashboard`;
+      if (updateHash && window.location.hash !== `#${view}`) history.pushState(null, "", `#${view}`);
+      window.scrollTo({ top: document.querySelector(".app-shell").offsetTop - 12, behavior: "smooth" });
+    }
+
+    document.querySelectorAll(".nav-link").forEach(link => link.addEventListener("click", event => {
+      event.preventDefault();
+      activateView(link.dataset.view, true);
+    }));
+    window.addEventListener("hashchange", () => activateView(window.location.hash.slice(1)));
+
     renderAllSnapshotViews();
     renderPerformance();
     renderRiskRanking();
+    renderRootCauseAnalysis();
+    activateView(window.location.hash.slice(1) || "executive-summary");
   </script>
 </body>
 </html>

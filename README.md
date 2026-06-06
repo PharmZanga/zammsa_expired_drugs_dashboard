@@ -5,6 +5,10 @@ commodities and salvage interventions in Zambia.
 
 ## Features
 
+- Nine-page dashboard architecture with responsive left navigation
+- Dedicated Executive Summary, Expiry Forecast, Commodity Register, Warning
+  Centre, Salvage Tracker, Action Tracker, Root Cause Analysis, Historical
+  Snapshots, and Institution Performance views
 - Executive summary metrics calculated from batch-level records
 - Clickable June-December expiry calendar
 - Selectable historical bi-weekly snapshots
@@ -42,7 +46,8 @@ Historical state is represented by two related structures:
 - `salvageEvents`: append-only dated salvage transactions
 
 Selecting a snapshot recalculates KPIs, monthly salvage progress, warning bands,
-the Zambia Army opportunity, and the cumulative salvage register.
+the Zambia Army opportunity, institution performance, executive alerts, and the
+cumulative salvage register across all dashboard pages.
 
 The national expiry register contains every commodity, batch, quantity, value,
 expiry date, days to expiry, risk band, and current status. Search covers
