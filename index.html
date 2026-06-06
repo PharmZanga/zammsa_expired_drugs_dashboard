@@ -108,22 +108,27 @@
 
     .identity {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 11px;
+      gap: 2px;
       font-weight: 700;
       letter-spacing: 0.02em;
+      text-align: center;
     }
 
-    .mark {
-      display: grid;
-      place-items: center;
-      width: 30px;
-      height: 30px;
-      color: var(--green-950);
-      background: #fff;
-      border-radius: 50%;
-      font-size: 18px;
-      font-weight: 900;
+    .control-tower-logo {
+      width: 105px;
+      height: 72px;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .identity strong {
+      max-width: 210px;
+      color: #fff;
+      font-size: 11px;
+      line-height: 1.2;
+      text-transform: uppercase;
     }
 
     .topbar-meta {
@@ -1545,6 +1550,16 @@
         font-size: 11px;
       }
 
+      .control-tower-logo {
+        width: 78px;
+        height: 56px;
+      }
+
+      .identity strong {
+        max-width: 150px;
+        font-size: 8px;
+      }
+
       .government-brand {
         gap: 0;
       }
@@ -1743,8 +1758,8 @@
     <div class="topbar">
       <div class="topbar-inner">
         <div class="identity">
-          <span class="mark" aria-hidden="true">+</span>
-          <span>National Supply Chain Control Unit</span>
+          <img class="control-tower-logo" src="assets/control-tower-logo.svg" alt="Control Tower">
+          <strong>National Supply Chain Coordinating Unit</strong>
         </div>
         <div class="government-brand">
           <img src="assets/zambia-coat-of-arms.svg" alt="Coat of arms of Zambia">
