@@ -1,0 +1,1224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="National dashboard for monitoring short-expiry medicines, salvage interventions, and redistribution priorities in Zambia.">
+  <meta name="theme-color" content="#123f35">
+  <title>Short Expiry &amp; Salvage Dashboard | Zambia</title>
+  <style>
+    :root {
+      --ink: #182721;
+      --muted: #607068;
+      --line: #dce5df;
+      --surface: #ffffff;
+      --surface-soft: #f4f7f5;
+      --green-950: #123f35;
+      --green-800: #1e5e4f;
+      --green-700: #28715f;
+      --green-100: #dceee7;
+      --red: #b73a3a;
+      --red-soft: #fce8e7;
+      --amber: #a46213;
+      --amber-soft: #fff1d8;
+      --blue: #2c6fa5;
+      --blue-soft: #e4f0f8;
+      --grey-soft: #edf0ee;
+      --shadow: 0 14px 40px rgba(24, 39, 33, 0.08);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 88% 0%, rgba(255, 185, 65, 0.15), transparent 28rem),
+        #eef3f0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 20;
+      padding: 10px 14px;
+      color: #fff;
+      background: var(--green-950);
+      border-radius: 8px;
+      transform: translateY(-150%);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .topbar {
+      color: #fff;
+      background: var(--green-950);
+    }
+
+    .topbar-inner,
+    .hero-inner,
+    main,
+    .footer-inner {
+      width: min(1180px, calc(100% - 32px));
+      margin-inline: auto;
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 54px;
+      gap: 20px;
+      font-size: 13px;
+    }
+
+    .identity {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      color: var(--green-950);
+      background: #fff;
+      border-radius: 50%;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .topbar-meta {
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      background: linear-gradient(120deg, var(--green-950), var(--green-800));
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 430px;
+      height: 430px;
+      right: -150px;
+      top: -260px;
+      border: 70px solid rgba(255, 255, 255, 0.06);
+      border-radius: 50%;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(270px, 0.55fr);
+      gap: 48px;
+      align-items: end;
+      padding: 58px 0 70px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 14px;
+      color: #d6ebe3;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: #f0ad39;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.4rem, 5vw, 4.5rem);
+      font-weight: 500;
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+    }
+
+    .hero-copy {
+      max-width: 720px;
+      margin: 20px 0 0;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 16px;
+    }
+
+    .reporting-card {
+      padding: 22px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      backdrop-filter: blur(6px);
+    }
+
+    .reporting-card strong,
+    .reporting-card span {
+      display: block;
+    }
+
+    .reporting-card span {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+    }
+
+    .reporting-card strong {
+      margin-top: 5px;
+      font-size: 24px;
+    }
+
+    .reporting-card p {
+      margin: 12px 0 0;
+      padding-top: 12px;
+      color: rgba(255, 255, 255, 0.72);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 13px;
+    }
+
+    main {
+      position: relative;
+      z-index: 2;
+      margin-top: -30px;
+      padding-bottom: 60px;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      margin-bottom: 28px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid rgba(220, 229, 223, 0.8);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .metric {
+      min-width: 0;
+      padding: 22px 20px;
+      border-right: 1px solid var(--line);
+    }
+
+    .metric:last-child {
+      border-right: 0;
+    }
+
+    .metric-label {
+      display: block;
+      min-height: 38px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .metric-value {
+      display: block;
+      margin-top: 5px;
+      font-size: clamp(1.45rem, 2.6vw, 2rem);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .metric-value.danger {
+      color: var(--red);
+    }
+
+    .metric-value.success {
+      color: var(--green-700);
+    }
+
+    .metric-value.warning {
+      color: var(--amber);
+    }
+
+    .metric-sub {
+      display: block;
+      margin-top: 8px;
+      color: #829087;
+      font-size: 11px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin: 34px 0 14px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    .section-heading p {
+      max-width: 580px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 0.82fr 1.18fr;
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 28px rgba(24, 39, 33, 0.045);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 22px 24px 0;
+    }
+
+    .card-header h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .card-header p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .donut-wrap {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr);
+      gap: 24px;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .donut {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 178px;
+      height: 178px;
+      border-radius: 50%;
+      background: conic-gradient(
+        var(--green-700) 0 16.667%,
+        var(--blue) 16.667% 33.334%,
+        var(--amber) 33.334% 66.667%,
+        #8b948f 66.667% 100%
+      );
+    }
+
+    .donut::before {
+      content: "";
+      position: absolute;
+      inset: 30px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    .donut-label {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .donut-label strong,
+    .donut-label span {
+      display: block;
+    }
+
+    .donut-label strong {
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .donut-label span {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .legend {
+      display: grid;
+      gap: 11px;
+    }
+
+    .legend-item {
+      display: grid;
+      grid-template-columns: 10px 1fr auto;
+      align-items: center;
+      gap: 9px;
+      font-size: 12px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .legend-item span:nth-child(2) {
+      color: var(--muted);
+    }
+
+    .legend-item strong {
+      font-size: 12px;
+    }
+
+    .risk-list {
+      display: grid;
+      gap: 13px;
+      padding: 24px;
+    }
+
+    .risk-row {
+      display: grid;
+      grid-template-columns: 122px minmax(0, 1fr) 42px;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    .risk-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .risk-track {
+      height: 9px;
+      overflow: hidden;
+      background: #edf1ef;
+      border-radius: 99px;
+    }
+
+    .risk-fill {
+      display: block;
+      height: 100%;
+      width: calc(var(--score) * 10%);
+      background: linear-gradient(90deg, #3e8d78, var(--green-950));
+      border-radius: inherit;
+    }
+
+    .risk-score {
+      color: var(--muted);
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .tracker {
+      overflow: hidden;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto auto;
+      gap: 10px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 14px;
+      width: 13px;
+      height: 13px;
+      border: 2px solid #829087;
+      border-radius: 50%;
+      transform: translateY(-58%);
+    }
+
+    .search-wrap::after {
+      content: "";
+      position: absolute;
+      top: calc(50% + 6px);
+      left: 26px;
+      width: 6px;
+      height: 2px;
+      background: #829087;
+      transform: rotate(45deg);
+    }
+
+    .control {
+      width: 100%;
+      min-height: 42px;
+      padding: 9px 12px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid #cfd9d3;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    .search-wrap .control {
+      padding-left: 42px;
+    }
+
+    .control:focus {
+      border-color: var(--green-700);
+      box-shadow: 0 0 0 3px rgba(40, 113, 95, 0.12);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      padding: 12px 16px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      border-bottom: 1px solid var(--line);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-align: left;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 15px 16px;
+      border-bottom: 1px solid #e6ece8;
+      vertical-align: top;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover {
+      background: #f8faf9;
+    }
+
+    .commodity {
+      font-weight: 750;
+    }
+
+    .intervention {
+      color: #4f6057;
+    }
+
+    .lead {
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 9px;
+      border-radius: 99px;
+      font-size: 10px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: currentColor;
+      border-radius: 50%;
+    }
+
+    .badge-completed {
+      color: var(--green-700);
+      background: var(--green-100);
+    }
+
+    .badge-ongoing {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .badge-progress {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .badge-pending {
+      color: #68716c;
+      background: var(--grey-soft);
+    }
+
+    .table-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 13px 22px;
+      color: var(--muted);
+      background: var(--surface-soft);
+      border-top: 1px solid var(--line);
+      font-size: 11px;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 38px 22px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .insight {
+      position: relative;
+      min-height: 160px;
+      padding: 22px;
+      overflow: hidden;
+    }
+
+    .insight-number {
+      display: block;
+      margin-bottom: 20px;
+      color: var(--green-700);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 34px;
+    }
+
+    .insight h3 {
+      margin: 0 0 6px;
+      font-size: 14px;
+    }
+
+    .insight p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .root-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      overflow: hidden;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .cause {
+      min-height: 126px;
+      padding: 20px;
+      background: #fff;
+    }
+
+    .cause strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--green-800);
+      font-size: 11px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .cause p {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .source-note {
+      margin: 22px 0 0;
+      padding: 14px 16px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.56);
+      border-left: 3px solid #f0ad39;
+      border-radius: 0 9px 9px 0;
+      font-size: 11px;
+    }
+
+    footer {
+      color: rgba(255, 255, 255, 0.7);
+      background: var(--green-950);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 25px 0;
+      font-size: 11px;
+    }
+
+    .footer-inner strong {
+      color: #fff;
+    }
+
+    @media (max-width: 980px) {
+      .metrics {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .metric:nth-child(3) {
+        border-right: 0;
+      }
+
+      .metric:nth-child(-n + 3) {
+        border-bottom: 1px solid var(--line);
+      }
+
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .insights-grid,
+      .root-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .topbar-meta {
+        display: none;
+      }
+
+      .hero-inner {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 44px 0 60px;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .metric,
+      .metric:nth-child(3) {
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .metric:nth-child(2n) {
+        border-right: 0;
+      }
+
+      .metric:nth-last-child(-n + 2) {
+        border-bottom: 0;
+      }
+
+      .section-heading {
+        display: block;
+      }
+
+      .section-heading p {
+        margin-top: 7px;
+        text-align: left;
+      }
+
+      .donut-wrap {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .legend {
+        width: 100%;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .insights-grid,
+      .root-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-inner {
+        display: block;
+      }
+
+      .footer-inner span {
+        display: block;
+        margin-top: 6px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .topbar-inner,
+      .hero-inner,
+      main,
+      .footer-inner {
+        width: min(100% - 20px, 1180px);
+      }
+
+      h1 {
+        font-size: 2.45rem;
+      }
+
+      main {
+        margin-top: -22px;
+      }
+
+      .metrics {
+        display: block;
+      }
+
+      .metric,
+      .metric:nth-child(3),
+      .metric:nth-child(2n),
+      .metric:nth-last-child(-n + 2) {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .metric:last-child {
+        border-bottom: 0;
+      }
+
+      .metric-label {
+        min-height: auto;
+      }
+
+      .risk-row {
+        grid-template-columns: 96px minmax(0, 1fr) 34px;
+      }
+
+      .table-footer {
+        display: block;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .topbar,
+      .toolbar,
+      footer {
+        display: none;
+      }
+
+      .hero {
+        color: var(--ink);
+        background: #fff;
+      }
+
+      .hero-copy,
+      .reporting-card span,
+      .reporting-card p {
+        color: var(--muted);
+      }
+
+      .reporting-card {
+        border-color: var(--line);
+        background: #fff;
+      }
+
+      main {
+        width: 100%;
+        margin-top: 0;
+      }
+
+      .card,
+      .metrics {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to dashboard content</a>
+
+  <header>
+    <div class="topbar">
+      <div class="topbar-inner">
+        <div class="identity">
+          <span class="mark" aria-hidden="true">+</span>
+          <span>Ministry of Health Zambia</span>
+        </div>
+        <div class="topbar-meta">Pharmaceutical Supply Chain Intelligence</div>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="hero-inner">
+        <div>
+          <p class="eyebrow">National commodity oversight</p>
+          <h1>Short Expiry &amp;<br>Salvage Dashboard</h1>
+          <p class="hero-copy">
+            A decision-support view of medicines at risk, active redistribution efforts,
+            and the interventions requiring immediate coordination.
+          </p>
+        </div>
+        <aside class="reporting-card" aria-label="Reporting period">
+          <span>Reporting period</span>
+          <strong>June 2026</strong>
+          <p>Value-at-risk position reported as of April 2026. Intervention status reflects the current tracker.</p>
+        </aside>
+      </div>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="metrics" aria-label="Executive summary">
+      <article class="metric">
+        <span class="metric-label">Total value at risk</span>
+        <strong class="metric-value danger">ZMW 33.8M</strong>
+        <span class="metric-sub">Reported April 2026</span>
+      </article>
+      <article class="metric">
+        <span class="metric-label">Commodities tracked</span>
+        <strong class="metric-value" id="metric-total">12</strong>
+        <span class="metric-sub">Priority interventions</span>
+      </article>
+      <article class="metric">
+        <span class="metric-label">Salvage completed</span>
+        <strong class="metric-value success" id="metric-completed">2</strong>
+        <span class="metric-sub" id="metric-completed-sub">17% of tracker</span>
+      </article>
+      <article class="metric">
+        <span class="metric-label">Active interventions</span>
+        <strong class="metric-value warning" id="metric-active">6</strong>
+        <span class="metric-sub">Ongoing + in progress</span>
+      </article>
+      <article class="metric">
+        <span class="metric-label">Pending action</span>
+        <strong class="metric-value" id="metric-pending">4</strong>
+        <span class="metric-sub" id="metric-pending-sub">33% of tracker</span>
+      </article>
+      <article class="metric">
+        <span class="metric-label">Amoxiclav distributed</span>
+        <strong class="metric-value success">120K+</strong>
+        <span class="metric-sub">Units since March 2026</span>
+      </article>
+    </section>
+
+    <div class="section-heading">
+      <h2>Portfolio overview</h2>
+      <p>Status counts are calculated from the live tracker below. Risk scores are indicative prioritisation signals, not quantities or monetary values.</p>
+    </div>
+
+    <section class="overview-grid" aria-label="Portfolio charts">
+      <article class="card">
+        <div class="card-header">
+          <div>
+            <h3>Intervention status</h3>
+            <p>Distribution of tracked salvage actions</p>
+          </div>
+        </div>
+        <div class="donut-wrap">
+          <div class="donut" id="status-donut" role="img" aria-label="Intervention status chart">
+            <div class="donut-label">
+              <strong id="donut-total">12</strong>
+              <span>Total actions</span>
+            </div>
+          </div>
+          <div class="legend" id="status-legend"></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-header">
+          <div>
+            <h3>Commodity categories at risk</h3>
+            <p>Indicative relative risk score out of 10</p>
+          </div>
+        </div>
+        <div class="risk-list" aria-label="Commodity category risk scores">
+          <div class="risk-row"><span class="risk-name">ARVs</span><span class="risk-track"><span class="risk-fill" style="--score:9"></span></span><span class="risk-score">9/10</span></div>
+          <div class="risk-row"><span class="risk-name">Mental health</span><span class="risk-track"><span class="risk-fill" style="--score:7"></span></span><span class="risk-score">7/10</span></div>
+          <div class="risk-row"><span class="risk-name">IV fluids</span><span class="risk-track"><span class="risk-fill" style="--score:7"></span></span><span class="risk-score">7/10</span></div>
+          <div class="risk-row"><span class="risk-name">Oncology</span><span class="risk-track"><span class="risk-fill" style="--score:6"></span></span><span class="risk-score">6/10</span></div>
+          <div class="risk-row"><span class="risk-name">Lab reagents</span><span class="risk-track"><span class="risk-fill" style="--score:6"></span></span><span class="risk-score">6/10</span></div>
+          <div class="risk-row"><span class="risk-name">TB products</span><span class="risk-track"><span class="risk-fill" style="--score:5"></span></span><span class="risk-score">5/10</span></div>
+          <div class="risk-row"><span class="risk-name">Insulin</span><span class="risk-track"><span class="risk-fill" style="--score:5"></span></span><span class="risk-score">5/10</span></div>
+        </div>
+      </article>
+    </section>
+
+    <div class="section-heading">
+      <h2>Salvage intervention tracker</h2>
+      <p>Search commodities, interventions, or lead institutions. Use the status filter to isolate the actions needing attention.</p>
+    </div>
+
+    <section class="card tracker" aria-labelledby="tracker-title">
+      <h3 class="sr-only" id="tracker-title">Commodity salvage tracker</h3>
+      <div class="toolbar">
+        <label class="search-wrap">
+          <span class="sr-only">Search tracker</span>
+          <input class="control" id="search-input" type="search" placeholder="Search tracker..." autocomplete="off">
+        </label>
+        <label>
+          <span class="sr-only">Filter by status</span>
+          <select class="control" id="status-filter">
+            <option value="All">All statuses</option>
+            <option value="Completed">Completed</option>
+            <option value="Ongoing">Ongoing</option>
+            <option value="In Progress">In progress</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </label>
+        <label>
+          <span class="sr-only">Sort tracker</span>
+          <select class="control" id="sort-select">
+            <option value="priority">Sort: action priority</option>
+            <option value="commodity">Sort: commodity A-Z</option>
+            <option value="status">Sort: status</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Commodity</th>
+              <th scope="col">Intervention</th>
+              <th scope="col">Lead institution</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+        <div class="empty-state" id="empty-state">No interventions match the selected filters.</div>
+      </div>
+
+      <div class="table-footer" aria-live="polite">
+        <span id="result-count">Showing 12 of 12 interventions</span>
+        <span>Last status update: June 2026</span>
+      </div>
+    </section>
+
+    <div class="section-heading">
+      <h2>Immediate management signals</h2>
+      <p>Concise prompts for the next coordination meeting, derived from the intervention tracker.</p>
+    </div>
+
+    <section class="insights-grid" aria-label="Management insights">
+      <article class="card insight">
+        <span class="insight-number">01</span>
+        <h3>Close pending institutional engagements</h3>
+        <p>Four interventions still require recipient-institution engagement before redistribution can begin.</p>
+      </article>
+      <article class="card insight">
+        <span class="insight-number">02</span>
+        <h3>Accelerate the active pipeline</h3>
+        <p>Six ongoing or in-progress actions represent the nearest opportunity to convert risk into documented salvage.</p>
+      </article>
+      <article class="card insight">
+        <span class="insight-number">03</span>
+        <h3>Replicate the Amoxiclav approach</h3>
+        <p>The completed redistribution model provides a practical playbook for matching stock with high-consumption facilities.</p>
+      </article>
+    </section>
+
+    <div class="section-heading">
+      <h2>Root causes identified</h2>
+      <p>Recurring system conditions contributing to short-expiry exposure and constrained redistribution.</p>
+    </div>
+
+    <section class="root-grid" aria-label="Root causes">
+      <article class="cause"><strong>Planning</strong><p>Procurement imbalances exceeding actual consumption.</p></article>
+      <article class="cause"><strong>Policy</strong><p>Treatment guideline changes reducing demand for selected products.</p></article>
+      <article class="cause"><strong>Quality assurance</strong><p>Prolonged quality-control and product-release delays.</p></article>
+      <article class="cause"><strong>Visibility</strong><p>Coding and stock-visibility gaps between ZAMMSA and facilities.</p></article>
+      <article class="cause"><strong>Inventory</strong><p>Facility-level overstocking limiting timely redistribution.</p></article>
+      <article class="cause"><strong>Demand</strong><p>Slow-moving and specialised commodity demand.</p></article>
+    </section>
+
+    <p class="source-note">
+      <strong>Data note:</strong> This dashboard presents the figures and intervention records supplied for the June 2026 management view.
+      The ZMW 33.8 million value-at-risk position is labelled as reported in April 2026. Indicative category risk scores should be replaced
+      with validated quantities, values, batch expiries, and facility-level records when those data become available.
+    </p>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <strong>National Short Expiry &amp; Salvage Dashboard</strong>
+      <span>Ministry of Health &middot; ZAMMSA &middot; Zambia</span>
+    </div>
+  </footer>
+
+  <script>
+    const interventions = [
+      { commodity: "Amoxiclav", intervention: "Redistribution to high-consumption facilities; 120K+ units distributed", lead: "MoH / ZAMMSA", status: "Completed" },
+      { commodity: "TB commodities", intervention: "Engagement with UTH Adult Hospital to facilitate uptake", lead: "ZAMMSA / UTH Adult", status: "Completed" },
+      { commodity: "Kit Yamoyo", intervention: "Identification of facilities for stock redistribution", lead: "ZAMMSA", status: "Ongoing" },
+      { commodity: "UNFPA Kits", intervention: "Preparation of distribution plans and recipient facilities", lead: "ZAMMSA", status: "Ongoing" },
+      { commodity: "Insulin products", intervention: "Redistribution to UTH and facilities with demonstrated demand", lead: "ZAMMSA", status: "In Progress" },
+      { commodity: "Glimepiride / Metformin", intervention: "Provincial-level redistribution efforts", lead: "ZAMMSA", status: "In Progress" },
+      { commodity: "Laboratory commodities", intervention: "Engagement with first-level hospitals and diagnostic facilities", lead: "MoH / ZAMMSA", status: "In Progress" },
+      { commodity: "Prasugrel & Metolazone", intervention: "Engagement with National Heart Hospital", lead: "ZAMMSA", status: "Pending" },
+      { commodity: "Quetiapine", intervention: "Engagement with Chainama Hospital", lead: "MoH / ZAMMSA", status: "Pending" },
+      { commodity: "Coagulation Factor VIII", intervention: "Engagement with Chongwe District and Provincial Pharmacists", lead: "ZAMMSA", status: "Pending" },
+      { commodity: "Anti-D Immunoglobulin", intervention: "Engagement with Kabwe Women and Newborn Hospital", lead: "ZAMMSA", status: "Pending" },
+      { commodity: "Lamotrigine", intervention: "Engagement with Pediatric Centre of Excellence to absorb stock", lead: "ZAMMSA", status: "In Progress" }
+    ];
+
+    const statusConfig = {
+      "Completed": { color: "#28715f", badge: "badge-completed", priority: 4 },
+      "Ongoing": { color: "#2c6fa5", badge: "badge-ongoing", priority: 2 },
+      "In Progress": { color: "#a46213", badge: "badge-progress", priority: 1 },
+      "Pending": { color: "#8b948f", badge: "badge-pending", priority: 0 }
+    };
+
+    const statusOrder = ["Completed", "Ongoing", "In Progress", "Pending"];
+    const counts = Object.fromEntries(statusOrder.map(status => [
+      status,
+      interventions.filter(item => item.status === status).length
+    ]));
+
+    const percent = value => Math.round((value / interventions.length) * 100);
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[character]);
+
+    function initialiseSummary() {
+      const active = counts.Ongoing + counts["In Progress"];
+      document.getElementById("metric-total").textContent = interventions.length;
+      document.getElementById("metric-completed").textContent = counts.Completed;
+      document.getElementById("metric-completed-sub").textContent = `${percent(counts.Completed)}% of tracker`;
+      document.getElementById("metric-active").textContent = active;
+      document.getElementById("metric-pending").textContent = counts.Pending;
+      document.getElementById("metric-pending-sub").textContent = `${percent(counts.Pending)}% of tracker`;
+      document.getElementById("donut-total").textContent = interventions.length;
+
+      let cursor = 0;
+      const stops = statusOrder.map(status => {
+        const start = cursor;
+        cursor += (counts[status] / interventions.length) * 100;
+        return `${statusConfig[status].color} ${start}% ${cursor}%`;
+      });
+
+      const donut = document.getElementById("status-donut");
+      donut.style.background = `conic-gradient(${stops.join(",")})`;
+      donut.setAttribute("aria-label", statusOrder
+        .map(status => `${status}: ${counts[status]} interventions`)
+        .join(", "));
+
+      document.getElementById("status-legend").innerHTML = statusOrder.map(status => `
+        <div class="legend-item">
+          <span class="legend-dot" style="background:${statusConfig[status].color}"></span>
+          <span>${status}</span>
+          <strong>${counts[status]} &middot; ${percent(counts[status])}%</strong>
+        </div>
+      `).join("");
+    }
+
+    function renderTable() {
+      const query = document.getElementById("search-input").value.trim().toLowerCase();
+      const status = document.getElementById("status-filter").value;
+      const sort = document.getElementById("sort-select").value;
+
+      const rows = interventions
+        .filter(item => status === "All" || item.status === status)
+        .filter(item => [item.commodity, item.intervention, item.lead, item.status]
+          .some(value => value.toLowerCase().includes(query)))
+        .sort((a, b) => {
+          if (sort === "commodity") return a.commodity.localeCompare(b.commodity);
+          if (sort === "status") return a.status.localeCompare(b.status) || a.commodity.localeCompare(b.commodity);
+          return statusConfig[a.status].priority - statusConfig[b.status].priority || a.commodity.localeCompare(b.commodity);
+        });
+
+      document.getElementById("table-body").innerHTML = rows.map(item => `
+        <tr>
+          <td class="commodity">${escapeHtml(item.commodity)}</td>
+          <td class="intervention">${escapeHtml(item.intervention)}</td>
+          <td class="lead">${escapeHtml(item.lead)}</td>
+          <td><span class="badge ${statusConfig[item.status].badge}">${escapeHtml(item.status)}</span></td>
+        </tr>
+      `).join("");
+
+      document.getElementById("empty-state").style.display = rows.length ? "none" : "block";
+      document.getElementById("result-count").textContent =
+        `Showing ${rows.length} of ${interventions.length} intervention${interventions.length === 1 ? "" : "s"}`;
+    }
+
+    initialiseSummary();
+    renderTable();
+
+    ["search-input", "status-filter", "sort-select"].forEach(id => {
+      document.getElementById(id).addEventListener(id === "search-input" ? "input" : "change", renderTable);
+    });
+  </script>
+</body>
+</html>
