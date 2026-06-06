@@ -1426,7 +1426,7 @@
       display: flex;
       width: max-content;
       padding: 11px 0;
-      animation: productTicker 90s linear infinite;
+      animation: productTicker 1200s linear infinite;
     }
 
     .ticker-shell:hover .ticker-track,
@@ -1488,6 +1488,39 @@
 
     .shared-monitor .section-heading {
       margin-top: 0;
+    }
+
+    .executive-narrative {
+      margin-bottom: 18px;
+      padding: 22px 24px;
+    }
+
+    .executive-narrative h3 {
+      margin: 0 0 12px;
+      color: var(--green-900);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 24px;
+    }
+
+    .executive-narrative p {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .executive-narrative p:last-child {
+      margin-bottom: 0;
+    }
+
+    .drilldown-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
+    .drilldown-toolbar label {
+      width: min(100%, 480px);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -2060,9 +2093,33 @@
 
     <div class="dashboard-view active" id="view-executive-summary" data-view="executive-summary">
       <div class="view-header"><div><h2>Executive Summary</h2></div><p>What is happening across the national short-expiry portfolio?</p></div>
+    <article class="card executive-narrative">
+      <h3>Executive Summary</h3>
+      <p>The National Short Expiry and Salvage Dashboard provides real-time visibility of pharmaceutical and medical commodities at risk of expiry across the national health supply chain. The dashboard supports the Ministry of Health, National Supply Chain Coordinating Unit (Control Tower), ZAMMSA, and key stakeholders in monitoring short-dated commodities, coordinating salvage interventions, and tracking progress towards reducing commodity wastage.</p>
+      <p>The dashboard highlights the total value of commodities at risk, commodities successfully salvaged, remaining exposure, and priority commodities requiring urgent action. It also provides forecasts of upcoming expiries, tracks ongoing salvage initiatives, and monitors implementation of agreed action points by responsible institutions.</p>
+      <p><strong>Current Reporting Period:</strong> This dashboard reflects the latest bi-weekly review and includes commodities identified as being at risk of expiry, ongoing salvage interventions, completed salvage actions, and projected expiries through December 2026.</p>
+    </article>
     <div class="demo-banner"><strong>Source data loaded:</strong> Short dated products.xlsx and Salvaged Products-Merged_May26.xlsx. Missing source fields are intentionally blank.</div>
 
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
+
+    <div class="section-heading">
+      <h2>Commodity drill-down</h2>
+      <p>Selecting a month in the calendar refreshes this profile. Choose a commodity below for product-level detail.</p>
+    </div>
+    <div class="drilldown-toolbar">
+      <label><span class="sr-only">Select commodity for executive drill-down</span><select class="control" id="executive-commodity-select"></select></label>
+    </div>
+    <section class="detail-grid">
+      <article class="card">
+        <div class="card-header"><div><h3 id="executive-profile-title">Commodity profile</h3><p>Supplied product and financial attributes</p></div></div>
+        <div class="profile-list" id="executive-commodity-profile"></div>
+      </article>
+      <article class="card">
+        <div class="card-header"><div><h3>Salvage timeline</h3><p id="executive-timeline-subtitle">Recorded intervention milestones</p></div></div>
+        <div class="timeline" id="executive-salvage-timeline"></div>
+      </article>
+    </section>
 
     <div class="section-heading">
       <h2>Changes since last review</h2>
@@ -2415,6 +2472,7 @@
         renderCalendar();
         renderMonthDetail();
         renderCommodity();
+        renderExecutiveCommodity();
         renderSalvageRegister();
       }));
     }
@@ -2470,6 +2528,56 @@
       document.getElementById("salvage-timeline").innerHTML = item.timeline.length
         ? item.timeline.map(([date, event]) => `<div class="timeline-item"><time>${escapeHtml(date)}</time><strong>${escapeHtml(event)}</strong></div>`).join("")
         : '<div class="warning-empty">No intervention timeline was supplied.</div>';
+    }
+
+    function commodityProfileFields(item) {
+      return [
+        ["SKU", item.sku],
+        ["Commodity", item.commodity],
+        ["Batch", item.batch],
+        ["S.O.H Quantity", isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""],
+        ["Unit Price", moneyExact(item.unitPrice)],
+        ["Shipped Units", isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""],
+        ["Value at Risk", moneyExact(item.value)],
+        ["Value Salvaged", moneyExact(item.salvagedValue)],
+        ["Expiry Date", formatDate(item.expiryDate)],
+        ["Lead Institution", item.institution],
+        ["Status", item.status],
+        ["Warehouse", item.warehouse],
+        ["Province", item.province],
+        ["Facility", item.facility],
+        ["Date Identified", item.identified]
+      ];
+    }
+
+    function renderExecutiveCommodity() {
+      const select = document.getElementById("executive-commodity-select");
+      const records = monthRecords(selectedMonth);
+      if (!records.length) {
+        select.innerHTML = '<option value="">No commodities supplied for this month</option>';
+        select.disabled = true;
+        document.getElementById("executive-profile-title").textContent = "Commodity profile";
+        document.getElementById("executive-timeline-subtitle").textContent = "";
+        document.getElementById("executive-commodity-profile").innerHTML = '<div class="warning-empty">No source record supplied for this month.</div>';
+        document.getElementById("executive-salvage-timeline").innerHTML = '<div class="warning-empty">No intervention timeline was supplied.</div>';
+        return;
+      }
+      select.disabled = false;
+      if (!records.some(item => item.id === selectedCommodityId)) selectedCommodityId = records[0].id;
+      select.innerHTML = records.map(item => `<option value="${item.id}" ${item.id === selectedCommodityId ? "selected" : ""}>${escapeHtml(item.sku)} · ${escapeHtml(item.commodity)}</option>`).join("");
+      const item = records.find(record => record.id === selectedCommodityId) || records[0];
+      document.getElementById("executive-profile-title").textContent = `${item.commodity} profile`;
+      document.getElementById("executive-timeline-subtitle").textContent = item.batch ? `${item.batch} intervention milestones` : "";
+      document.getElementById("executive-commodity-profile").innerHTML = commodityProfileFields(item)
+        .map(([label, value]) => `<div class="profile-item"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("");
+      document.getElementById("executive-salvage-timeline").innerHTML = item.timeline.length
+        ? item.timeline.map(([date, event]) => `<div class="timeline-item"><time>${escapeHtml(date)}</time><strong>${escapeHtml(event)}</strong></div>`).join("")
+        : '<div class="warning-empty">No intervention timeline was supplied.</div>';
+      select.onchange = () => {
+        selectedCommodityId = select.value;
+        renderExecutiveCommodity();
+        renderCommodity();
+      };
     }
 
     function daysToExpiry(item) {
@@ -2581,6 +2689,7 @@
         renderCalendar();
         renderMonthDetail();
         renderCommodity();
+        renderExecutiveCommodity();
         renderSalvageRegister();
       }));
       const critical = expiryRecords.filter(item => daysToExpiry(item) !== null && daysToExpiry(item) <= 30);
@@ -2800,6 +2909,7 @@
       renderCalendar();
       renderMonthDetail();
       renderCommodity();
+      renderExecutiveCommodity();
       renderWarningCentre();
       renderWarningTop();
       renderSalvageKpis();
