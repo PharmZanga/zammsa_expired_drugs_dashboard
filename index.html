@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="National dashboard for monitoring short-expiry medicines, salvage interventions, and redistribution priorities in Zambia.">
   <meta name="theme-color" content="#123f35">
-  <title>Short Expiry &amp; Salvage Dashboard | Zambia</title>
+  <title>National Short Expiry and Salvage Dashboard | Zambia</title>
   <style>
     :root {
       --ink: #182721;
@@ -619,6 +619,11 @@
       background: var(--grey-soft);
     }
 
+    .badge-overdue {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
     .table-footer {
       display: flex;
       justify-content: space-between;
@@ -709,6 +714,266 @@
       font-size: 11px;
     }
 
+    .answer-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .answer-card {
+      padding: 18px;
+      color: #fff;
+      background: var(--green-950);
+      border-radius: 14px;
+    }
+
+    .answer-card span,
+    .answer-card strong,
+    .answer-card small {
+      display: block;
+    }
+
+    .answer-card span {
+      color: #bdd8cf;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .answer-card strong {
+      margin-top: 9px;
+      font-size: 23px;
+      line-height: 1.1;
+    }
+
+    .answer-card small {
+      margin-top: 7px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 11px;
+    }
+
+    .period-table {
+      overflow: hidden;
+    }
+
+    .period-table td:nth-child(n + 2),
+    .period-table th:nth-child(n + 2) {
+      text-align: right;
+    }
+
+    .trend {
+      font-weight: 800;
+    }
+
+    .trend-up {
+      color: var(--red);
+    }
+
+    .trend-down {
+      color: var(--green-700);
+    }
+
+    .trend-flat {
+      color: var(--muted);
+    }
+
+    .change-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .change-card {
+      padding: 20px;
+      border-top: 4px solid var(--green-700);
+    }
+
+    .change-card.risk {
+      border-top-color: var(--amber);
+    }
+
+    .change-card.expired {
+      border-top-color: var(--red);
+    }
+
+    .change-card.partner {
+      border-top-color: var(--blue);
+    }
+
+    .change-card h3 {
+      margin: 0 0 13px;
+      font-size: 13px;
+    }
+
+    .change-list {
+      display: grid;
+      gap: 9px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .change-list li {
+      padding-top: 9px;
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+    }
+
+    .change-list li:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .change-list strong,
+    .change-list span {
+      display: block;
+    }
+
+    .change-list span {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .placeholder {
+      color: #8a7560;
+      font-style: italic;
+    }
+
+    .planning-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .chart-body {
+      padding: 24px;
+    }
+
+    .line-chart {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .line-chart text {
+      fill: var(--muted);
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      font-size: 10px;
+    }
+
+    .forecast-list {
+      display: grid;
+      gap: 11px;
+      padding: 22px 24px 24px;
+    }
+
+    .forecast-row {
+      display: grid;
+      grid-template-columns: 74px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    .forecast-bar {
+      height: 8px;
+      overflow: hidden;
+      background: #edf1ef;
+      border-radius: 99px;
+    }
+
+    .forecast-bar span {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--amber);
+    }
+
+    .initiative {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(260px, 0.8fr);
+      gap: 0;
+      overflow: hidden;
+      color: #fff;
+      background: var(--green-950);
+    }
+
+    .initiative-main {
+      padding: 30px;
+    }
+
+    .initiative-main h3 {
+      margin: 7px 0 10px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 29px;
+      font-weight: 500;
+    }
+
+    .initiative-main p {
+      max-width: 680px;
+      margin: 0;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+    }
+
+    .initiative-meta {
+      display: grid;
+      gap: 1px;
+      padding: 1px;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .initiative-meta div {
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .initiative-meta span,
+    .initiative-meta strong {
+      display: block;
+    }
+
+    .initiative-meta span {
+      color: #b9d5cc;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .initiative-meta strong {
+      margin-top: 3px;
+      font-size: 12px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .mini-kpi {
+      padding: 18px;
+    }
+
+    .mini-kpi span,
+    .mini-kpi strong {
+      display: block;
+    }
+
+    .mini-kpi span {
+      min-height: 32px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .mini-kpi strong {
+      margin-top: 7px;
+      font-size: 22px;
+    }
+
     footer {
       color: rgba(255, 255, 255, 0.7);
       background: var(--green-950);
@@ -745,6 +1010,12 @@
 
       .insights-grid,
       .root-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .answer-strip,
+      .change-grid,
+      .kpi-grid {
         grid-template-columns: repeat(2, 1fr);
       }
     }
@@ -805,6 +1076,11 @@
         grid-template-columns: 1fr;
       }
 
+      .planning-grid,
+      .initiative {
+        grid-template-columns: 1fr;
+      }
+
       .footer-inner {
         display: block;
       }
@@ -849,6 +1125,12 @@
 
       .metric-label {
         min-height: auto;
+      }
+
+      .answer-strip,
+      .change-grid,
+      .kpi-grid {
+        grid-template-columns: 1fr;
       }
 
       .risk-row {
@@ -918,203 +1200,135 @@
       <div class="hero-inner">
         <div>
           <p class="eyebrow">National commodity oversight</p>
-          <h1>Short Expiry &amp;<br>Salvage Dashboard</h1>
+          <h1>National Short Expiry<br>&amp; Salvage Dashboard</h1>
           <p class="hero-copy">
-            A decision-support view of medicines at risk, active redistribution efforts,
-            and the interventions requiring immediate coordination.
+            Bi-Weekly Review Dashboard &middot; Ministry of Health &middot; ZAMMSA &middot; Control Tower
           </p>
         </div>
         <aside class="reporting-card" aria-label="Reporting period">
           <span>Reporting period</span>
-          <strong>June 2026</strong>
-          <p>Value-at-risk position reported as of April 2026. Intervention status reflects the current tracker.</p>
+          <strong>Review 01 &middot; June 2026</strong>
+          <p>Current review date: 6 June 2026. Comparison values remain flagged until the prior review dataset is loaded.</p>
         </aside>
       </div>
     </div>
   </header>
 
   <main id="main-content">
-    <section class="metrics" aria-label="Executive summary">
-      <article class="metric">
-        <span class="metric-label">Total value at risk</span>
-        <strong class="metric-value danger">ZMW 33.8M</strong>
-        <span class="metric-sub">Reported April 2026</span>
-      </article>
-      <article class="metric">
-        <span class="metric-label">Commodities tracked</span>
-        <strong class="metric-value" id="metric-total">12</strong>
-        <span class="metric-sub">Priority interventions</span>
-      </article>
-      <article class="metric">
-        <span class="metric-label">Salvage completed</span>
-        <strong class="metric-value success" id="metric-completed">2</strong>
-        <span class="metric-sub" id="metric-completed-sub">17% of tracker</span>
-      </article>
-      <article class="metric">
-        <span class="metric-label">Active interventions</span>
-        <strong class="metric-value warning" id="metric-active">6</strong>
-        <span class="metric-sub">Ongoing + in progress</span>
-      </article>
-      <article class="metric">
-        <span class="metric-label">Pending action</span>
-        <strong class="metric-value" id="metric-pending">4</strong>
-        <span class="metric-sub" id="metric-pending-sub">33% of tracker</span>
-      </article>
-      <article class="metric">
-        <span class="metric-label">Amoxiclav distributed</span>
-        <strong class="metric-value success">120K+</strong>
-        <span class="metric-sub">Units since March 2026</span>
-      </article>
+    <section class="answer-strip" aria-label="Leadership questions">
+      <article class="answer-card"><span>Currently at risk</span><strong>ZMW 33.8M</strong><small>Latest validated position: April 2026</small></article>
+      <article class="answer-card"><span>Saved this review</span><strong class="placeholder">Value required</strong><small>2 interventions recorded as completed</small></article>
+      <article class="answer-card"><span>Needs intervention</span><strong id="answer-pending">10 commodities</strong><small>Active or pending salvage actions</small></article>
+      <article class="answer-card"><span>Actions overdue</span><strong id="answer-overdue">0 confirmed</strong><small>Due dates required to validate overdue status</small></article>
     </section>
 
     <div class="section-heading">
-      <h2>Portfolio overview</h2>
-      <p>Status counts are calculated from the live tracker below. Risk scores are indicative prioritisation signals, not quantities or monetary values.</p>
+      <h2>Changes since last review</h2>
+      <p>This is the bi-weekly movement view. Items without validated monetary values remain explicitly flagged for update.</p>
     </div>
-
-    <section class="overview-grid" aria-label="Portfolio charts">
-      <article class="card">
-        <div class="card-header">
-          <div>
-            <h3>Intervention status</h3>
-            <p>Distribution of tracked salvage actions</p>
-          </div>
-        </div>
-        <div class="donut-wrap">
-          <div class="donut" id="status-donut" role="img" aria-label="Intervention status chart">
-            <div class="donut-label">
-              <strong id="donut-total">12</strong>
-              <span>Total actions</span>
-            </div>
-          </div>
-          <div class="legend" id="status-legend"></div>
-        </div>
-      </article>
-
-      <article class="card">
-        <div class="card-header">
-          <div>
-            <h3>Commodity categories at risk</h3>
-            <p>Indicative relative risk score out of 10</p>
-          </div>
-        </div>
-        <div class="risk-list" aria-label="Commodity category risk scores">
-          <div class="risk-row"><span class="risk-name">ARVs</span><span class="risk-track"><span class="risk-fill" style="--score:9"></span></span><span class="risk-score">9/10</span></div>
-          <div class="risk-row"><span class="risk-name">Mental health</span><span class="risk-track"><span class="risk-fill" style="--score:7"></span></span><span class="risk-score">7/10</span></div>
-          <div class="risk-row"><span class="risk-name">IV fluids</span><span class="risk-track"><span class="risk-fill" style="--score:7"></span></span><span class="risk-score">7/10</span></div>
-          <div class="risk-row"><span class="risk-name">Oncology</span><span class="risk-track"><span class="risk-fill" style="--score:6"></span></span><span class="risk-score">6/10</span></div>
-          <div class="risk-row"><span class="risk-name">Lab reagents</span><span class="risk-track"><span class="risk-fill" style="--score:6"></span></span><span class="risk-score">6/10</span></div>
-          <div class="risk-row"><span class="risk-name">TB products</span><span class="risk-track"><span class="risk-fill" style="--score:5"></span></span><span class="risk-score">5/10</span></div>
-          <div class="risk-row"><span class="risk-name">Insulin</span><span class="risk-track"><span class="risk-fill" style="--score:5"></span></span><span class="risk-score">5/10</span></div>
-        </div>
-      </article>
+    <section class="change-grid" aria-label="Changes since last review">
+      <article class="card change-card risk"><h3>New risks identified</h3><ul class="change-list"><li class="placeholder">No comparison dataset loaded</li><li><strong>Next update</strong><span>Add new commodity and ZMW value</span></li></ul></article>
+      <article class="card change-card"><h3>Successfully salvaged</h3><ul class="change-list"><li><strong>Amoxiclav</strong><span>120K+ units distributed &middot; value required</span></li><li><strong>TB commodities</strong><span>Uptake facilitated &middot; value required</span></li></ul></article>
+      <article class="card change-card expired"><h3>Expired</h3><ul class="change-list"><li class="placeholder">No validated expiry movement loaded</li><li><strong>Next update</strong><span>Add commodity and expired value</span></li></ul></article>
+      <article class="card change-card partner"><h3>New partners engaged</h3><ul class="change-list"><li><strong>Zambia Army</strong><span>Salvage initiative awaiting feedback</span></li><li><strong>UTH Adult</strong><span>TB commodity uptake</span></li><li><strong>Chainama Hospital</strong><span>Quetiapine engagement</span></li></ul></article>
     </section>
 
     <div class="section-heading">
-      <h2>Salvage intervention tracker</h2>
-      <p>Search commodities, interventions, or lead institutions. Use the status filter to isolate the actions needing attention.</p>
+      <h2>Bi-weekly executive scorecard</h2>
+      <p>Current and previous period values are separated so leadership can see direction, not just the latest position.</p>
     </div>
-
-    <section class="card tracker" aria-labelledby="tracker-title">
-      <h3 class="sr-only" id="tracker-title">Commodity salvage tracker</h3>
-      <div class="toolbar">
-        <label class="search-wrap">
-          <span class="sr-only">Search tracker</span>
-          <input class="control" id="search-input" type="search" placeholder="Search tracker..." autocomplete="off">
-        </label>
-        <label>
-          <span class="sr-only">Filter by status</span>
-          <select class="control" id="status-filter">
-            <option value="All">All statuses</option>
-            <option value="Completed">Completed</option>
-            <option value="Ongoing">Ongoing</option>
-            <option value="In Progress">In progress</option>
-            <option value="Pending">Pending</option>
-          </select>
-        </label>
-        <label>
-          <span class="sr-only">Sort tracker</span>
-          <select class="control" id="sort-select">
-            <option value="priority">Sort: action priority</option>
-            <option value="commodity">Sort: commodity A-Z</option>
-            <option value="status">Sort: status</option>
-          </select>
-        </label>
-      </div>
-
+    <section class="card period-table">
       <div class="table-wrap">
         <table>
-          <thead>
-            <tr>
-              <th scope="col">Commodity</th>
-              <th scope="col">Intervention</th>
-              <th scope="col">Lead institution</th>
-              <th scope="col">Status</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Indicator</th><th>Current period</th><th>Previous period</th><th>Trend</th></tr></thead>
+          <tbody id="scorecard-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div class="section-heading">
+      <h2>Planning outlook</h2>
+      <p>Forecast and salvage movement should become the core forward-planning view once period values are validated.</p>
+    </div>
+    <section class="planning-grid">
+      <article class="card">
+        <div class="card-header"><div><h3>Six-month expiry forecast</h3><p>Expected value at risk by expiry month</p></div></div>
+        <div class="forecast-list" id="forecast-list"></div>
+      </article>
+      <article class="card">
+        <div class="card-header"><div><h3>Salvage value trend</h3><p>Monthly value salvaged, April-August 2026</p></div></div>
+        <div class="chart-body" id="trend-chart"></div>
+      </article>
+    </section>
+
+    <div class="section-heading">
+      <h2>Action tracker</h2>
+      <p>Due-date discipline is central to the TWG. Actions without confirmed dates are highlighted for immediate completion.</p>
+    </div>
+    <section class="card tracker" aria-labelledby="tracker-title">
+      <h3 class="sr-only" id="tracker-title">Bi-weekly action tracker</h3>
+      <div class="toolbar">
+        <label class="search-wrap"><span class="sr-only">Search actions</span><input class="control" id="search-input" type="search" placeholder="Search actions..." autocomplete="off"></label>
+        <label><span class="sr-only">Filter by status</span><select class="control" id="status-filter"><option value="All">All statuses</option><option value="Completed">Completed</option><option value="In Progress">In progress</option><option value="Pending">Pending</option><option value="Overdue">Overdue</option></select></label>
+        <label><span class="sr-only">Sort actions</span><select class="control" id="sort-select"><option value="priority">Sort: action priority</option><option value="due">Sort: due date</option><option value="action">Sort: action A-Z</option></select></label>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Action</th><th>Lead</th><th>Due date</th><th>Status</th></tr></thead>
           <tbody id="table-body"></tbody>
         </table>
-        <div class="empty-state" id="empty-state">No interventions match the selected filters.</div>
+        <div class="empty-state" id="empty-state">No actions match the selected filters.</div>
       </div>
+      <div class="table-footer" aria-live="polite"><span id="result-count"></span><span>Review date: 6 June 2026</span></div>
+    </section>
 
-      <div class="table-footer" aria-live="polite">
-        <span id="result-count">Showing 12 of 12 interventions</span>
-        <span>Last status update: June 2026</span>
+    <div class="section-heading">
+      <h2>Special initiative</h2>
+      <p>Dedicated visibility for high-impact salvage opportunities requiring cross-institutional coordination.</p>
+    </div>
+    <section class="card initiative" aria-label="Zambia Army salvage initiative">
+      <div class="initiative-main"><span class="eyebrow">Current focus</span><h3>Zambia Army Salvage Initiative</h3><p>Commodities expiring from June to November 2026 have been shared for potential uptake. Confirmation is needed before distribution planning can begin.</p></div>
+      <div class="initiative-meta">
+        <div><span>Status</span><strong>Awaiting feedback</strong></div>
+        <div><span>Potential impact</span><strong>Reduce national expiry burden</strong></div>
+        <div><span>Next step</span><strong>Distribution planning upon confirmation</strong></div>
+        <div><span>Action owner / due date</span><strong class="placeholder">To be confirmed</strong></div>
       </div>
     </section>
 
     <div class="section-heading">
-      <h2>Immediate management signals</h2>
-      <p>Concise prompts for the next coordination meeting, derived from the intervention tracker.</p>
+      <h2>Operational KPIs</h2>
+      <p>Measures recommended for every bi-weekly review. Unknown values are left visible to drive data completion.</p>
     </div>
-
-    <section class="insights-grid" aria-label="Management insights">
-      <article class="card insight">
-        <span class="insight-number">01</span>
-        <h3>Close pending institutional engagements</h3>
-        <p>Four interventions still require recipient-institution engagement before redistribution can begin.</p>
-      </article>
-      <article class="card insight">
-        <span class="insight-number">02</span>
-        <h3>Accelerate the active pipeline</h3>
-        <p>Six ongoing or in-progress actions represent the nearest opportunity to convert risk into documented salvage.</p>
-      </article>
-      <article class="card insight">
-        <span class="insight-number">03</span>
-        <h3>Replicate the Amoxiclav approach</h3>
-        <p>The completed redistribution model provides a practical playbook for matching stock with high-consumption facilities.</p>
-      </article>
-    </section>
+    <section class="kpi-grid" id="operational-kpis"></section>
 
     <div class="section-heading">
-      <h2>Root causes identified</h2>
-      <p>Recurring system conditions contributing to short-expiry exposure and constrained redistribution.</p>
+      <h2>Intervention portfolio</h2>
+      <p>Status counts are calculated directly from the 12 supplied commodity interventions.</p>
     </div>
-
-    <section class="root-grid" aria-label="Root causes">
-      <article class="cause"><strong>Planning</strong><p>Procurement imbalances exceeding actual consumption.</p></article>
-      <article class="cause"><strong>Policy</strong><p>Treatment guideline changes reducing demand for selected products.</p></article>
-      <article class="cause"><strong>Quality assurance</strong><p>Prolonged quality-control and product-release delays.</p></article>
-      <article class="cause"><strong>Visibility</strong><p>Coding and stock-visibility gaps between ZAMMSA and facilities.</p></article>
-      <article class="cause"><strong>Inventory</strong><p>Facility-level overstocking limiting timely redistribution.</p></article>
-      <article class="cause"><strong>Demand</strong><p>Slow-moving and specialised commodity demand.</p></article>
+    <section class="overview-grid">
+      <article class="card">
+        <div class="card-header"><div><h3>Intervention status</h3><p>Completed, active, and pending actions</p></div></div>
+        <div class="donut-wrap"><div class="donut" id="status-donut" role="img" aria-label="Intervention status chart"><div class="donut-label"><strong id="donut-total">12</strong><span>Total actions</span></div></div><div class="legend" id="status-legend"></div></div>
+      </article>
+      <article class="card">
+        <div class="card-header"><div><h3>Immediate intervention queue</h3><p>Actions awaiting recipient engagement or distribution completion</p></div></div>
+        <div class="risk-list" id="priority-list"></div>
+      </article>
     </section>
 
-    <p class="source-note">
-      <strong>Data note:</strong> This dashboard presents the figures and intervention records supplied for the June 2026 management view.
-      The ZMW 33.8 million value-at-risk position is labelled as reported in April 2026. Indicative category risk scores should be replaced
-      with validated quantities, values, batch expiries, and facility-level records when those data become available.
-    </p>
+    <p class="source-note"><strong>Data governance note:</strong> The dashboard does not infer financial values, prior-period movements, expiry totals, or due dates. “Data required” identifies fields that should be completed before the next TWG review. The ZMW 33.8 million value-at-risk position remains labelled as reported in April 2026.</p>
   </main>
 
   <footer>
     <div class="footer-inner">
-      <strong>National Short Expiry &amp; Salvage Dashboard</strong>
-      <span>Ministry of Health &middot; ZAMMSA &middot; Zambia</span>
+      <strong>National Short Expiry and Salvage Dashboard</strong>
+      <span>Bi-Weekly Review &middot; Ministry of Health &middot; ZAMMSA &middot; Control Tower</span>
     </div>
   </footer>
 
   <script>
+    const reviewDate = new Date("2026-06-06T00:00:00+02:00");
     const interventions = [
       { commodity: "Amoxiclav", intervention: "Redistribution to high-consumption facilities; 120K+ units distributed", lead: "MoH / ZAMMSA", status: "Completed" },
       { commodity: "TB commodities", intervention: "Engagement with UTH Adult Hospital to facilitate uptake", lead: "ZAMMSA / UTH Adult", status: "Completed" },
@@ -1130,17 +1344,51 @@
       { commodity: "Lamotrigine", intervention: "Engagement with Pediatric Centre of Excellence to absorb stock", lead: "ZAMMSA", status: "In Progress" }
     ];
 
+    const actions = [
+      { action: "Zambia Army feedback", lead: "Zambia Army / MoH", dueDate: null, status: "Pending" },
+      ...interventions.map(item => ({
+        action: item.status === "Completed" ? `${item.commodity} salvage close-out` : item.intervention,
+        lead: item.lead,
+        dueDate: null,
+        status: item.status === "Ongoing" ? "In Progress" : item.status
+      }))
+    ];
+
+    const scorecard = [
+      { indicator: "Total Value at Risk", current: "ZMW 33.8M", previous: null, direction: "lower" },
+      { indicator: "Value Salvaged", current: null, previous: null, direction: "higher" },
+      { indicator: "Commodities Under Salvage", current: 10, previous: null, direction: "lower" },
+      { indicator: "Commodities Expired", current: null, previous: null, direction: "lower" },
+      { indicator: "Salvage Success Rate", current: "17%", previous: null, direction: "higher" }
+    ];
+
+    const forecast = ["July", "August", "September", "October", "November", "December"]
+      .map(month => ({ month, value: null }));
+    const salvageTrend = ["April", "May", "June", "July", "August"]
+      .map(month => ({ month, value: null }));
+
+    const operationalKpis = [
+      ["Value at Risk", "ZMW 33.8M"],
+      ["Value Salvaged", null],
+      ["Value Expired", null],
+      ["Salvage Rate", "17%"],
+      ["Average Days to Salvage", null],
+      ["Commodities Reviewed", "12"],
+      ["Facilities Engaged", null],
+      ["Provinces Engaged", null]
+    ];
+
     const statusConfig = {
       "Completed": { color: "#28715f", badge: "badge-completed", priority: 4 },
       "Ongoing": { color: "#2c6fa5", badge: "badge-ongoing", priority: 2 },
       "In Progress": { color: "#a46213", badge: "badge-progress", priority: 1 },
-      "Pending": { color: "#8b948f", badge: "badge-pending", priority: 0 }
+      "Pending": { color: "#8b948f", badge: "badge-pending", priority: 0 },
+      "Overdue": { color: "#b73a3a", badge: "badge-overdue", priority: -1 }
     };
 
-    const statusOrder = ["Completed", "Ongoing", "In Progress", "Pending"];
-    const counts = Object.fromEntries(statusOrder.map(status => [
-      status,
-      interventions.filter(item => item.status === status).length
+    const portfolioStatusOrder = ["Completed", "Ongoing", "In Progress", "Pending"];
+    const counts = Object.fromEntries(portfolioStatusOrder.map(status => [
+      status, interventions.filter(item => item.status === status).length
     ]));
 
     const percent = value => Math.round((value / interventions.length) * 100);
@@ -1152,18 +1400,74 @@
       "'": "&#039;"
     })[character]);
 
-    function initialiseSummary() {
-      const active = counts.Ongoing + counts["In Progress"];
-      document.getElementById("metric-total").textContent = interventions.length;
-      document.getElementById("metric-completed").textContent = counts.Completed;
-      document.getElementById("metric-completed-sub").textContent = `${percent(counts.Completed)}% of tracker`;
-      document.getElementById("metric-active").textContent = active;
-      document.getElementById("metric-pending").textContent = counts.Pending;
-      document.getElementById("metric-pending-sub").textContent = `${percent(counts.Pending)}% of tracker`;
+    const displayValue = value => value === null ? '<span class="placeholder">Data required</span>' : escapeHtml(value);
+
+    function effectiveStatus(action) {
+      if (action.status !== "Completed" && action.dueDate && new Date(`${action.dueDate}T23:59:59+02:00`) < reviewDate) return "Overdue";
+      return action.status;
+    }
+
+    function formatDate(value) {
+      if (!value) return '<span class="placeholder">Date required</span>';
+      return new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+        .format(new Date(`${value}T12:00:00+02:00`));
+    }
+
+    function trendFor(row) {
+      if (row.current === null || row.previous === null) return { symbol: "—", className: "trend-flat", label: "Comparison required" };
+      const current = Number(String(row.current).replace(/[^0-9.-]/g, ""));
+      const previous = Number(String(row.previous).replace(/[^0-9.-]/g, ""));
+      if (current === previous) return { symbol: "→", className: "trend-flat", label: "No change" };
+      const increased = current > previous;
+      const positive = row.direction === "higher" ? increased : !increased;
+      return { symbol: increased ? "↑" : "↓", className: positive ? "trend-down" : "trend-up", label: increased ? "Increased" : "Decreased" };
+    }
+
+    function renderScorecard() {
+      document.getElementById("scorecard-body").innerHTML = scorecard.map(row => {
+        const trend = trendFor(row);
+        return `<tr><td class="commodity">${escapeHtml(row.indicator)}</td><td>${displayValue(row.current)}</td><td>${displayValue(row.previous)}</td><td><span class="trend ${trend.className}" title="${trend.label}">${trend.symbol}</span></td></tr>`;
+      }).join("");
+    }
+
+    function renderForecast() {
+      document.getElementById("forecast-list").innerHTML = forecast.map(item => `
+        <div class="forecast-row">
+          <strong>${item.month}</strong>
+          <span class="forecast-bar"><span></span></span>
+          <span class="placeholder">${item.value === null ? "Value required" : escapeHtml(item.value)}</span>
+        </div>`).join("");
+    }
+
+    function renderTrend() {
+      const hasValues = salvageTrend.some(item => item.value !== null);
+      if (!hasValues) {
+        document.getElementById("trend-chart").innerHTML = `
+          <svg class="line-chart" viewBox="0 0 500 230" role="img" aria-label="Salvage value trend awaiting monthly values">
+            <line x1="48" y1="30" x2="48" y2="190" stroke="#dce5df"/>
+            <line x1="48" y1="190" x2="475" y2="190" stroke="#dce5df"/>
+            ${salvageTrend.map((item, index) => `<text x="${55 + index * 98}" y="215">${item.month}</text><circle cx="${75 + index * 98}" cy="110" r="6" fill="#fff" stroke="#a46213" stroke-width="2"/>`).join("")}
+            <text x="250" y="75" text-anchor="middle" style="font-size:13px;font-weight:700">Monthly salvage values required</text>
+            <text x="250" y="96" text-anchor="middle">Add validated ZMW values to activate the trend line</text>
+          </svg>`;
+      }
+    }
+
+    function renderOperationalKpis() {
+      document.getElementById("operational-kpis").innerHTML = operationalKpis.map(([label, value]) => `
+        <article class="card mini-kpi"><span>${escapeHtml(label)}</span><strong>${displayValue(value)}</strong></article>
+      `).join("");
+    }
+
+    function initialisePortfolio() {
+      const openCommodities = interventions.length - counts.Completed;
+      const overdue = actions.filter(action => effectiveStatus(action) === "Overdue").length;
+      document.getElementById("answer-pending").textContent = `${openCommodities} commodities`;
+      document.getElementById("answer-overdue").textContent = `${overdue} confirmed`;
       document.getElementById("donut-total").textContent = interventions.length;
 
       let cursor = 0;
-      const stops = statusOrder.map(status => {
+      const stops = portfolioStatusOrder.map(status => {
         const start = cursor;
         cursor += (counts[status] / interventions.length) * 100;
         return `${statusConfig[status].color} ${start}% ${cursor}%`;
@@ -1171,15 +1475,24 @@
 
       const donut = document.getElementById("status-donut");
       donut.style.background = `conic-gradient(${stops.join(",")})`;
-      donut.setAttribute("aria-label", statusOrder
+      donut.setAttribute("aria-label", portfolioStatusOrder
         .map(status => `${status}: ${counts[status]} interventions`)
         .join(", "));
 
-      document.getElementById("status-legend").innerHTML = statusOrder.map(status => `
+      document.getElementById("status-legend").innerHTML = portfolioStatusOrder.map(status => `
         <div class="legend-item">
           <span class="legend-dot" style="background:${statusConfig[status].color}"></span>
           <span>${status}</span>
           <strong>${counts[status]} &middot; ${percent(counts[status])}%</strong>
+        </div>
+      `).join("");
+
+      const priorities = interventions.filter(item => item.status !== "Completed").slice(0, 7);
+      document.getElementById("priority-list").innerHTML = priorities.map((item, index) => `
+        <div class="risk-row">
+          <span class="risk-name" title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span>
+          <span class="risk-track"><span class="risk-fill" style="--score:${10 - index * 0.6}"></span></span>
+          <span class="risk-score">${escapeHtml(["Ongoing", "In Progress"].includes(item.status) ? "Active" : item.status)}</span>
         </div>
       `).join("");
     }
@@ -1189,31 +1502,35 @@
       const status = document.getElementById("status-filter").value;
       const sort = document.getElementById("sort-select").value;
 
-      const rows = interventions
-        .filter(item => status === "All" || item.status === status)
-        .filter(item => [item.commodity, item.intervention, item.lead, item.status]
+      const rows = actions
+        .map(item => ({ ...item, effectiveStatus: effectiveStatus(item) }))
+        .filter(item => status === "All" || item.effectiveStatus === status)
+        .filter(item => [item.action, item.lead, item.effectiveStatus]
           .some(value => value.toLowerCase().includes(query)))
         .sort((a, b) => {
-          if (sort === "commodity") return a.commodity.localeCompare(b.commodity);
-          if (sort === "status") return a.status.localeCompare(b.status) || a.commodity.localeCompare(b.commodity);
-          return statusConfig[a.status].priority - statusConfig[b.status].priority || a.commodity.localeCompare(b.commodity);
+          if (sort === "action") return a.action.localeCompare(b.action);
+          if (sort === "due") return (a.dueDate || "9999-12-31").localeCompare(b.dueDate || "9999-12-31");
+          return statusConfig[a.effectiveStatus].priority - statusConfig[b.effectiveStatus].priority || a.action.localeCompare(b.action);
         });
 
       document.getElementById("table-body").innerHTML = rows.map(item => `
         <tr>
-          <td class="commodity">${escapeHtml(item.commodity)}</td>
-          <td class="intervention">${escapeHtml(item.intervention)}</td>
+          <td class="commodity">${escapeHtml(item.action)}</td>
           <td class="lead">${escapeHtml(item.lead)}</td>
-          <td><span class="badge ${statusConfig[item.status].badge}">${escapeHtml(item.status)}</span></td>
+          <td>${formatDate(item.dueDate)}</td>
+          <td><span class="badge ${statusConfig[item.effectiveStatus].badge}">${escapeHtml(item.effectiveStatus)}</span></td>
         </tr>
       `).join("");
 
       document.getElementById("empty-state").style.display = rows.length ? "none" : "block";
-      document.getElementById("result-count").textContent =
-        `Showing ${rows.length} of ${interventions.length} intervention${interventions.length === 1 ? "" : "s"}`;
+      document.getElementById("result-count").textContent = `Showing ${rows.length} of ${actions.length} actions`;
     }
 
-    initialiseSummary();
+    renderScorecard();
+    renderForecast();
+    renderTrend();
+    renderOperationalKpis();
+    initialisePortfolio();
     renderTable();
 
     ["search-input", "status-filter", "sort-select"].forEach(id => {
