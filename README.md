@@ -20,7 +20,7 @@ commodities and salvage interventions in Zambia.
 - Bi-weekly at-risk and cumulative-salvage trend
 - Commodity value-at-risk Pareto ranking and top-10 list
 - Lifecycle-stage KPIs and traffic-light action tracker
-- Upward-moving product scoreboard showing commodity, quantity, value, and expiry date
+- Side-to-side product scoreboard showing commodity, quantity, value, and expiry date
 - National Supply Chain Control Unit and Ministry of Health government header
 - Searchable national expiry register with month, status, risk-band, and sort controls
 - Responsive layout for desktop, tablet, and mobile

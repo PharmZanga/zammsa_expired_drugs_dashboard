@@ -1394,7 +1394,6 @@
 
     .ticker-shell {
       position: relative;
-      height: 86px;
       margin: 0 0 18px;
       overflow: hidden;
       background: var(--green-950);
@@ -1407,25 +1406,26 @@
       content: "";
       position: absolute;
       z-index: 2;
-      right: 0;
-      left: 0;
-      height: 22px;
+      top: 0;
+      bottom: 0;
+      width: 48px;
       pointer-events: none;
     }
 
     .ticker-shell::before {
-      top: 0;
-      background: linear-gradient(180deg, var(--green-950), transparent);
+      left: 0;
+      background: linear-gradient(90deg, var(--green-950), transparent);
     }
 
     .ticker-shell::after {
-      bottom: 0;
-      background: linear-gradient(0deg, var(--green-950), transparent);
+      right: 0;
+      background: linear-gradient(270deg, var(--green-950), transparent);
     }
 
     .ticker-track {
-      display: block;
-      width: 100%;
+      display: flex;
+      width: max-content;
+      padding: 11px 0;
       animation: productTicker 90s linear infinite;
     }
 
@@ -1439,10 +1439,10 @@
       grid-template-columns: minmax(220px, 1.5fr) minmax(110px, .6fr) minmax(150px, .8fr) minmax(130px, .7fr);
       align-items: center;
       gap: 16px;
-      min-height: 86px;
+      min-width: 650px;
       padding: 12px 24px;
       color: #fff;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     .ticker-item span,
@@ -1473,8 +1473,8 @@
     }
 
     @keyframes productTicker {
-      from { transform: translateY(0); }
-      to { transform: translateY(-50%); }
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
     }
 
     .shared-monitor {
