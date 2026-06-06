@@ -1870,8 +1870,8 @@
     </section>
 
     <div class="section-heading">
-      <h2>Salvaged commodities register</h2>
-      <p>Permanent cumulative evidence of completed or partial salvage. Historical records are never overwritten.</p>
+      <h2 id="salvage-register-title">October salvaged commodities register</h2>
+      <p id="salvage-register-copy">Permanent cumulative evidence filtered to the selected expiry month. Historical records are never overwritten.</p>
     </div>
     <section class="card tracker">
       <div class="table-wrap">
@@ -1880,7 +1880,7 @@
           <tbody id="salvage-register"></tbody>
         </table>
       </div>
-      <div class="table-footer"><span id="salvage-register-count"></span><span>Cumulative through selected snapshot</span></div>
+      <div class="table-footer"><span id="salvage-register-count"></span><span id="salvage-register-scope"></span></div>
     </section>
 
     <div class="section-heading">
@@ -2076,6 +2076,7 @@
         renderCalendar();
         renderMonthDetail();
         renderCommodity();
+        renderSalvageRegister();
       }));
     }
 
@@ -2137,12 +2138,21 @@
     }
 
     function renderSalvageRegister() {
-      const events = eventsThroughSnapshot();
-      document.getElementById("salvage-register").innerHTML = events.map(event => {
+      const events = eventsThroughSnapshot().filter(event => {
+        const item = expiryRecords.find(record => record.id === event.recordId);
+        return item && item.month === selectedMonth;
+      });
+      document.getElementById("salvage-register-title").textContent = `${selectedMonth} salvaged commodities register`;
+      document.getElementById("salvage-register-copy").textContent =
+        `Permanent cumulative evidence for commodities expiring in ${selectedMonth} 2026. Historical records are never overwritten.`;
+      document.getElementById("salvage-register").innerHTML = events.length ? events.map(event => {
         const item = expiryRecords.find(record => record.id === event.recordId);
         return `<tr><td class="commodity">${escapeHtml(item.commodity)}</td><td>${escapeHtml(item.batch)}</td><td>${moneyExact(event.value)}</td><td>${event.label}</td><td>${escapeHtml(event.institution)}</td></tr>`;
-      }).join("");
-      document.getElementById("salvage-register-count").textContent = `${events.length} permanent salvage event${events.length === 1 ? "" : "s"}`;
+      }).join("") : `<tr><td colspan="5" class="empty-state" style="display:table-cell">No salvage events recorded for commodities expiring in ${selectedMonth} through ${selectedSnapshot().label}.</td></tr>`;
+      document.getElementById("salvage-register-count").textContent =
+        `${events.length} ${selectedMonth} salvage event${events.length === 1 ? "" : "s"}`;
+      document.getElementById("salvage-register-scope").textContent =
+        `Filtered by ${selectedMonth} expiry · cumulative through ${selectedSnapshot().label}`;
     }
 
     function renderArmyTracker() {
