@@ -101,7 +101,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      min-height: 54px;
+      min-height: 96px;
       gap: 20px;
       font-size: 13px;
     }
@@ -128,6 +128,37 @@
 
     .topbar-meta {
       color: rgba(255, 255, 255, 0.72);
+    }
+
+    .government-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+      text-align: center;
+    }
+
+    .government-brand img {
+      width: 46px;
+      height: 54px;
+      object-fit: contain;
+    }
+
+    .government-brand span,
+    .government-brand strong {
+      display: block;
+    }
+
+    .government-brand span {
+      color: rgba(255, 255, 255, 0.65);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .government-brand strong {
+      margin-top: 1px;
+      font-size: 12px;
     }
 
     .hero {
@@ -247,7 +278,7 @@
 
     .metric {
       min-width: 0;
-      padding: 22px 20px;
+      padding: 18px 14px;
       border-right: 1px solid var(--line);
     }
 
@@ -267,10 +298,12 @@
     .metric-value {
       display: block;
       margin-top: 5px;
-      font-size: clamp(1.45rem, 2.6vw, 2rem);
+      overflow-wrap: anywhere;
+      font-size: clamp(0.88rem, 1.25vw, 1.15rem);
       font-weight: 800;
       line-height: 1;
       letter-spacing: -0.04em;
+      white-space: nowrap;
     }
 
     .metric-value.danger {
@@ -1346,6 +1379,97 @@
       font-size: 11px;
     }
 
+    .ticker-shell {
+      position: relative;
+      margin: 0 0 26px;
+      overflow: hidden;
+      background: var(--green-950);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .ticker-shell::before,
+    .ticker-shell::after {
+      content: "";
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      bottom: 0;
+      width: 48px;
+      pointer-events: none;
+    }
+
+    .ticker-shell::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--green-950), transparent);
+    }
+
+    .ticker-shell::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--green-950), transparent);
+    }
+
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      padding: 11px 0;
+      animation: productTicker 55s linear infinite;
+    }
+
+    .ticker-shell:hover .ticker-track,
+    .ticker-shell:focus-within .ticker-track {
+      animation-play-state: paused;
+    }
+
+    .ticker-item {
+      display: grid;
+      grid-template-columns: minmax(140px, 1.3fr) auto auto;
+      align-items: center;
+      gap: 16px;
+      min-width: 390px;
+      padding: 8px 22px;
+      color: #fff;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .ticker-item span,
+    .ticker-item strong,
+    .ticker-item small {
+      display: block;
+    }
+
+    .ticker-item span {
+      overflow: hidden;
+      font-size: 12px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ticker-item small {
+      color: #b8d2c9;
+      font-size: 8px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .ticker-item strong {
+      margin-top: 2px;
+      font-size: 11px;
+      white-space: nowrap;
+    }
+
+    @keyframes productTicker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ticker-track {
+        animation: none;
+      }
+    }
+
     .pareto-list .risk-row {
       grid-template-columns: 155px minmax(0, 1fr) 92px;
     }
@@ -1415,6 +1539,23 @@
     @media (max-width: 720px) {
       .topbar-meta {
         display: none;
+      }
+
+      .identity {
+        font-size: 11px;
+      }
+
+      .government-brand {
+        gap: 0;
+      }
+
+      .government-brand img {
+        width: 38px;
+        height: 44px;
+      }
+
+      .government-brand strong {
+        font-size: 12px;
       }
 
       .hero-inner {
@@ -1603,9 +1744,15 @@
       <div class="topbar-inner">
         <div class="identity">
           <span class="mark" aria-hidden="true">+</span>
-          <span>Ministry of Health Zambia</span>
+          <span>National Supply Chain Control Unit</span>
         </div>
-        <div class="topbar-meta">Pharmaceutical Supply Chain Intelligence</div>
+        <div class="government-brand">
+          <img src="assets/zambia-coat-of-arms.svg" alt="Coat of arms of Zambia">
+          <div>
+            <span>Republic of Zambia</span>
+            <strong>Ministry of Health</strong>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1636,6 +1783,15 @@
     </section>
 
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
+    <section class="ticker-shell" aria-label="Moving product scoreboard">
+      <div class="ticker-track" id="product-ticker"></div>
+    </section>
+
+    <div class="section-heading">
+      <h2>Changes since last review</h2>
+      <p>Bi-weekly movement in new risk, salvage, expiry outcomes, and institutional engagement.</p>
+    </div>
+    <section class="change-grid" id="changes-since-review"></section>
 
     <div class="section-heading">
       <h2>Monthly expiry calendar</h2>
@@ -1678,6 +1834,25 @@
       <p>Days-to-expiry alerts recalculate against the selected historical snapshot date.</p>
     </div>
     <section class="warning-grid" id="warning-centre"></section>
+
+    <div class="section-heading">
+      <h2>Action tracker</h2>
+      <p>Commodity-level responsibilities and interventions, with status filtering and priority sorting.</p>
+    </div>
+    <section class="card tracker">
+      <div class="toolbar">
+        <label class="search-wrap"><span class="sr-only">Search actions</span><input class="control" id="action-search" type="search" placeholder="Search actions..." autocomplete="off"></label>
+        <label><span class="sr-only">Filter actions by status</span><select class="control" id="action-status"><option value="All">All statuses</option><option value="Complete">Complete</option><option value="Ongoing">Ongoing</option><option value="Overdue">Overdue</option></select></label>
+        <label><span class="sr-only">Sort actions</span><select class="control" id="action-sort"><option value="priority">Sort: action priority</option><option value="commodity">Sort: commodity A-Z</option><option value="lead">Sort: lead institution</option></select></label>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Action</th><th>Lead</th><th>Due Date</th><th>Status</th></tr></thead>
+          <tbody id="action-tracker-body"></tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span id="action-result-count"></span><span>Due dates remain flagged until confirmed</span></div>
+    </section>
 
     <div class="section-heading">
       <h2>Salvaged commodities register</h2>
@@ -1754,6 +1929,21 @@
           <tbody id="commodity-actions"></tbody>
         </table>
       </div>
+    </section>
+
+    <div class="section-heading">
+      <h2>Intervention portfolio</h2>
+      <p>Status distribution and the immediate queue of commodities requiring action.</p>
+    </div>
+    <section class="overview-grid">
+      <article class="card">
+        <div class="card-header"><div><h3>Intervention status</h3><p>Completed, active, and pending actions</p></div></div>
+        <div class="donut-wrap"><div class="donut" id="intervention-donut" role="img"><div class="donut-label"><strong id="intervention-total"></strong><span>Total actions</span></div></div><div class="legend" id="intervention-legend"></div></div>
+      </article>
+      <article class="card">
+        <div class="card-header"><div><h3>Immediate intervention queue</h3><p>Products ranked by remaining value at risk</p></div></div>
+        <div class="risk-list" id="intervention-queue"></div>
+      </article>
     </section>
 
     <div class="section-heading">
@@ -2017,6 +2207,133 @@
         }).join("");
     }
 
+    function renderProductTicker() {
+      const items = [...expiryRecords].sort((a, b) => b.value - a.value);
+      const markup = items.map(item => `
+        <div class="ticker-item">
+          <div><small>Product</small><span title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span></div>
+          <div><small>Quantity</small><strong>${item.quantity.toLocaleString("en-ZM")}</strong></div>
+          <div><small>Value</small><strong>${moneyExact(item.value)}</strong></div>
+        </div>`).join("");
+      document.getElementById("product-ticker").innerHTML = markup + markup;
+    }
+
+    function renderChangesSinceReview() {
+      const currentIndex = snapshots.findIndex(item => item.id === selectedSnapshotId);
+      const previous = currentIndex > 0 ? snapshots[currentIndex - 1] : null;
+      const current = selectedSnapshot();
+      const periodEvents = salvageEvents.filter(event => event.date <= selectedSnapshotId && (!previous || event.date > previous.id));
+      const atRiskChange = previous ? current.atRisk - previous.atRisk : 0;
+      const partnerNames = [...new Set(periodEvents.map(event => event.institution))];
+      const cards = [
+        {
+          className: "risk",
+          title: "New risks identified",
+          lines: previous && atRiskChange > 0
+            ? [[`Risk increase`, moneyExact(atRiskChange)]]
+            : [["No new risk increase", previous ? `Compared with ${previous.label}` : "Baseline snapshot"]]
+        },
+        {
+          className: "",
+          title: "Successfully salvaged",
+          lines: periodEvents.length
+            ? periodEvents.map(event => {
+                const item = expiryRecords.find(record => record.id === event.recordId);
+                return [item.commodity, moneyExact(event.value)];
+              })
+            : [["No salvage events", "Recorded in this review period"]]
+        },
+        {
+          className: "expired",
+          title: "Expired",
+          lines: current.expired > 0 ? [["Expired value", moneyExact(current.expired)]] : [["No validated expiries", "Current snapshot"]]
+        },
+        {
+          className: "partner",
+          title: "Partners engaged",
+          lines: partnerNames.length ? partnerNames.map(name => [name, "Salvage intervention"]) : [["No new partner event", "Current review period"]]
+        }
+      ];
+      document.getElementById("changes-since-review").innerHTML = cards.map(card => `
+        <article class="card change-card ${card.className}">
+          <h3>${card.title}</h3>
+          <ul class="change-list">${card.lines.map(([title, note]) => `<li><strong>${escapeHtml(title)}</strong><span>${escapeHtml(note)}</span></li>`).join("")}</ul>
+        </article>`).join("");
+    }
+
+    function actionRows() {
+      return expiryRecords.map(item => {
+        const traffic = trafficStatus(item);
+        return {
+          commodity: item.commodity,
+          action: nextAction(item),
+          lead: item.institution,
+          dueDate: null,
+          status: traffic.label,
+          badge: traffic.badge,
+          priority: traffic.label === "Overdue" ? 0 : traffic.label === "Ongoing" ? 1 : 2
+        };
+      });
+    }
+
+    function renderActionTracker() {
+      const search = document.getElementById("action-search").value.trim().toLowerCase();
+      const status = document.getElementById("action-status").value;
+      const sort = document.getElementById("action-sort").value;
+      const rows = actionRows()
+        .filter(item => status === "All" || item.status === status)
+        .filter(item => [item.commodity, item.action, item.lead].some(value => value.toLowerCase().includes(search)))
+        .sort((a, b) => {
+          if (sort === "commodity") return a.commodity.localeCompare(b.commodity);
+          if (sort === "lead") return a.lead.localeCompare(b.lead);
+          return a.priority - b.priority || a.commodity.localeCompare(b.commodity);
+        });
+      document.getElementById("action-tracker-body").innerHTML = rows.map(item => `
+        <tr>
+          <td><strong>${escapeHtml(item.action)}</strong><br><span class="metric-sub">${escapeHtml(item.commodity)}</span></td>
+          <td>${escapeHtml(item.lead)}</td>
+          <td><span class="placeholder">Date required</span></td>
+          <td><span class="badge ${item.badge}">${item.status}</span></td>
+        </tr>`).join("");
+      document.getElementById("action-result-count").textContent = `Showing ${rows.length} of ${expiryRecords.length} actions`;
+      document.getElementById("action-search").oninput = renderActionTracker;
+      document.getElementById("action-status").onchange = renderActionTracker;
+      document.getElementById("action-sort").onchange = renderActionTracker;
+    }
+
+    function renderInterventionPortfolio() {
+      const statuses = [
+        { label: "Completed", color: "#28715f", records: expiryRecords.filter(item => trafficStatus(item).label === "Complete") },
+        { label: "Active", color: "#a46213", records: expiryRecords.filter(item => trafficStatus(item).label === "Ongoing") },
+        { label: "Pending / overdue", color: "#b73a3a", records: expiryRecords.filter(item => trafficStatus(item).label === "Overdue") }
+      ];
+      let cursor = 0;
+      const stops = statuses.map(status => {
+        const start = cursor;
+        cursor += (status.records.length / expiryRecords.length) * 100;
+        return `${status.color} ${start}% ${cursor}%`;
+      });
+      const donut = document.getElementById("intervention-donut");
+      donut.style.background = `conic-gradient(${stops.join(",")})`;
+      donut.setAttribute("aria-label", statuses.map(status => `${status.label}: ${status.records.length}`).join(", "));
+      document.getElementById("intervention-total").textContent = expiryRecords.length;
+      document.getElementById("intervention-legend").innerHTML = statuses.map(status => `
+        <div class="legend-item"><span class="legend-dot" style="background:${status.color}"></span><span>${status.label}</span><strong>${status.records.length} · ${Math.round(status.records.length / expiryRecords.length * 100)}%</strong></div>
+      `).join("");
+      const queue = expiryRecords
+        .map(item => ({ ...item, remaining: item.value - salvagedForRecord(item.id) }))
+        .filter(item => item.remaining > 0)
+        .sort((a, b) => b.remaining - a.remaining)
+        .slice(0, 7);
+      const maximum = queue[0]?.remaining || 1;
+      document.getElementById("intervention-queue").innerHTML = queue.map(item => `
+        <div class="risk-row">
+          <span class="risk-name" title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span>
+          <span class="risk-track"><span class="risk-fill" style="--score:${item.remaining / maximum * 10}"></span></span>
+          <span class="risk-score">${money(item.remaining)}</span>
+        </div>`).join("");
+    }
+
     function renderFields() {
       document.getElementById("required-fields").innerHTML = fields.map((field, index) => `<article class="card mini-kpi"><span>Field ${String(index + 1).padStart(2, "0")}</span><strong>${field}</strong></article>`).join("");
     }
@@ -2031,6 +2348,10 @@
       renderSalvageRegister();
       renderArmyTracker();
       renderLifecycleAndActions();
+      renderProductTicker();
+      renderChangesSinceReview();
+      renderActionTracker();
+      renderInterventionPortfolio();
     }
 
     renderAllSnapshotViews();

@@ -16,6 +16,8 @@ commodities and salvage interventions in Zambia.
 - Bi-weekly at-risk and cumulative-salvage trend
 - Commodity value-at-risk Pareto ranking and top-10 list
 - Lifecycle-stage KPIs and traffic-light action tracker
+- Moving product scoreboard showing commodity, quantity, and value
+- National Supply Chain Control Unit and Ministry of Health government header
 - Responsive layout for desktop, tablet, and mobile
 - Print-friendly reporting view
 - Automated deployment to GitHub Pages
@@ -54,3 +56,6 @@ The current demonstration baseline uses:
 - Total salvaged: `ZMW 359,266.25`
 - Remaining risk: `ZMW 33,476,910.43`
 - Salvage rate: `1.06%`
+
+The Zambia coat of arms asset is the public-domain SVG from
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_Zambia.svg).
