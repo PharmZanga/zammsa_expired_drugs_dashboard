@@ -1,4 +1,4 @@
-# ZAMMSA Short Expiry & Salvage Dashboard
+# National Short Expiry & Salvage Monitoring System
 
 A responsive, accessible management dashboard for monitoring short-expiry
 commodities and salvage interventions in Zambia.
@@ -7,9 +7,12 @@ commodities and salvage interventions in Zambia.
 
 - Executive summary metrics calculated from batch-level records
 - Clickable June-December expiry calendar
+- Selectable historical bi-weekly snapshots
 - Month-level batch detail and calculated salvage summaries
 - Commodity profiles with intervention timelines
-- Automatic critical, moderate, and controlled risk alerts
+- Days-to-expiry warning centre
+- Append-only salvaged commodities register
+- Zambia Army initiative tracker
 - Bi-weekly at-risk and cumulative-salvage trend
 - Responsive layout for desktop, tablet, and mobile
 - Print-friendly reporting view
@@ -27,3 +30,11 @@ demonstration dataset implementing the supplied control-tower concept. Replace
 them with the validated national commodity line list before operational use.
 All month totals, salvage values, remaining risk, salvage rates, and alerts are
 calculated from the batch records in `index.html`.
+
+Historical state is represented by two related structures:
+
+- `snapshots`: aggregate position recorded at each bi-weekly review
+- `salvageEvents`: append-only dated salvage transactions
+
+Selecting a snapshot recalculates KPIs, monthly salvage progress, warning bands,
+the Zambia Army opportunity, and the cumulative salvage register.
