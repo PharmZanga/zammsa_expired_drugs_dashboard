@@ -1522,14 +1522,70 @@
       margin-bottom: 0;
     }
 
-    .drilldown-toolbar {
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 12px;
+    .salvage-month-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
     }
 
-    .drilldown-toolbar label {
-      width: min(100%, 480px);
+    .salvage-month-card {
+      display: grid;
+      grid-template-columns: 0.75fr 1fr 1fr;
+      gap: 10px;
+      align-items: center;
+      min-width: 0;
+      padding: 16px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      text-align: left;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .salvage-month-card:hover {
+      transform: translateY(-2px);
+      border-color: #9fbcb1;
+      box-shadow: 0 9px 24px rgba(24, 39, 33, 0.08);
+    }
+
+    .salvage-month-card.active {
+      color: #fff;
+      background: var(--green-950);
+      border-color: var(--green-950);
+    }
+
+    .salvage-month-card span,
+    .salvage-month-card strong,
+    .salvage-month-card small {
+      display: block;
+    }
+
+    .salvage-month-card > span {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .salvage-month-card small {
+      margin-bottom: 3px;
+      color: var(--muted);
+      font-size: 8px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .salvage-month-card strong {
+      overflow: hidden;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .salvage-month-card.active small {
+      color: rgba(255, 255, 255, 0.66);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1773,6 +1829,10 @@
         grid-template-columns: repeat(4, 1fr);
       }
 
+      .salvage-month-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .detail-grid {
         grid-template-columns: 1fr;
       }
@@ -1987,6 +2047,7 @@
       }
 
       .calendar,
+      .salvage-month-grid,
       .summary-metrics,
       .alerts,
       .profile-list {
@@ -2125,24 +2186,6 @@
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
 
     <div class="section-heading">
-      <h2>Commodity drill-down</h2>
-      <p>Selecting a month in the calendar refreshes this profile. Choose a commodity below for product-level detail.</p>
-    </div>
-    <div class="drilldown-toolbar">
-      <label><span class="sr-only">Select commodity for executive drill-down</span><select class="control" id="executive-commodity-select"></select></label>
-    </div>
-    <section class="detail-grid">
-      <article class="card">
-        <div class="card-header"><div><h3 id="executive-profile-title">Commodity profile</h3><p>Supplied product and financial attributes</p></div></div>
-        <div class="profile-list" id="executive-commodity-profile"></div>
-      </article>
-      <article class="card">
-        <div class="card-header"><div><h3>Salvage timeline</h3><p id="executive-timeline-subtitle">Recorded intervention milestones</p></div></div>
-        <div class="timeline" id="executive-salvage-timeline"></div>
-      </article>
-    </section>
-
-    <div class="section-heading">
       <h2>Changes since last review</h2>
       <p>Bi-weekly movement in new risk, salvage, expiry outcomes, and institutional engagement.</p>
     </div>
@@ -2225,8 +2268,22 @@
     <div class="view-header"><div><h2>Salvage Tracker</h2></div><p>What value has been saved, when, and through which institution?</p></div>
     <section class="metrics" id="salvage-kpis"></section>
     <div class="section-heading">
-      <h2 id="salvage-register-title">May salvaged commodities register</h2>
-      <p id="salvage-register-copy">Permanent cumulative evidence filtered to the selected expiry month. Historical records are never overwritten.</p>
+      <h2>Monthly salvage performance</h2>
+      <p>Select a month to compare the total value expiring with the value already salvaged.</p>
+    </div>
+    <section class="salvage-month-grid" id="salvage-month-grid" aria-label="Monthly expiring and salvaged values"></section>
+    <section class="card tracker">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Commodity</th><th>Shipped Units</th><th>Total Expiring</th><th>Value Salvaged</th><th>Remaining Risk</th><th>Expiry Date</th></tr></thead>
+          <tbody id="salvage-month-products"></tbody>
+        </table>
+      </div>
+      <div class="table-footer"><span id="salvage-month-product-count"></span><span id="salvage-month-product-total"></span></div>
+    </section>
+    <div class="section-heading">
+      <h2 id="salvage-register-title">May detailed shipment evidence</h2>
+      <p id="salvage-register-copy">Permanent recipient-level movement evidence filtered to the selected expiry month.</p>
     </div>
     <section class="card tracker">
       <div class="table-wrap">
@@ -2494,7 +2551,7 @@
         renderCalendar();
         renderMonthDetail();
         renderCommodity();
-        renderExecutiveCommodity();
+        renderSalvageMonthSummary();
         renderSalvageRegister();
       }));
     }
@@ -2552,56 +2609,6 @@
         : '<div class="warning-empty">No intervention timeline was supplied.</div>';
     }
 
-    function commodityProfileFields(item) {
-      return [
-        ["SKU", item.sku],
-        ["Commodity", item.commodity],
-        ["Batch", item.batch],
-        ["S.O.H Quantity", isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""],
-        ["Unit Price", moneyExact(item.unitPrice)],
-        ["Shipped Units", isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""],
-        ["Value at Risk", moneyExact(item.value)],
-        ["Value Salvaged", moneyExact(item.salvagedValue)],
-        ["Expiry Date", formatDate(item.expiryDate)],
-        ["Lead Institution", item.institution],
-        ["Status", item.status],
-        ["Warehouse", item.warehouse],
-        ["Province", item.province],
-        ["Facility", item.facility],
-        ["Date Identified", item.identified]
-      ];
-    }
-
-    function renderExecutiveCommodity() {
-      const select = document.getElementById("executive-commodity-select");
-      const records = monthRecords(selectedMonth);
-      if (!records.length) {
-        select.innerHTML = '<option value="">No commodities supplied for this month</option>';
-        select.disabled = true;
-        document.getElementById("executive-profile-title").textContent = "Commodity profile";
-        document.getElementById("executive-timeline-subtitle").textContent = "";
-        document.getElementById("executive-commodity-profile").innerHTML = '<div class="warning-empty">No source record supplied for this month.</div>';
-        document.getElementById("executive-salvage-timeline").innerHTML = '<div class="warning-empty">No intervention timeline was supplied.</div>';
-        return;
-      }
-      select.disabled = false;
-      if (!records.some(item => item.id === selectedCommodityId)) selectedCommodityId = records[0].id;
-      select.innerHTML = records.map(item => `<option value="${item.id}" ${item.id === selectedCommodityId ? "selected" : ""}>${escapeHtml(item.sku)} · ${escapeHtml(item.commodity)}</option>`).join("");
-      const item = records.find(record => record.id === selectedCommodityId) || records[0];
-      document.getElementById("executive-profile-title").textContent = `${item.commodity} profile`;
-      document.getElementById("executive-timeline-subtitle").textContent = item.batch ? `${item.batch} intervention milestones` : "";
-      document.getElementById("executive-commodity-profile").innerHTML = commodityProfileFields(item)
-        .map(([label, value]) => `<div class="profile-item"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("");
-      document.getElementById("executive-salvage-timeline").innerHTML = item.timeline.length
-        ? item.timeline.map(([date, event]) => `<div class="timeline-item"><time>${escapeHtml(date)}</time><strong>${escapeHtml(event)}</strong></div>`).join("")
-        : '<div class="warning-empty">No intervention timeline was supplied.</div>';
-      select.onchange = () => {
-        selectedCommodityId = select.value;
-        renderExecutiveCommodity();
-        renderCommodity();
-      };
-    }
-
     function daysToExpiry(item) {
       if (!item.expiryDate) return null;
       return Math.ceil((new Date(`${item.expiryDate}T12:00:00+02:00`) - new Date(`${selectedSnapshotId}T12:00:00+02:00`)) / 86400000);
@@ -2633,10 +2640,49 @@
         </tr>`).join("");
     }
 
+    function renderSalvageMonthSummary() {
+      document.getElementById("salvage-month-grid").innerHTML = monthOrder.map(month => {
+        const stats = monthStats(month);
+        return `<button class="salvage-month-card ${month === selectedMonth ? "active" : ""}" type="button" data-salvage-month="${month}" aria-pressed="${month === selectedMonth}">
+          <span>${month}</span>
+          <div><small>Total Expiring</small><strong>${money(stats.total)}</strong></div>
+          <div><small>Salvaged</small><strong>${money(stats.salvaged)}</strong></div>
+        </button>`;
+      }).join("");
+      document.querySelectorAll("[data-salvage-month]").forEach(button => button.addEventListener("click", () => {
+        selectedMonth = button.dataset.salvageMonth;
+        selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
+        renderCalendar();
+        renderMonthDetail();
+        renderCommodity();
+        renderSalvageMonthSummary();
+        renderSalvageRegister();
+      }));
+
+      const stats = monthStats(selectedMonth);
+      document.getElementById("salvage-month-products").innerHTML = stats.records.length ? stats.records.map(item => {
+        const remaining = isNumber(item.value) && isNumber(item.salvagedValue)
+          ? Math.max(0, item.value - item.salvagedValue)
+          : null;
+        return `<tr>
+          <td class="commodity">${escapeHtml(item.commodity)}<br><span class="metric-sub">${escapeHtml(item.sku)}</span></td>
+          <td>${isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""}</td>
+          <td>${moneyExact(item.value)}</td>
+          <td>${moneyExact(item.salvagedValue)}</td>
+          <td>${moneyExact(remaining)}</td>
+          <td>${formatDate(item.expiryDate)}</td>
+        </tr>`;
+      }).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">No commodity records were supplied for ${selectedMonth} 2026.</td></tr>`;
+      document.getElementById("salvage-month-product-count").textContent =
+        `${stats.records.length} ${selectedMonth} commodit${stats.records.length === 1 ? "y" : "ies"}`;
+      document.getElementById("salvage-month-product-total").textContent =
+        `Total expiring: ${moneyExact(stats.total)} | Salvaged: ${moneyExact(stats.salvaged)}`;
+    }
+
     function renderSalvageRegister() {
       const monthNumber = { May: 5, June: 6, July: 7, August: 8, September: 9, October: 10, November: 11, December: 12 }[selectedMonth];
       const events = eventsThroughSnapshot().filter(event => event.expiryDate && new Date(`${event.expiryDate}T12:00:00`).getMonth() + 1 === monthNumber);
-      document.getElementById("salvage-register-title").textContent = `${selectedMonth} salvaged commodities register`;
+      document.getElementById("salvage-register-title").textContent = `${selectedMonth} detailed shipment evidence`;
       document.getElementById("salvage-register-copy").textContent =
         `Shipment evidence for products expiring in ${selectedMonth} 2026. Monetary value is blank because it is not supplied at shipment-row level.`;
       document.getElementById("salvage-register").innerHTML = events.length ? events.map(event =>
@@ -2711,7 +2757,7 @@
         renderCalendar();
         renderMonthDetail();
         renderCommodity();
-        renderExecutiveCommodity();
+        renderSalvageMonthSummary();
         renderSalvageRegister();
       }));
       const critical = expiryRecords.filter(item => daysToExpiry(item) !== null && daysToExpiry(item) <= 30);
@@ -2931,10 +2977,10 @@
       renderCalendar();
       renderMonthDetail();
       renderCommodity();
-      renderExecutiveCommodity();
       renderWarningCentre();
       renderWarningTop();
       renderSalvageKpis();
+      renderSalvageMonthSummary();
       renderSalvageRegister();
       renderArmyTracker();
       renderInstitutionPerformance();
