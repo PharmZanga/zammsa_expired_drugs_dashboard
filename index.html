@@ -1435,7 +1435,7 @@
       display: flex;
       width: max-content;
       padding: 11px 0;
-      animation: productTicker 1200s linear infinite;
+      animation: productTicker var(--ticker-duration, 1200s) linear infinite;
     }
 
     .ticker-shell:hover .ticker-track,
@@ -2834,7 +2834,9 @@
           <div><small>Value</small><strong>${moneyExact(item.value)}</strong></div>
           <div><small>Expiry Date</small><strong>${formatDate(item.expiryDate)}</strong></div>
         </div>`).join("");
-      document.getElementById("product-ticker").innerHTML = markup + markup;
+      const ticker = document.getElementById("product-ticker");
+      ticker.innerHTML = markup + markup;
+      ticker.style.setProperty("--ticker-duration", `${Math.max(1200, items.length * 30)}s`);
     }
 
     function renderChangesSinceReview() {
