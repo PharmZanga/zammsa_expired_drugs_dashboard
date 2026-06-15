@@ -2139,7 +2139,7 @@
         <aside class="reporting-card" aria-label="Reporting period">
           <span>Source reporting period</span>
           <strong>May-September 2026</strong>
-          <p>Loaded from the supplied short-dated product and salvaged-product workbooks.</p>
+          <p>Loaded from the corrected June-September short-dated report and the supplied May salvage workbook.</p>
         </aside>
       </div>
     </div>
@@ -2181,7 +2181,7 @@
       <p>The dashboard highlights the total value of commodities at risk, commodities successfully salvaged, remaining exposure, and priority commodities requiring urgent action. It also provides forecasts of upcoming expiries, tracks ongoing salvage initiatives, and monitors implementation of agreed action points by responsible institutions.</p>
       <p><strong>Current Reporting Period:</strong> This dashboard reflects the latest bi-weekly review and includes commodities identified as being at risk of expiry, ongoing salvage interventions, completed salvage actions, and projected expiries through December 2026.</p>
     </article>
-    <div class="demo-banner"><strong>Source data loaded:</strong> Short dated products.xlsx and Salvaged Products-Merged_May26.xlsx. Missing source fields are intentionally blank.</div>
+    <div class="demo-banner"><strong>Source data loaded:</strong> Shortdated report Jun-Sept 2026.xlsx and Salvaged Products-Merged_May26.xlsx. Missing source fields are intentionally blank.</div>
 
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
 
@@ -2420,7 +2420,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> May-July shipped units, unit prices, salvaged values, stock on hand, values at risk, and expiry dates come from Salvaged Products-Merged_May26.xlsx. August-September quantities and expiry dates come from Short dated products.xlsx. Fields not present in those files are intentionally blank. Warning bands are calculated from 26 May 2026 to each supplied expiry date.</p>
+    <p class="source-note"><strong>Source note:</strong> The verified June-September expiry register, including unit prices, quantities, extended values, batches, locations, funders, statuses, and expiry dates, comes from Shortdated report Jun-Sept 2026.xlsx. May and the salvage totals remain sourced from Salvaged Products-Merged_May26.xlsx. Fields not present in those files are intentionally blank. Warning bands are calculated from 15 June 2026 to each supplied expiry date.</p>
   </main>
 
   <footer>
@@ -2433,7 +2433,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js"></script>
+  <script src="assets/dashboard-data.js?v=20260615"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -2476,7 +2476,7 @@
     const salvageEvents = sourceData.salvageShipments;
     const snapshots = [{
       id: sourceData.sourceUpdated,
-      label: "26 May 2026",
+      label: "15 June 2026",
       atRisk: sourceData.summary.valueAtRisk,
       salvaged: sourceData.summary.valueSalvaged,
       expired: null,
@@ -2529,12 +2529,12 @@
     function renderExecutive() {
       const snapshot = selectedSnapshot();
       const metrics = [
-        ["Projected Expiry by December 2026", "", "October-December values not supplied", "danger"],
-        ["Total Value at Risk", moneyExact(snapshot.atRisk), "Priced May-July expiry records", "warning"],
+        ["Verified Expiry Jun-Sep 2026", moneyExact(sourceData.verifiedJuneSeptemberValue), "Corrected workbook total", "danger"],
+        ["Total Value at Risk", moneyExact(snapshot.atRisk), "May source plus verified June-September report", "warning"],
         ["Total Salvaged", moneyExact(snapshot.salvaged), "Supplied May-July shipped value", "success"],
         ["Remaining At Risk", moneyExact(snapshot.atRisk - snapshot.salvaged), "Risk minus salvaged", "warning"],
         ["Salvage Rate", `${preciseRate(snapshot.salvaged, snapshot.atRisk)}%`, "Salvaged ÷ value at risk", "success"],
-        ["Short-Dated Product Rows", expiryRecords.length, "May-September source register", ""]
+        ["Short-Dated Product Rows", expiryRecords.length, "May source plus 1,039 corrected June-September rows", ""]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
     }
