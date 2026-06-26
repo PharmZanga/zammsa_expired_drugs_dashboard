@@ -2139,7 +2139,7 @@
         <aside class="reporting-card" aria-label="Reporting period">
           <span>Source reporting period</span>
           <strong>May-September 2026</strong>
-          <p>Loaded from the corrected June-September short-dated report and the supplied May salvage workbook.</p>
+          <p>Loaded from the updated Jan-15 Jun salvage summary and Jun-Dec available-expiry workbook.</p>
         </aside>
       </div>
     </div>
@@ -2181,7 +2181,7 @@
       <p>The dashboard highlights the total value of commodities at risk, commodities successfully salvaged, remaining exposure, and priority commodities requiring urgent action. It also provides forecasts of upcoming expiries, tracks ongoing salvage initiatives, and monitors implementation of agreed action points by responsible institutions.</p>
       <p><strong>Current Reporting Period:</strong> This dashboard reflects the latest bi-weekly review and includes commodities identified as being at risk of expiry, ongoing salvage interventions, completed salvage actions, and projected expiries through December 2026.</p>
     </article>
-    <div class="demo-banner"><strong>Source data loaded:</strong> Shortdated report Jun-Sept 2026.xlsx and Salvaged Products-Merged_May26.xlsx. Missing source fields are intentionally blank.</div>
+    <div class="demo-banner"><strong>Source data loaded:</strong> Summary_Salvaged products_1st Jan to 15th Jun26_Updated.xlsx. Missing source fields are intentionally blank.</div>
 
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
 
@@ -2420,7 +2420,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> The verified June-September expiry register, including unit prices, quantities, extended values, batches, locations, funders, statuses, and expiry dates, comes from Shortdated report Jun-Sept 2026.xlsx. May and the salvage totals remain sourced from Salvaged Products-Merged_May26.xlsx. Fields not present in those files are intentionally blank. Warning bands are calculated from 15 June 2026 to each supplied expiry date.</p>
+    <p class="source-note"><strong>Source note:</strong> Salvaged and expired values are from the workbook summary covering shipments from 1 January to 15 June 2026. Current expiry risk is from the Jun-Dec available-units tabs in Summary_Salvaged products_1st Jan to 15th Jun26_Updated.xlsx. Batch, warehouse, province, facility, and recipient fields are blank where they are not supplied. Warning bands are calculated from 15 June 2026 to each supplied expiry date.</p>
   </main>
 
   <footer>
@@ -2433,7 +2433,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js?v=20260615"></script>
+  <script src="assets/dashboard-data.js?v=20260626"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -2480,7 +2480,8 @@
       label: "15 June 2026",
       atRisk: sourceData.summary.valueAtRisk,
       salvaged: sourceData.summary.valueSalvaged,
-      expired: null,
+      expired: sourceData.summary.valueExpired,
+      remainingRisk: sourceData.summary.remainingRisk,
       totalCommodities: expiryRecords.length
     }];
     const expiryDates = Object.fromEntries(monthOrder.map(month => [
@@ -2488,7 +2489,7 @@
       expiryRecords.find(item => item.month === month)?.expiryDate || ""
     ]));
     const statusClass = { Salvaged: "badge-completed", "In Progress": "badge-progress", Pending: "badge-pending", Expired: "badge-overdue" };
-    let selectedMonth = "May";
+    let selectedMonth = monthOrder[0] || "June";
     let selectedCommodityId = expiryRecords[0]?.id || "";
     let selectedSnapshotId = sourceData.sourceUpdated;
 
@@ -2560,8 +2561,9 @@
       const records = monthRecords(month);
       const total = monthlyTargets[month];
       const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
-      const remaining = isNumber(total) && isNumber(salvaged) ? total - salvaged : null;
-      return { records, total, salvaged, remaining, rate: rate(salvaged, total) };
+      const reviewed = sourceData.monthlyHistoricalReviewed?.[month] ?? null;
+      const remaining = isNumber(total) ? total : null;
+      return { records, total, salvaged, remaining, rate: preciseRate(salvaged, reviewed) };
     };
     const alertLevel = value => !isNumber(value) ? "" : value > 1000000 ? "Critical" : value >= 500000 ? "Moderate" : "Controlled";
 
@@ -2572,7 +2574,7 @@
       document.getElementById("snapshot-summary").innerHTML = `
         <div><span>Value at risk</span><strong>${moneyExact(snapshot.atRisk)}</strong></div>
         <div><span>Value salvaged</span><strong>${moneyExact(snapshot.salvaged)}</strong></div>
-        <div><span>Remaining risk</span><strong>${moneyExact(snapshot.atRisk - snapshot.salvaged)}</strong></div>`;
+        <div><span>Expired value</span><strong>${moneyExact(snapshot.expired)}</strong></div>`;
       select.addEventListener("change", () => {
         selectedSnapshotId = select.value;
         renderAllSnapshotViews();
@@ -2582,12 +2584,12 @@
     function renderExecutive() {
       const snapshot = selectedSnapshot();
       const metrics = [
-        ["Verified Expiry Jun-Sep 2026", moneyExact(sourceData.verifiedJuneSeptemberValue), "Corrected workbook total", "danger"],
-        ["Total Value at Risk", moneyExact(snapshot.atRisk), "May source plus verified June-September report", "warning"],
-        ["Total Salvaged", moneyExact(snapshot.salvaged), "Supplied May-July shipped value", "success"],
-        ["Remaining At Risk", moneyExact(snapshot.atRisk - snapshot.salvaged), "Risk minus salvaged", "warning"],
-        ["Salvage Rate", `${preciseRate(snapshot.salvaged, snapshot.atRisk)}%`, "Salvaged ÷ value at risk", "success"],
-        ["Batch Lines Reviewed", expiryRecords.length, `${rawExpiryRecords.length} source rows grouped by SKU, batch, and expiry`, ""]
+        ["Current Value at Risk", moneyExact(snapshot.atRisk), "Jun-Dec available units still expiring", "danger"],
+        ["Total Salvaged", moneyExact(snapshot.salvaged), "1 Jan-15 Jun shipped before expiry", "success"],
+        ["Total Expired", moneyExact(snapshot.expired), "1 Jan-15 Jun expired value", "warning"],
+        ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ reviewed Jan-15 Jun value", "success"],
+        ["December Exposure", moneyExact(monthlyTargets.December), "Largest remaining monthly risk", "warning"],
+        ["Batch Lines Reviewed", expiryRecords.length, `${rawExpiryRecords.length} available-unit rows`, ""]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
     }
@@ -2619,7 +2621,7 @@
         ["Total Expiring", money(stats.total)],
         ["Salvaged", money(stats.salvaged)],
         ["Remaining Risk", money(stats.remaining)],
-        ["Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
+        ["Historical Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
       ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
       document.getElementById("expiry-table-body").innerHTML = stats.records.length ? stats.records.map(item => `
         <tr>
@@ -2752,10 +2754,10 @@
       const commodities = new Set(events.map(event => event.sku).filter(Boolean)).size;
       const institutions = new Set(events.map(event => event.institution).filter(Boolean)).size;
       const metrics = [
-        ["Total Value Salvaged", moneyExact(sourceData.summary.valueSalvaged), "Supplied May-July summary", "success"],
-        ["Salvage Rate", `${preciseRate(selectedSnapshot().salvaged, selectedSnapshot().atRisk)}%`, "Against selected snapshot value at risk", "success"],
-        ["Products Shipped", commodities, `${events.length} detailed shipment records`, ""],
-        ["Recipient Institutions", institutions, "From the supplied raw shipment register", ""]
+        ["Total Value Salvaged", moneyExact(sourceData.summary.valueSalvaged), "1 Jan-15 Jun shipped before expiry", "success"],
+        ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ reviewed Jan-15 Jun value", "success"],
+        ["Products Salvaged", commodities, `${events.length} updated salvage rows`, ""],
+        ["Value Expired", moneyExact(sourceData.summary.valueExpired), "1 Jan-15 Jun expired value", "warning"]
       ];
       document.getElementById("salvage-kpis").innerHTML = metrics.map(([label, value, sub, tone]) =>
         `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`
@@ -2790,7 +2792,7 @@
       const y = value => bottom - (value / max) * (bottom - top);
       document.getElementById("executive-trend-chart").innerHTML = `
         <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly value at risk and salvage trend">
-          ${[0, 10, 20, 30].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="12" y="${y(value) + 4}">${value}M</text>`).join("")}
+          ${[0, max / 3, max * 2 / 3, max].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="12" y="${y(value) + 4}">${Math.round(value)}M</text>`).join("")}
           <polyline points="${snapshots.map((item, index) => `${x(index)},${y(item.atRisk / 1000000)}`).join(" ")}" fill="none" stroke="#b73a3a" stroke-width="4"/>
           <polyline points="${snapshots.map((item, index) => `${x(index)},${y(item.salvaged / 1000000)}`).join(" ")}" fill="none" stroke="#28715f" stroke-width="4"/>
           ${snapshots.map((item, index) => `<circle cx="${x(index)}" cy="${y(item.atRisk / 1000000)}" r="5" fill="#fff" stroke="#b73a3a" stroke-width="3"/><circle cx="${x(index)}" cy="${y(item.salvaged / 1000000)}" r="5" fill="#fff" stroke="#28715f" stroke-width="3"/><text x="${x(index)}" y="205" text-anchor="middle">${item.label.replace(" 2026", "")}</text>`).join("")}
@@ -2831,7 +2833,7 @@
       const x = index => snapshots.length === 1 ? (left + right) / 2 : left + index * ((right - left) / (snapshots.length - 1));
       const y = value => bottom - (value / max) * (bottom - top);
       const line = field => snapshots.map((item, index) => `${x(index)},${y(item[field] / 1000000)}`).join(" ");
-      const rateY = item => bottom - (Number(preciseRate(item.salvaged, item.atRisk)) / 100) * (bottom - top);
+      const rateY = () => bottom - (sourceData.summary.salvageRate / 100) * (bottom - top);
       document.getElementById("performance-chart").innerHTML = `
         <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly value at risk, value salvaged, and salvage rate trend">
           ${[0, max / 3, max * 2 / 3, max].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="18" y="${y(value) + 4}">${Math.round(value)}M</text>`).join("")}
@@ -2841,7 +2843,7 @@
           ${snapshots.map((item, index) => `<circle cx="${x(index)}" cy="${y(item.atRisk / 1000000)}" r="5" fill="#fff" stroke="#b73a3a" stroke-width="3"/><circle cx="${x(index)}" cy="${y(item.salvaged / 1000000)}" r="5" fill="#fff" stroke="#28715f" stroke-width="3"/><circle cx="${x(index)}" cy="${rateY(item)}" r="4" fill="#fff" stroke="#2c6fa5" stroke-width="2"/><text x="${x(index)}" y="232" text-anchor="middle">${item.label.replace(" 2026", "")}</text>`).join("")}
         </svg>`;
       document.getElementById("performance-table").innerHTML = snapshots.map(item => {
-        return `<tr><td class="commodity">${item.label}</td><td>${moneyExact(item.atRisk)}</td><td>${moneyExact(item.salvaged)}</td><td>${moneyExact(item.atRisk - item.salvaged)}</td><td>${preciseRate(item.salvaged, item.atRisk)}%</td></tr>`;
+        return `<tr><td class="commodity">${item.label}</td><td>${moneyExact(item.atRisk)}</td><td>${moneyExact(item.salvaged)}</td><td>${moneyExact(item.remainingRisk)}</td><td>${sourceData.summary.salvageRate.toFixed(2)}%</td></tr>`;
       }).join("");
     }
 
