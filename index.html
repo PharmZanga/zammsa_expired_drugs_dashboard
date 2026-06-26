@@ -292,7 +292,7 @@
 
     .metric {
       min-width: 0;
-      padding: 18px 14px;
+      padding: 17px 10px;
       border-right: 1px solid var(--line);
     }
 
@@ -313,11 +313,11 @@
       display: block;
       margin-top: 5px;
       overflow-wrap: anywhere;
-      font-size: clamp(0.88rem, 1.25vw, 1.15rem);
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(0.72rem, 0.95vw, 1rem);
       font-weight: 800;
-      line-height: 1;
-      letter-spacing: -0.04em;
-      white-space: nowrap;
+      line-height: 1.08;
+      letter-spacing: -0.045em;
     }
 
     .metric-value.danger {
@@ -1041,7 +1041,7 @@
 
     .calendar {
       display: grid;
-      grid-template-columns: repeat(8, 1fr);
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 9px;
     }
 
@@ -1083,7 +1083,13 @@
 
     .month-card strong {
       margin-top: 9px;
-      font-size: 18px;
+      overflow: hidden;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(0.82rem, 1.05vw, 1rem);
+      letter-spacing: -0.035em;
+      line-height: 1.05;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .month-card small {
@@ -1579,7 +1585,9 @@
 
     .salvage-month-card strong {
       overflow: hidden;
-      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      font-size: 11px;
+      letter-spacing: -0.025em;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -2165,7 +2173,7 @@
     <section class="shared-monitor" aria-label="Monthly expiry calendar and commodity scoreboard">
       <div class="section-heading">
         <h2>Monthly expiry calendar</h2>
-        <p>Source values remain blank where no monetary value was supplied. Select a month to update the expiry detail.</p>
+        <p>January-June show historical salvage/expiry summaries; June-December show available stock still expiring. Select a month to update the detail.</p>
       </div>
       <section class="calendar" id="month-calendar" aria-label="Clickable monthly expiry calendar"></section>
       <section class="ticker-shell" aria-label="Moving product scoreboard">
@@ -2598,7 +2606,10 @@
       document.getElementById("month-calendar").innerHTML = monthOrder.map(month => {
         const stats = monthStats(month);
         const quantity = sum(stats.records, "quantity");
-        return `<button class="month-card ${month === selectedMonth ? "active" : ""}" type="button" data-month="${month}" aria-pressed="${month === selectedMonth}"><span>${month}</span><strong>${money(stats.total)}</strong><small>${stats.records.length ? `${stats.records.length} rows · ${quantity.toLocaleString("en-ZM")} units` : ""}</small></button>`;
+        const detail = stats.records.length
+          ? `${stats.records.length} rows · ${quantity.toLocaleString("en-ZM")} units`
+          : isNumber(sourceData.monthlyHistoricalReviewed?.[month]) ? "historical summary" : "";
+        return `<button class="month-card ${month === selectedMonth ? "active" : ""}" type="button" data-month="${month}" aria-pressed="${month === selectedMonth}"><span>${month}</span><strong>${money(stats.total)}</strong><small>${detail}</small></button>`;
       }).join("");
       document.querySelectorAll(".month-card").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.month;
@@ -2614,13 +2625,18 @@
     function renderMonthDetail() {
       const stats = monthStats(selectedMonth);
       document.getElementById("month-detail-title").textContent = `${selectedMonth} 2026 expiry detail`;
-      document.getElementById("month-detail-copy").textContent = isNumber(stats.total)
-        ? `Supplied value at risk: ${moneyExact(stats.total)}.`
+      document.getElementById("month-detail-copy").textContent = stats.records.length
+        ? `Available value still expiring: ${moneyExact(stats.total)}.`
+        : isNumber(sourceData.monthlyHistoricalReviewed?.[selectedMonth])
+          ? `Historical reviewed value: ${moneyExact(sourceData.monthlyHistoricalReviewed[selectedMonth])}. Product-level available-unit records are not supplied for this month.`
         : "No monetary value was supplied for this month.";
+      const thirdMetric = stats.records.length
+        ? ["Remaining Risk", money(stats.remaining)]
+        : ["Expired", money(sourceData.monthlyValueExpired?.[selectedMonth])];
       document.getElementById("month-summary").innerHTML = [
         ["Total Expiring", money(stats.total)],
         ["Salvaged", money(stats.salvaged)],
-        ["Remaining Risk", money(stats.remaining)],
+        thirdMetric,
         ["Historical Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
       ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
       document.getElementById("expiry-table-body").innerHTML = stats.records.length ? stats.records.map(item => `
@@ -2631,7 +2647,7 @@
           <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
           <td>${moneyExact(item.value)}</td>
           <td>${formatDate(item.expiryDate)}</td>
-        </tr>`).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">No source records supplied for ${selectedMonth} 2026.</td></tr>`;
+        </tr>`).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">Only historical monthly summary values were supplied for ${selectedMonth} 2026.</td></tr>`;
       document.getElementById("month-record-count").textContent = `${stats.records.length} batch line${stats.records.length === 1 ? "" : "s"} from grouped source rows`;
       document.querySelectorAll(".commodity-button").forEach(button => button.addEventListener("click", () => {
         selectedCommodityId = button.dataset.id;
