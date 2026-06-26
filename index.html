@@ -2166,6 +2166,7 @@
         <a class="nav-link" href="#root-cause-analysis" data-view="root-cause-analysis"><span class="nav-icon">↗</span><span class="nav-text">Root Cause Analysis</span></a>
         <a class="nav-link" href="#historical-snapshots" data-view="historical-snapshots"><span class="nav-icon">◷</span><span class="nav-text">Historical Snapshots</span></a>
         <a class="nav-link" href="#institution-performance" data-view="institution-performance"><span class="nav-icon">H</span><span class="nav-text">Institution Performance</span></a>
+        <a class="nav-link" href="#national-summary" data-view="national-summary"><span class="nav-icon">Σ</span><span class="nav-text">National Summary</span></a>
       </div>
     </nav>
     <div class="dashboard-content">
@@ -2326,6 +2327,30 @@
       <div class="table-wrap">
         <table>
           <thead><tr><th>Month</th><th>Salvaged (ZMW)</th><th>Expired (ZMW)</th><th>Total Value (ZMW)</th><th>Salvage Percentage</th></tr></thead>
+          <tbody id="institution-national-summary-table"></tbody>
+        </table>
+      </div>
+      <div class="source-note">
+        <strong>Note:</strong>
+        <ol>
+          <li>Salvaged indicates value of products that would have expired in a given month but were shipped.</li>
+          <li>Expired indicates the value of products that expired in a given month.</li>
+          <li>Salvage percentages are calculated retrospectively using actual salvaged and expired values.</li>
+          <li>Total values are estimates because some product unit prices are manually entered and may vary by source tab.</li>
+          <li>January-June tabs show shipped and expired product tables; June-December available-unit tabs show remaining quantities expiring in 2026.</li>
+          <li>This analysis includes orders shipped from 1 January 2026 to 15 June 2026.</li>
+        </ol>
+      </div>
+    </section>
+    </div>
+
+    <div class="dashboard-view" id="view-national-summary" data-view="national-summary">
+    <div class="view-header"><div><h2>National Salvage / Expiry Summary</h2></div><p>Workbook summary of salvaged value, expired value, total reviewed value, and salvage percentage.</p></div>
+    <section class="metrics" id="national-summary-kpis"></section>
+    <section class="card tracker">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Month</th><th>Salvaged (ZMW)</th><th>Expired (ZMW)</th><th>Total Value (ZMW)</th><th>Salvage Percentage</th></tr></thead>
           <tbody id="national-summary-table"></tbody>
         </table>
       </div>
@@ -2461,7 +2486,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js?v=20260627expired"></script>
+  <script src="assets/dashboard-data.js?v=20260627summary"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -2667,7 +2692,8 @@
         thirdMetric,
         ["Historical Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
       ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
-      document.getElementById("expiry-table-body").innerHTML = stats.records.length ? stats.records.map(item => `
+      const rankedMonthRecords = [...stats.records].sort((a, b) => (b.value || 0) - (a.value || 0));
+      document.getElementById("expiry-table-body").innerHTML = rankedMonthRecords.length ? rankedMonthRecords.map(item => `
         <tr>
           <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.sku)}<br><span class="metric-sub">${escapeHtml(item.commodity)}</span></button></td>
           <td>${isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""}</td>
@@ -3089,7 +3115,7 @@
         expired: sourceData.summary.valueExpired,
         total: sourceData.summary.historicalReviewedValue
       };
-      document.getElementById("national-summary-table").innerHTML = rows.map(row => `
+      const summaryMarkup = rows.map(row => `
         <tr>
           <td class="commodity">${monthLabels[row.month]}</td>
           <td>${moneyExact(row.salvaged)}</td>
@@ -3104,6 +3130,22 @@
           <td><strong>${moneyExact(totals.total)}</strong></td>
           <td><strong>${rate(totals.salvaged, totals.total)}%</strong></td>
         </tr>`;
+      ["national-summary-table", "institution-national-summary-table"].forEach(id => {
+        const table = document.getElementById(id);
+        if (table) table.innerHTML = summaryMarkup;
+      });
+      const kpis = [
+        ["Total Salvaged", moneyExact(totals.salvaged), "1 Jan-15 Jun shipped before expiry", "success"],
+        ["Total Expired", moneyExact(totals.expired), "1 Jan-15 Jun expired value", "warning"],
+        ["Total Reviewed", moneyExact(totals.total), "Salvaged + expired value", ""],
+        ["Salvage Percentage", `${rate(totals.salvaged, totals.total)}%`, "Workbook total salvage percentage", "success"]
+      ];
+      const kpiTarget = document.getElementById("national-summary-kpis");
+      if (kpiTarget) {
+        kpiTarget.innerHTML = kpis.map(([label, value, sub, tone]) =>
+          `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`
+        ).join("");
+      }
     }
 
     function renderAllSnapshotViews() {
@@ -3138,7 +3180,8 @@
       "action-tracker",
       "root-cause-analysis",
       "historical-snapshots",
-      "institution-performance"
+      "institution-performance",
+      "national-summary"
     ];
 
     function activateView(viewName, updateHash = false) {
