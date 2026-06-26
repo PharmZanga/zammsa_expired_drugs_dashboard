@@ -2472,7 +2472,8 @@
     const sourceData = window.ZAMMSA_SOURCE_DATA;
     const monthOrder = sourceData.monthOrder;
     const monthlyTargets = sourceData.monthlyValueAtRisk;
-    const expiryRecords = sourceData.expiryRecords;
+    const rawExpiryRecords = sourceData.expiryRecords;
+    const expiryRecords = aggregateBatchRecords(rawExpiryRecords);
     const salvageEvents = sourceData.salvageShipments;
     const snapshots = [{
       id: sourceData.sourceUpdated,
@@ -2490,6 +2491,58 @@
     let selectedMonth = "May";
     let selectedCommodityId = expiryRecords[0]?.id || "";
     let selectedSnapshotId = sourceData.sourceUpdated;
+
+    function aggregateBatchRecords(records) {
+      const grouped = new Map();
+      const numeric = value => typeof value === "number" && Number.isFinite(value);
+      const addText = (set, value) => {
+        if (value) set.add(String(value).trim());
+      };
+      const textList = set => {
+        const values = [...set].filter(Boolean);
+        return values.length <= 3 ? values.join("; ") : `${values.slice(0, 3).join("; ")} +${values.length - 3} more`;
+      };
+      records.forEach(item => {
+        const key = [item.month, item.sku, item.commodity, item.batch, item.unitPrice, item.expiryDate].join("||");
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            ...item,
+            quantity: null,
+            value: null,
+            shippedQuantity: null,
+            salvagedValue: null,
+            warehouseSet: new Set(),
+            provinceSet: new Set(),
+            facilitySet: new Set(),
+            institutionSet: new Set(),
+            statusSet: new Set(),
+            sourceRows: 0
+          });
+        }
+        const current = grouped.get(key);
+        current.sourceRows += 1;
+        ["quantity", "value", "shippedQuantity", "salvagedValue"].forEach(field => {
+          if (numeric(item[field])) current[field] = (numeric(current[field]) ? current[field] : 0) + item[field];
+        });
+        addText(current.warehouseSet, item.warehouse);
+        addText(current.provinceSet, item.province);
+        addText(current.facilitySet, item.facility);
+        addText(current.institutionSet, item.institution);
+        addText(current.statusSet, item.status);
+      });
+      return [...grouped.values()].map((item, index) => {
+        const { warehouseSet, provinceSet, facilitySet, institutionSet, statusSet, ...record } = item;
+        return {
+          ...record,
+          id: `${record.month}-${record.sku}-${record.batch || "no-batch"}-${index}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+          warehouse: textList(warehouseSet),
+          province: textList(provinceSet),
+          facility: textList(facilitySet),
+          institution: textList(institutionSet),
+          status: textList(statusSet)
+        };
+      });
+    }
 
     const isNumber = value => typeof value === "number" && Number.isFinite(value);
     const sum = (items, field) => items.reduce((total, item) => total + (isNumber(item[field]) ? item[field] : 0), 0);
@@ -2534,7 +2587,7 @@
         ["Total Salvaged", moneyExact(snapshot.salvaged), "Supplied May-July shipped value", "success"],
         ["Remaining At Risk", moneyExact(snapshot.atRisk - snapshot.salvaged), "Risk minus salvaged", "warning"],
         ["Salvage Rate", `${preciseRate(snapshot.salvaged, snapshot.atRisk)}%`, "Salvaged ÷ value at risk", "success"],
-        ["Short-Dated Product Rows", expiryRecords.length, "May source plus 1,039 corrected June-September rows", ""]
+        ["Batch Lines Reviewed", expiryRecords.length, `${rawExpiryRecords.length} source rows grouped by SKU, batch, and expiry`, ""]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
     }
@@ -2577,7 +2630,7 @@
           <td>${moneyExact(item.value)}</td>
           <td>${formatDate(item.expiryDate)}</td>
         </tr>`).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">No source records supplied for ${selectedMonth} 2026.</td></tr>`;
-      document.getElementById("month-record-count").textContent = `${stats.records.length} source row${stats.records.length === 1 ? "" : "s"}`;
+      document.getElementById("month-record-count").textContent = `${stats.records.length} batch line${stats.records.length === 1 ? "" : "s"} from grouped source rows`;
       document.querySelectorAll(".commodity-button").forEach(button => button.addEventListener("click", () => {
         selectedCommodityId = button.dataset.id;
         renderCommodity();
@@ -2953,7 +3006,12 @@
 
       const quantity = sum(records, "quantity");
       const pricedRecords = records.filter(item => isNumber(item.value));
-      const value = pricedRecords.length ? sum(pricedRecords, "value") : null;
+      const unfilteredValueScope = !query && status === "All" && risk === "All";
+      const value = unfilteredValueScope && month === "All"
+        ? sourceData.summary.valueAtRisk
+        : unfilteredValueScope && isNumber(monthlyTargets[month])
+          ? monthlyTargets[month]
+          : pricedRecords.length ? sum(pricedRecords, "value") : null;
       const activeParameters = [
         month === "All" ? "All months" : `${month} 2026`,
         status === "All" ? "All statuses" : status,
@@ -2963,7 +3021,7 @@
       if (query) activeParameters.unshift(`Search: "${query}"`);
       document.getElementById("expiry-register-summary").textContent = `Parameters: ${activeParameters.join(" · ")}`;
       document.getElementById("expiry-register-count").textContent =
-        `${records.length} of ${expiryRecords.length} commodities · ${quantity.toLocaleString("en-ZM")} units`;
+        `${records.length} of ${expiryRecords.length} batch lines · ${quantity.toLocaleString("en-ZM")} units`;
       document.getElementById("expiry-register-value").textContent = value === null ? "Combined value:" : `Combined value: ${moneyExact(value)}`;
 
       ["expiry-search", "expiry-month-filter", "expiry-status-filter", "expiry-risk-filter", "expiry-sort"].forEach(id => {
