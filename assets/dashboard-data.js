@@ -26,7 +26,7 @@ window.ZAMMSA_SOURCE_DATA = {
     "September": 26718120.11,
     "October": 20830551.82,
     "November": 38476905.31,
-    "December": 834799877.49
+    "December": 417399938.74
   },
   "monthlyValueSalvaged": {
     "January": 4683535.07,
@@ -43,11 +43,11 @@ window.ZAMMSA_SOURCE_DATA = {
     "December": null
   },
   "summary": {
-    "valueAtRisk": 1045248658.16,
+    "valueAtRisk": 627848719.41,
     "valueSalvaged": 103218531.82,
     "valueExpired": 80571810.82,
     "historicalReviewedValue": 183790342.65,
-    "remainingRisk": 1045248658.16,
+    "remainingRisk": 627848719.41,
     "salvageRate": 56.161,
     "coverage": "Jan-15 Jun salvage/expiry summary plus Jun-Dec available expiry risk"
   },
@@ -4705,27 +4705,6 @@ window.ZAMMSA_SOURCE_DATA = {
       "unitPrice": 1840.811,
       "salvagedValue": null,
       "expiryDate": "2026-12-31",
-      "warehouse": "",
-      "province": "",
-      "facility": "",
-      "institution": "",
-      "status": "Pending",
-      "identified": "",
-      "salvagedDate": "",
-      "timeline": []
-    },
-    {
-      "id": "total-december-available-51",
-      "month": "December",
-      "sku": "Total",
-      "commodity": "",
-      "batch": "",
-      "quantity": null,
-      "value": 417399938.7441122,
-      "shippedQuantity": null,
-      "unitPrice": null,
-      "salvagedValue": null,
-      "expiryDate": "",
       "warehouse": "",
       "province": "",
       "facility": "",

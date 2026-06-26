@@ -2441,7 +2441,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js?v=20260626jan"></script>
+  <script src="assets/dashboard-data.js?v=20260627audit"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -2912,9 +2912,9 @@
 
     function renderChangesSinceReview() {
       const cards = [
-        { className: "risk", title: "New risks identified", lines: [["", "No previous review snapshot supplied"]] },
-        { className: "", title: "Successfully salvaged", lines: [["", "Bi-weekly comparison not supplied"]] },
-        { className: "expired", title: "Expired", lines: [["", "Expired value not supplied"]] },
+        { className: "risk", title: "Current value at risk", lines: [[moneyExact(sourceData.summary.valueAtRisk), "Jun-Dec available units still expiring"]] },
+        { className: "", title: "Successfully salvaged", lines: [[moneyExact(sourceData.summary.valueSalvaged), "1 Jan-15 Jun shipped before expiry"]] },
+        { className: "expired", title: "Expired", lines: [[moneyExact(sourceData.summary.valueExpired), "1 Jan-15 Jun expired value"]] },
         { className: "partner", title: "Partners engaged", lines: [["", "Engagement status not supplied"]] }
       ];
       document.getElementById("changes-since-review").innerHTML = cards.map(card => `
