@@ -2321,6 +2321,26 @@
     </section>
     <div class="section-heading"><h2>Engagement performance</h2><p>Commodity count, portfolio value, and current intervention status by institution.</p></div>
     <section class="card tracker"><div class="table-wrap"><table><thead><tr><th>Recipient Institution</th><th>Shipment Records</th><th>Quantity Shipped</th><th>Province(s)</th><th>Value</th></tr></thead><tbody id="institution-table"></tbody></table></div></section>
+    <div class="section-heading"><h2>National salvage and expiry summary</h2><p>Historical value reviewed from 1 January to 15 June 2026, including salvaged and expired outcomes.</p></div>
+    <section class="card tracker">
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Month</th><th>Salvaged (ZMW)</th><th>Expired (ZMW)</th><th>Total Value (ZMW)</th><th>Salvage Percentage</th></tr></thead>
+          <tbody id="national-summary-table"></tbody>
+        </table>
+      </div>
+      <div class="source-note">
+        <strong>Note:</strong>
+        <ol>
+          <li>Salvaged indicates value of products that would have expired in a given month but were shipped.</li>
+          <li>Expired indicates the value of products that expired in a given month.</li>
+          <li>Salvage percentages are calculated retrospectively using actual salvaged and expired values.</li>
+          <li>Total values are estimates because some product unit prices are manually entered and may vary by source tab.</li>
+          <li>January-June tabs show shipped and expired product tables; June-December available-unit tabs show remaining quantities expiring in 2026.</li>
+          <li>This analysis includes orders shipped from 1 January 2026 to 15 June 2026.</li>
+        </ol>
+      </div>
+    </section>
     </div>
 
     <div class="dashboard-view" id="view-historical-snapshots" data-view="historical-snapshots">
@@ -2441,7 +2461,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js?v=20260627audit"></script>
+  <script src="assets/dashboard-data.js?v=20260627expired"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -2483,6 +2503,8 @@
     const rawExpiryRecords = sourceData.expiryRecords;
     const expiryRecords = aggregateBatchRecords(rawExpiryRecords);
     const salvageEvents = sourceData.salvageShipments;
+    const isExpiredRecord = item => item.status === "Expired";
+    const activeRiskRecords = () => expiryRecords.filter(item => !isExpiredRecord(item));
     const snapshots = [{
       id: sourceData.sourceUpdated,
       label: "15 June 2026",
@@ -2569,9 +2591,11 @@
       const records = monthRecords(month);
       const total = monthlyTargets[month];
       const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
+      const expired = sourceData.monthlyValueExpired?.[month] ?? null;
       const reviewed = sourceData.monthlyHistoricalReviewed?.[month] ?? null;
       const remaining = isNumber(total) ? total : null;
-      return { records, total, salvaged, remaining, rate: preciseRate(salvaged, reviewed) };
+      const allExpired = records.length > 0 && records.every(isExpiredRecord);
+      return { records, total, salvaged, expired, reviewed, remaining, allExpired, rate: preciseRate(salvaged, reviewed) };
     };
     const alertLevel = value => !isNumber(value) ? "" : value > 1000000 ? "Critical" : value >= 500000 ? "Moderate" : "Controlled";
 
@@ -2597,7 +2621,7 @@
         ["Total Expired", moneyExact(snapshot.expired), "1 Jan-15 Jun expired value", "warning"],
         ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ reviewed Jan-15 Jun value", "success"],
         ["December Exposure", moneyExact(monthlyTargets.December), "Largest remaining monthly risk", "warning"],
-        ["Batch Lines Reviewed", expiryRecords.length, `${rawExpiryRecords.length} available-unit rows`, ""]
+        ["Batch Lines Reviewed", expiryRecords.length, `${sourceData.expiredLineListCount || 0} expired rows + ${rawExpiryRecords.length - (sourceData.expiredLineListCount || 0)} available rows`, ""]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
     }
@@ -2626,13 +2650,17 @@
       const stats = monthStats(selectedMonth);
       document.getElementById("month-detail-title").textContent = `${selectedMonth} 2026 expiry detail`;
       document.getElementById("month-detail-copy").textContent = stats.records.length
-        ? `Available value still expiring: ${moneyExact(stats.total)}.`
+        ? stats.allExpired
+          ? `Expired product lines supplied for ${selectedMonth}: ${moneyExact(stats.expired)} expired out of ${moneyExact(stats.reviewed)} reviewed.`
+          : `Available value still expiring: ${moneyExact(stats.total)}.${stats.records.some(isExpiredRecord) ? ` Expired historical product lines are also shown for ${selectedMonth}.` : ""}`
         : isNumber(sourceData.monthlyHistoricalReviewed?.[selectedMonth])
           ? `Historical reviewed value: ${moneyExact(sourceData.monthlyHistoricalReviewed[selectedMonth])}. Product-level available-unit records are not supplied for this month.`
         : "No monetary value was supplied for this month.";
-      const thirdMetric = stats.records.length
-        ? ["Remaining Risk", money(stats.remaining)]
-        : ["Expired", money(sourceData.monthlyValueExpired?.[selectedMonth])];
+      const thirdMetric = stats.allExpired
+        ? ["Expired", money(stats.expired)]
+        : stats.records.length
+          ? ["Remaining Risk", money(stats.remaining)]
+          : ["Expired", money(sourceData.monthlyValueExpired?.[selectedMonth])];
       document.getElementById("month-summary").innerHTML = [
         ["Total Expiring", money(stats.total)],
         ["Salvaged", money(stats.salvaged)],
@@ -2692,13 +2720,13 @@
         { title: "Medium Risk", subtitle: "91-180 days", className: "controlled", filter: days => days >= 91 && days <= 180 }
       ];
       document.getElementById("warning-centre").innerHTML = groups.map(group => {
-        const items = expiryRecords.filter(item => daysToExpiry(item) !== null && group.filter(daysToExpiry(item)));
+        const items = activeRiskRecords().filter(item => daysToExpiry(item) !== null && group.filter(daysToExpiry(item)));
         return `<article class="card warning-card"><div class="warning-head"><strong>${group.title}</strong><span>${group.subtitle} from ${selectedSnapshot().label}</span></div><div class="warning-list">${items.length ? items.map(item => `<div class="warning-item"><strong>${escapeHtml(item.commodity)}</strong><span>${formatDate(item.expiryDate)} &middot; ${daysToExpiry(item)} days</span></div>`).join("") : '<div class="warning-empty">No commodities in this band.</div>'}</div></article>`;
       }).join("");
     }
 
     function renderWarningTop() {
-      const ranked = [...expiryRecords]
+      const ranked = activeRiskRecords()
         .sort((a, b) => daysToExpiry(a) - daysToExpiry(b))
         .slice(0, 20);
       document.getElementById("warning-top-table").innerHTML = ranked.map((item, index) => `
@@ -2731,7 +2759,8 @@
       }));
 
       const stats = monthStats(selectedMonth);
-      document.getElementById("salvage-month-products").innerHTML = stats.records.length ? stats.records.map(item => {
+      const rankedProducts = [...stats.records].sort((a, b) => (b.value || 0) - (a.value || 0));
+      document.getElementById("salvage-month-products").innerHTML = rankedProducts.length ? rankedProducts.map(item => {
         const remaining = isNumber(item.value) && isNumber(item.salvagedValue)
           ? Math.max(0, item.value - item.salvagedValue)
           : null;
@@ -2831,8 +2860,8 @@
         renderSalvageMonthSummary();
         renderSalvageRegister();
       }));
-      const critical = expiryRecords.filter(item => daysToExpiry(item) !== null && daysToExpiry(item) <= 30);
-      const high = expiryRecords.filter(item => daysToExpiry(item) > 30 && daysToExpiry(item) <= 90);
+      const critical = activeRiskRecords().filter(item => daysToExpiry(item) !== null && daysToExpiry(item) <= 30);
+      const high = activeRiskRecords().filter(item => daysToExpiry(item) > 30 && daysToExpiry(item) <= 90);
       document.getElementById("executive-alerts").innerHTML = `
         <article class="alert-card critical"><span>Critical alert</span><strong>${critical.length}</strong><small>Commodities expiring within 30 days of ${selectedSnapshot().label}</small></article>
         <article class="alert-card moderate"><span>High-risk alert</span><strong>${high.length}</strong><small>Commodities expiring within 31-90 days</small></article>`;
@@ -2874,7 +2903,7 @@
     function nextAction() { return ""; }
 
     function renderRiskRanking() {
-      const ranked = expiryRecords.filter(item => isNumber(item.value)).sort((a, b) => b.value - a.value);
+      const ranked = activeRiskRecords().filter(item => isNumber(item.value)).sort((a, b) => b.value - a.value);
       document.getElementById("pareto-ranking").classList.add("pareto-list");
       document.getElementById("pareto-ranking").innerHTML = ranked.length ? ranked.slice(0, 10).map(item => `
         <div class="risk-row">
@@ -2963,6 +2992,7 @@
     }
 
     function expiryRiskBand(item) {
+      if (isExpiredRecord(item)) return "Expired";
       const days = daysToExpiry(item);
       if (days === null) return "";
       if (days <= 30) return "Critical";
@@ -2977,6 +3007,7 @@
 
     function riskBadgeClass(risk) {
       if (risk === "Critical") return "badge-overdue";
+      if (risk === "Expired") return "badge-overdue";
       if (risk === "High Risk") return "badge-progress";
       if (risk === "Medium Risk") return "badge-completed";
       return "badge-pending";
@@ -3025,11 +3056,7 @@
       const quantity = sum(records, "quantity");
       const pricedRecords = records.filter(item => isNumber(item.value));
       const unfilteredValueScope = !query && status === "All" && risk === "All";
-      const value = unfilteredValueScope && month === "All"
-        ? sourceData.summary.valueAtRisk
-        : unfilteredValueScope && isNumber(monthlyTargets[month])
-          ? monthlyTargets[month]
-          : pricedRecords.length ? sum(pricedRecords, "value") : null;
+      const value = pricedRecords.length ? sum(pricedRecords, "value") : null;
       const activeParameters = [
         month === "All" ? "All months" : `${month} 2026`,
         status === "All" ? "All statuses" : status,
@@ -3048,6 +3075,37 @@
       });
     }
 
+    function renderNationalSummary() {
+      const summaryMonths = ["January", "February", "March", "April", "May", "June"];
+      const monthLabels = { January: "Jan", February: "Feb", March: "Mar", April: "Apr", May: "May", June: "June*" };
+      const rows = summaryMonths.map(month => {
+        const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
+        const expired = sourceData.monthlyValueExpired?.[month] ?? null;
+        const total = sourceData.monthlyHistoricalReviewed?.[month] ?? null;
+        return { month, salvaged, expired, total, rate: rate(salvaged, total) };
+      });
+      const totals = {
+        salvaged: sourceData.summary.valueSalvaged,
+        expired: sourceData.summary.valueExpired,
+        total: sourceData.summary.historicalReviewedValue
+      };
+      document.getElementById("national-summary-table").innerHTML = rows.map(row => `
+        <tr>
+          <td class="commodity">${monthLabels[row.month]}</td>
+          <td>${moneyExact(row.salvaged)}</td>
+          <td>${moneyExact(row.expired)}</td>
+          <td>${moneyExact(row.total)}</td>
+          <td>${row.rate}%</td>
+        </tr>`).join("") + `
+        <tr>
+          <td class="commodity">Total</td>
+          <td><strong>${moneyExact(totals.salvaged)}</strong></td>
+          <td><strong>${moneyExact(totals.expired)}</strong></td>
+          <td><strong>${moneyExact(totals.total)}</strong></td>
+          <td><strong>${rate(totals.salvaged, totals.total)}%</strong></td>
+        </tr>`;
+    }
+
     function renderAllSnapshotViews() {
       renderSnapshotSelector();
       renderExecutive();
@@ -3062,6 +3120,7 @@
       renderSalvageRegister();
       renderArmyTracker();
       renderInstitutionPerformance();
+      renderNationalSummary();
       renderLifecycleAndActions();
       renderProductTicker();
       renderChangesSinceReview();
