@@ -1378,12 +1378,25 @@
     }
 
     .warning-item {
+      width: 100%;
       padding: 12px 18px;
+      color: var(--ink);
+      background: transparent;
       border-bottom: 1px solid #e8eeea;
+      border-left: 0;
+      border-right: 0;
+      border-top: 0;
+      text-align: left;
     }
 
     .warning-item:last-child {
       border-bottom: 0;
+    }
+
+    .warning-item:hover,
+    .warning-item:focus-visible {
+      background: #f4f8f6;
+      outline: none;
     }
 
     .warning-item strong,
@@ -1505,11 +1518,43 @@
       margin-top: 0;
     }
 
-    body[data-active-view="commodity-register"] .shared-monitor {
+    body[data-active-view="commodity-register"] .shared-monitor,
+    body[data-active-view="warning-centre"] .shared-monitor,
+    body[data-active-view="salvage-tracker"] .shared-monitor,
+    body[data-active-view="action-tracker"] .shared-monitor,
+    body[data-active-view="root-cause-analysis"] .shared-monitor,
+    body[data-active-view="institution-performance"] .shared-monitor,
+    body[data-active-view="national-summary"] .shared-monitor {
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    body[data-active-view="commodity-register"] .shared-monitor .section-heading,
+    body[data-active-view="commodity-register"] .shared-monitor .calendar,
+    body[data-active-view="warning-centre"] .shared-monitor .section-heading,
+    body[data-active-view="warning-centre"] .shared-monitor .calendar,
+    body[data-active-view="salvage-tracker"] .shared-monitor .section-heading,
+    body[data-active-view="salvage-tracker"] .shared-monitor .calendar,
+    body[data-active-view="action-tracker"] .shared-monitor .section-heading,
+    body[data-active-view="action-tracker"] .shared-monitor .calendar,
+    body[data-active-view="root-cause-analysis"] .shared-monitor .section-heading,
+    body[data-active-view="root-cause-analysis"] .shared-monitor .calendar,
+    body[data-active-view="institution-performance"] .shared-monitor .section-heading,
+    body[data-active-view="institution-performance"] .shared-monitor .calendar,
+    body[data-active-view="national-summary"] .shared-monitor .section-heading,
+    body[data-active-view="national-summary"] .shared-monitor .calendar {
       display: none;
     }
 
-    body[data-active-view="commodity-register"] .dashboard-content main {
+    body[data-active-view="commodity-register"] .dashboard-content main,
+    body[data-active-view="warning-centre"] .dashboard-content main,
+    body[data-active-view="salvage-tracker"] .dashboard-content main,
+    body[data-active-view="action-tracker"] .dashboard-content main,
+    body[data-active-view="root-cause-analysis"] .dashboard-content main,
+    body[data-active-view="institution-performance"] .dashboard-content main,
+    body[data-active-view="national-summary"] .dashboard-content main {
       margin-top: 24px;
     }
 
@@ -2535,7 +2580,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js?v=20260627summary"></script>
+  <script src="assets/dashboard-data.js?v=20260627ops"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -2579,15 +2624,7 @@
     const salvageEvents = sourceData.salvageShipments;
     const isExpiredRecord = item => item.status === "Expired";
     const activeRiskRecords = () => expiryRecords.filter(item => !isExpiredRecord(item));
-    const snapshots = [{
-      id: sourceData.sourceUpdated,
-      label: "15 June 2026",
-      atRisk: sourceData.summary.valueAtRisk,
-      salvaged: sourceData.summary.valueSalvaged,
-      expired: sourceData.summary.valueExpired,
-      remainingRisk: sourceData.summary.remainingRisk,
-      totalCommodities: expiryRecords.length
-    }];
+    const snapshots = buildSnapshots();
     const expiryDates = Object.fromEntries(monthOrder.map(month => [
       month,
       expiryRecords.find(item => item.month === month)?.expiryDate || ""
@@ -2595,7 +2632,7 @@
     const statusClass = { Salvaged: "badge-completed", "In Progress": "badge-progress", Pending: "badge-pending", Expired: "badge-overdue" };
     let selectedMonth = monthOrder[0] || "June";
     let selectedCommodityId = expiryRecords[0]?.id || "";
-    let selectedSnapshotId = sourceData.sourceUpdated;
+    let selectedSnapshotId = snapshots[snapshots.length - 1]?.id || sourceData.sourceUpdated;
 
     function aggregateBatchRecords(records) {
       const grouped = new Map();
@@ -2645,6 +2682,34 @@
           facility: textList(facilitySet),
           institution: textList(institutionSet),
           status: textList(statusSet)
+        };
+      });
+    }
+
+    function buildSnapshots() {
+      const monthDates = [
+        ["January", "2026-01-31", "31 January 2026"],
+        ["February", "2026-02-28", "28 February 2026"],
+        ["March", "2026-03-31", "31 March 2026"],
+        ["April", "2026-04-30", "30 April 2026"],
+        ["May", "2026-05-31", "31 May 2026"],
+        ["June", sourceData.sourceUpdated, "15 June 2026"]
+      ];
+      let salvaged = 0;
+      let expired = 0;
+      return monthDates.map(([month, id, label], index) => {
+        salvaged += sourceData.monthlyValueSalvaged?.[month] || 0;
+        expired += sourceData.monthlyValueExpired?.[month] || 0;
+        const historicalReviewed = salvaged + expired;
+        const isLatest = index === monthDates.length - 1;
+        return {
+          id,
+          label,
+          atRisk: isLatest ? sourceData.summary.valueAtRisk : historicalReviewed,
+          salvaged,
+          expired,
+          remainingRisk: isLatest ? sourceData.summary.valueAtRisk : expired,
+          totalCommodities: isLatest ? activeRiskRecords().length : expiryRecords.filter(item => item.status === "Expired" && item.expiryDate <= id).length
         };
       });
     }
@@ -2783,6 +2848,20 @@
         : '<div class="warning-empty">No intervention timeline was supplied.</div>';
     }
 
+    function openCommodityProfile(recordId) {
+      const item = expiryRecords.find(record => record.id === recordId);
+      if (!item) return;
+      selectedMonth = item.month;
+      selectedCommodityId = item.id;
+      renderCalendar();
+      renderMonthDetail();
+      renderCommodity();
+      renderSalvageMonthSummary();
+      renderSalvageRegister();
+      activateView("expiry-forecast", true);
+      setTimeout(() => document.getElementById("profile-title")?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
+    }
+
     function daysToExpiry(item) {
       if (!item.expiryDate) return null;
       return Math.ceil((new Date(`${item.expiryDate}T12:00:00+02:00`) - new Date(`${selectedSnapshotId}T12:00:00+02:00`)) / 86400000);
@@ -2796,8 +2875,9 @@
       ];
       document.getElementById("warning-centre").innerHTML = groups.map(group => {
         const items = activeRiskRecords().filter(item => daysToExpiry(item) !== null && group.filter(daysToExpiry(item)));
-        return `<article class="card warning-card"><div class="warning-head"><strong>${group.title}</strong><span>${group.subtitle} from ${selectedSnapshot().label}</span></div><div class="warning-list">${items.length ? items.map(item => `<div class="warning-item"><strong>${escapeHtml(item.commodity)}</strong><span>${formatDate(item.expiryDate)} &middot; ${daysToExpiry(item)} days</span></div>`).join("") : '<div class="warning-empty">No commodities in this band.</div>'}</div></article>`;
+        return `<article class="card warning-card"><div class="warning-head"><strong>${group.title}</strong><span>${group.subtitle} from ${selectedSnapshot().label}</span></div><div class="warning-list">${items.length ? items.map(item => `<button class="warning-item" type="button" data-profile-id="${item.id}"><strong>${escapeHtml(item.commodity)}</strong><span>${formatDate(item.expiryDate)} &middot; ${daysToExpiry(item)} days</span></button>`).join("") : '<div class="warning-empty">No commodities in this band.</div>'}</div></article>`;
       }).join("");
+      document.querySelectorAll("[data-profile-id]").forEach(button => button.addEventListener("click", () => openCommodityProfile(button.dataset.profileId)));
     }
 
     function renderWarningTop() {
@@ -2807,11 +2887,12 @@
       document.getElementById("warning-top-table").innerHTML = ranked.map((item, index) => `
         <tr>
           <td>${index + 1}</td>
-          <td class="commodity">${escapeHtml(item.commodity)}</td>
+          <td class="commodity"><button class="commodity-button" type="button" data-warning-profile-id="${item.id}">${escapeHtml(item.commodity)}</button></td>
           <td>${formatDate(item.expiryDate)}<br><span class="metric-sub">${daysToExpiry(item)} days</span></td>
           <td></td>
           <td><span class="badge ${riskBadgeClass(expiryRiskBand(item))}">${expiryRiskBand(item)}</span></td>
         </tr>`).join("");
+      document.querySelectorAll("[data-warning-profile-id]").forEach(button => button.addEventListener("click", () => openCommodityProfile(button.dataset.warningProfileId)));
     }
 
     function renderSalvageMonthSummary() {
