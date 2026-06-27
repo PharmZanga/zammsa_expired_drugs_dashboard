@@ -2336,9 +2336,13 @@
 
     <div class="dashboard-view" id="view-warning-centre" data-view="warning-centre">
     <div class="view-header"><div><h2>Warning Centre</h2></div><p>Which commodities need intervention now, within 90 days, or within 180 days?</p></div>
+    <section class="snapshot-bar" aria-label="Warning centre date filter">
+      <label><span>Risk calculation date</span><input class="control" id="warning-date-filter" type="date" min="2026-01-01" max="2026-12-31"></label>
+      <div class="snapshot-summary" id="warning-date-summary"></div>
+    </section>
     <div class="section-heading">
       <h2>Warning centre</h2>
-      <p>Days-to-expiry alerts recalculate against the selected historical snapshot date.</p>
+      <p>Days-to-expiry alerts recalculate from the selected date. High Risk covers the first three months; Medium Risk extends to 180 days.</p>
     </div>
     <section class="warning-grid" id="warning-centre"></section>
     <div class="section-heading"><h2>Top commodities at risk</h2><p>Highest remaining financial exposure at the selected snapshot.</p></div>
@@ -2580,7 +2584,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js?v=20260627ops"></script>
+  <script src="assets/dashboard-data.js?v=20260627warningdate"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -2633,6 +2637,7 @@
     let selectedMonth = monthOrder[0] || "June";
     let selectedCommodityId = expiryRecords[0]?.id || "";
     let selectedSnapshotId = snapshots[snapshots.length - 1]?.id || sourceData.sourceUpdated;
+    let selectedWarningDate = sourceData.sourceUpdated;
 
     function aggregateBatchRecords(records) {
       const grouped = new Map();
@@ -2867,31 +2872,80 @@
       return Math.ceil((new Date(`${item.expiryDate}T12:00:00+02:00`) - new Date(`${selectedSnapshotId}T12:00:00+02:00`)) / 86400000);
     }
 
+    function daysToExpiryFromWarningDate(item) {
+      if (!item.expiryDate) return null;
+      return Math.ceil((new Date(`${item.expiryDate}T12:00:00+02:00`) - new Date(`${selectedWarningDate}T12:00:00+02:00`)) / 86400000);
+    }
+
+    function warningHorizonDays() {
+      return 180;
+    }
+
+    function warningWindowRecords() {
+      const horizon = warningHorizonDays();
+      return expiryRecords.filter(item => {
+        const days = daysToExpiryFromWarningDate(item);
+        return days !== null && days >= 0 && days <= horizon;
+      });
+    }
+
+    function warningRiskBand(item) {
+      const days = daysToExpiryFromWarningDate(item);
+      if (days === null) return "";
+      if (days <= 30) return "Critical";
+      if (days <= 90) return "High Risk";
+      if (days <= warningHorizonDays()) return "Medium Risk";
+      return "Outside Window";
+    }
+
+    function warningDateLabel() {
+      return formatDate(selectedWarningDate) || selectedWarningDate;
+    }
+
+    function renderWarningDateFilter() {
+      const input = document.getElementById("warning-date-filter");
+      input.value = selectedWarningDate;
+      const threeMonthMark = new Date(`${selectedWarningDate}T12:00:00+02:00`);
+      threeMonthMark.setMonth(threeMonthMark.getMonth() + 3);
+      const horizonEnd = new Date(`${selectedWarningDate}T12:00:00+02:00`);
+      horizonEnd.setDate(horizonEnd.getDate() + warningHorizonDays());
+      document.getElementById("warning-date-summary").innerHTML = `
+        <div><span>Window start</span><strong>${warningDateLabel()}</strong></div>
+        <div><span>3-month mark</span><strong>${formatDate(threeMonthMark.toISOString().slice(0, 10))}</strong></div>
+        <div><span>180-day horizon</span><strong>${formatDate(horizonEnd.toISOString().slice(0, 10))}</strong></div>`;
+      input.onchange = () => {
+        selectedWarningDate = input.value || sourceData.sourceUpdated;
+        renderWarningDateFilter();
+        renderWarningCentre();
+        renderWarningTop();
+      };
+    }
+
     function renderWarningCentre() {
       const groups = [
         { title: "Critical", subtitle: "30 days or less", className: "critical", filter: days => days <= 30 },
         { title: "High Risk", subtitle: "31-90 days", className: "moderate", filter: days => days >= 31 && days <= 90 },
-        { title: "Medium Risk", subtitle: "91-180 days", className: "controlled", filter: days => days >= 91 && days <= 180 }
+        { title: "Medium Risk", subtitle: "91-180 days", className: "controlled", filter: days => days >= 91 && days <= warningHorizonDays() }
       ];
       document.getElementById("warning-centre").innerHTML = groups.map(group => {
-        const items = activeRiskRecords().filter(item => daysToExpiry(item) !== null && group.filter(daysToExpiry(item)));
-        return `<article class="card warning-card"><div class="warning-head"><strong>${group.title}</strong><span>${group.subtitle} from ${selectedSnapshot().label}</span></div><div class="warning-list">${items.length ? items.map(item => `<button class="warning-item" type="button" data-profile-id="${item.id}"><strong>${escapeHtml(item.commodity)}</strong><span>${formatDate(item.expiryDate)} &middot; ${daysToExpiry(item)} days</span></button>`).join("") : '<div class="warning-empty">No commodities in this band.</div>'}</div></article>`;
+        const items = warningWindowRecords().filter(item => group.filter(daysToExpiryFromWarningDate(item)));
+        return `<article class="card warning-card"><div class="warning-head"><strong>${group.title}</strong><span>${group.subtitle} from ${warningDateLabel()}</span></div><div class="warning-list">${items.length ? items.map(item => `<button class="warning-item" type="button" data-profile-id="${item.id}"><strong>${escapeHtml(item.commodity)}</strong><span>${formatDate(item.expiryDate)} &middot; ${daysToExpiryFromWarningDate(item)} days</span></button>`).join("") : '<div class="warning-empty">No commodities in this band.</div>'}</div></article>`;
       }).join("");
       document.querySelectorAll("[data-profile-id]").forEach(button => button.addEventListener("click", () => openCommodityProfile(button.dataset.profileId)));
     }
 
     function renderWarningTop() {
-      const ranked = activeRiskRecords()
-        .sort((a, b) => daysToExpiry(a) - daysToExpiry(b))
+      const ranked = warningWindowRecords()
+        .sort((a, b) => daysToExpiryFromWarningDate(a) - daysToExpiryFromWarningDate(b))
         .slice(0, 20);
       document.getElementById("warning-top-table").innerHTML = ranked.map((item, index) => `
         <tr>
           <td>${index + 1}</td>
           <td class="commodity"><button class="commodity-button" type="button" data-warning-profile-id="${item.id}">${escapeHtml(item.commodity)}</button></td>
-          <td>${formatDate(item.expiryDate)}<br><span class="metric-sub">${daysToExpiry(item)} days</span></td>
+          <td>${formatDate(item.expiryDate)}<br><span class="metric-sub">${daysToExpiryFromWarningDate(item)} days</span></td>
           <td></td>
-          <td><span class="badge ${riskBadgeClass(expiryRiskBand(item))}">${expiryRiskBand(item)}</span></td>
-        </tr>`).join("");
+          <td><span class="badge ${riskBadgeClass(warningRiskBand(item))}">${warningRiskBand(item)}</span></td>
+        </tr>`).join("") || '<tr><td colspan="5" class="empty-state" style="display:table-cell">No commodities fall within 180 days of the selected date.</td></tr>';
       document.querySelectorAll("[data-warning-profile-id]").forEach(button => button.addEventListener("click", () => openCommodityProfile(button.dataset.warningProfileId)));
     }
 
@@ -3285,6 +3339,7 @@
       renderCalendar();
       renderMonthDetail();
       renderCommodity();
+      renderWarningDateFilter();
       renderWarningCentre();
       renderWarningTop();
       renderSalvageKpis();
