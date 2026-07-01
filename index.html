@@ -2240,8 +2240,8 @@
         </div>
         <aside class="reporting-card" aria-label="Reporting period">
           <span>Source reporting period</span>
-          <strong>May-September 2026</strong>
-          <p>Loaded from the updated Jan-15 Jun salvage summary and Jun-Dec available-expiry workbook.</p>
+          <strong>As of 01 July 2026</strong>
+          <p>Loaded from the ZAMMSA July raw query and 16-30 June salvage update. Blank values indicate missing unit price.</p>
         </aside>
       </div>
     </div>
@@ -2284,7 +2284,7 @@
       <p>The dashboard highlights the total value of commodities at risk, commodities successfully salvaged, remaining exposure, and priority commodities requiring urgent action. It also provides forecasts of upcoming expiries, tracks ongoing salvage initiatives, and monitors implementation of agreed action points by responsible institutions.</p>
       <p><strong>Current Reporting Period:</strong> This dashboard reflects the latest bi-weekly review and includes commodities identified as being at risk of expiry, ongoing salvage interventions, completed salvage actions, and projected expiries through December 2026.</p>
     </article>
-    <div class="demo-banner"><strong>Source data loaded:</strong> Summary_Salvaged products_1st Jan to 15th Jun26_Updated.xlsx. Missing source fields are intentionally blank.</div>
+    <div class="demo-banner"><strong>Source data loaded:</strong> Load_Query_July 1_2026 and Salvaged Products_16th Jun to 30th Jun_2026. Missing unit prices are intentionally blank.</div>
 
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
 
@@ -2571,7 +2571,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> Salvaged and expired values are from the workbook summary covering shipments from 1 January to 15 June 2026. Current expiry risk is from the Jun-Dec available-units tabs in Summary_Salvaged products_1st Jan to 15th Jun26_Updated.xlsx. Batch, warehouse, province, facility, and recipient fields are blank where they are not supplied. Warning bands are calculated from 15 June 2026 to each supplied expiry date.</p>
+    <p class="source-note"><strong>Source note:</strong> Salvaged and expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December expiries. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date.</p>
   </main>
 
   <footer>
@@ -2584,7 +2584,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js?v=20260627warningdate"></script>
+  <script src="assets/dashboard-data.js?v=20260701update"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -2698,7 +2698,8 @@
         ["March", "2026-03-31", "31 March 2026"],
         ["April", "2026-04-30", "30 April 2026"],
         ["May", "2026-05-31", "31 May 2026"],
-        ["June", sourceData.sourceUpdated, "15 June 2026"]
+        ["June", "2026-06-30", "30 June 2026"],
+        ["July", sourceData.sourceUpdated, "01 July 2026"]
       ];
       let salvaged = 0;
       let expired = 0;
@@ -2760,12 +2761,12 @@
     function renderExecutive() {
       const snapshot = selectedSnapshot();
       const metrics = [
-        ["Current Value at Risk", moneyExact(snapshot.atRisk), "Jun-Dec available units still expiring", "danger"],
-        ["Total Salvaged", moneyExact(snapshot.salvaged), "1 Jan-15 Jun shipped before expiry", "success"],
-        ["Total Expired", moneyExact(snapshot.expired), "1 Jan-15 Jun expired value", "warning"],
+        ["Known Value at Risk", moneyExact(snapshot.atRisk), "Jul-Dec priced raw-query rows still expiring", "danger"],
+        ["Total Salvaged", moneyExact(snapshot.salvaged), "1 Jan-30 Jun shipped before expiry", "success"],
+        ["Total Expired", moneyExact(snapshot.expired), "Jan-Jun expired value", "warning"],
         ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ reviewed Jan-15 Jun value", "success"],
         ["December Exposure", moneyExact(monthlyTargets.December), "Largest remaining monthly risk", "warning"],
-        ["Batch Lines Reviewed", expiryRecords.length, `${sourceData.expiredLineListCount || 0} expired rows + ${rawExpiryRecords.length - (sourceData.expiredLineListCount || 0)} available rows`, ""]
+        ["Batch Lines Reviewed", expiryRecords.length, `${sourceData.expiredLineListCount || 0} expired rows + ${rawExpiryRecords.length - (sourceData.expiredLineListCount || 0)} July raw rows`, ""]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
     }
@@ -3009,10 +3010,10 @@
       const commodities = new Set(events.map(event => event.sku).filter(Boolean)).size;
       const institutions = new Set(events.map(event => event.institution).filter(Boolean)).size;
       const metrics = [
-        ["Total Value Salvaged", moneyExact(sourceData.summary.valueSalvaged), "1 Jan-15 Jun shipped before expiry", "success"],
-        ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ reviewed Jan-15 Jun value", "success"],
+        ["Total Value Salvaged", moneyExact(sourceData.summary.valueSalvaged), "1 Jan-30 Jun shipped before expiry", "success"],
+        ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ salvaged plus expired value", "success"],
         ["Products Salvaged", commodities, `${events.length} updated salvage rows`, ""],
-        ["Value Expired", moneyExact(sourceData.summary.valueExpired), "1 Jan-15 Jun expired value", "warning"]
+        ["Value Expired", moneyExact(sourceData.summary.valueExpired), "Jan-Jun expired value", "warning"]
       ];
       document.getElementById("salvage-kpis").innerHTML = metrics.map(([label, value, sub, tone]) =>
         `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`
@@ -3146,14 +3147,14 @@
         </div>`).join("");
       const ticker = document.getElementById("product-ticker");
       ticker.innerHTML = markup + markup;
-      ticker.style.setProperty("--ticker-duration", `${Math.max(1200, items.length * 30)}s`);
+      ticker.style.setProperty("--ticker-duration", `${Math.min(3600, Math.max(900, items.length * 2))}s`);
     }
 
     function renderChangesSinceReview() {
       const cards = [
-        { className: "risk", title: "Current value at risk", lines: [[moneyExact(sourceData.summary.valueAtRisk), "Jun-Dec available units still expiring"]] },
-        { className: "", title: "Successfully salvaged", lines: [[moneyExact(sourceData.summary.valueSalvaged), "1 Jan-15 Jun shipped before expiry"]] },
-        { className: "expired", title: "Expired", lines: [[moneyExact(sourceData.summary.valueExpired), "1 Jan-15 Jun expired value"]] },
+        { className: "risk", title: "Known value at risk", lines: [[moneyExact(sourceData.summary.valueAtRisk), "Jul-Dec priced raw-query rows still expiring"]] },
+        { className: "", title: "Successfully salvaged", lines: [[moneyExact(sourceData.summary.valueSalvaged), "1 Jan-30 Jun shipped before expiry"]] },
+        { className: "expired", title: "Expired", lines: [[moneyExact(sourceData.summary.valueExpired), "Jan-Jun expired value"]] },
         { className: "partner", title: "Partners engaged", lines: [["", "Engagement status not supplied"]] }
       ];
       document.getElementById("changes-since-review").innerHTML = cards.map(card => `
@@ -3286,18 +3287,19 @@
     }
 
     function renderNationalSummary() {
-      const summaryMonths = ["January", "February", "March", "April", "May", "June"];
-      const monthLabels = { January: "Jan", February: "Feb", March: "Mar", April: "Apr", May: "May", June: "June*" };
+      const summaryMonths = monthOrder;
+      const monthLabels = { January: "Jan", February: "Feb", March: "Mar", April: "Apr", May: "May", June: "Jun", July: "Jul", August: "Aug", September: "Sep", October: "Oct", November: "Nov", December: "Dec" };
       const rows = summaryMonths.map(month => {
         const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
         const expired = sourceData.monthlyValueExpired?.[month] ?? null;
-        const total = sourceData.monthlyHistoricalReviewed?.[month] ?? null;
-        return { month, salvaged, expired, total, rate: rate(salvaged, total) };
+        const total = sourceData.monthlyHistoricalReviewed?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
+        const denominator = (salvaged || 0) + (expired || 0) + (!expired && sourceData.monthlyValueAtRisk?.[month] ? sourceData.monthlyValueAtRisk[month] : 0);
+        return { month, salvaged, expired, total, rate: rate(salvaged, denominator) };
       });
       const totals = {
         salvaged: sourceData.summary.valueSalvaged,
         expired: sourceData.summary.valueExpired,
-        total: sourceData.summary.historicalReviewedValue
+        total: sourceData.summary.historicalReviewedValue + sourceData.summary.valueAtRisk
       };
       const summaryMarkup = rows.map(row => `
         <tr>
