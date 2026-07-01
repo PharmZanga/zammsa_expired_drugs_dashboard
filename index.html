@@ -2763,6 +2763,7 @@
     const rate = (salvaged, total) => isNumber(salvaged) && total ? Math.round((salvaged / total) * 100) : "";
     const preciseRate = (salvaged, total) => isNumber(salvaged) && total ? ((salvaged / total) * 100).toFixed(2) : "";
     const formatDate = value => value ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${value}T12:00:00+02:00`)) : "";
+    const monthNameFromDate = value => value ? new Intl.DateTimeFormat("en-US", { month: "long" }).format(new Date(`${value}T12:00:00+02:00`)) : "";
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
     const selectedSnapshot = () => snapshots.find(item => item.id === selectedSnapshotId);
     const eventsThroughSnapshot = () => salvageEvents;
@@ -2779,6 +2780,63 @@
       return { records, total, salvaged, expired, reviewed, remaining, allExpired, rate: preciseRate(salvaged, reviewed) };
     };
     const alertLevel = value => !isNumber(value) ? "" : value > 1000000 ? "Critical" : value >= 500000 ? "Moderate" : "Controlled";
+
+    function shortTextList(values) {
+      const uniqueValues = [...new Set(values.filter(Boolean).map(value => String(value).trim()).filter(Boolean))].sort();
+      return uniqueValues.length <= 2 ? uniqueValues.join("; ") : `${uniqueValues.slice(0, 2).join("; ")} +${uniqueValues.length - 2} more`;
+    }
+
+    function salvageEventsForMonth(month) {
+      return eventsThroughSnapshot().filter(event => monthNameFromDate(event.expiryDate) === month);
+    }
+
+    function salvagedProductsForMonth(month) {
+      const grouped = new Map();
+      salvageEventsForMonth(month).forEach(event => {
+        const key = [month, event.sku || "", event.commodity || ""].join("||");
+        if (!grouped.has(key)) {
+          grouped.set(key, {
+            month,
+            sku: event.sku || "",
+            commodity: event.commodity || "",
+            quantity: null,
+            value: null,
+            batchValues: [],
+            institutionValues: [],
+            expiryDateValues: [],
+            shippedDateValues: [],
+            sourceRows: 0
+          });
+        }
+        const current = grouped.get(key);
+        current.sourceRows += 1;
+        if (isNumber(event.quantity)) current.quantity = (isNumber(current.quantity) ? current.quantity : 0) + event.quantity;
+        if (isNumber(event.value)) current.value = (isNumber(current.value) ? current.value : 0) + event.value;
+        current.batchValues.push(event.batch);
+        current.institutionValues.push(event.institution);
+        current.expiryDateValues.push(event.expiryDate);
+        current.shippedDateValues.push(event.shippedDate);
+      });
+      return [...grouped.values()].map(item => {
+        const expiryDates = [...new Set(item.expiryDateValues.filter(Boolean))].sort();
+        const shippedDates = [...new Set(item.shippedDateValues.filter(Boolean))].sort();
+        const matchingExposure = monthRecords(month).filter(record =>
+          item.sku ? record.sku === item.sku : record.commodity === item.commodity
+        );
+        const exposureValue = matchingExposure.some(record => isNumber(record.value)) ? sum(matchingExposure, "value") : null;
+        return {
+          ...item,
+          batch: shortTextList(item.batchValues),
+          institution: shortTextList(item.institutionValues),
+          expiryDate: expiryDates[0] || "",
+          expiryDateNote: expiryDates.length > 1 ? `${expiryDates.length} expiry dates` : "",
+          shippedDate: shippedDates[0] || "",
+          shippedDateNote: shippedDates.length > 1 ? `${shippedDates.length} shipped dates` : "",
+          exposureValue,
+          remainingRisk: isNumber(exposureValue) && isNumber(item.value) ? Math.max(0, exposureValue - item.value) : null
+        };
+      });
+    }
 
     function renderSnapshotSelector() {
       const select = document.getElementById("snapshot-select");
@@ -3010,26 +3068,23 @@
       }));
 
       const stats = monthStats(selectedMonth);
-      const rankedProducts = [...stats.records].sort((a, b) => (b.value || 0) - (a.value || 0));
+      const rankedProducts = salvagedProductsForMonth(selectedMonth).sort((a, b) => (b.value || 0) - (a.value || 0));
       const totalPages = Math.max(1, Math.ceil(rankedProducts.length / salvagePageSize));
       salvageProductPage = Math.min(Math.max(1, salvageProductPage), totalPages);
       const start = (salvageProductPage - 1) * salvagePageSize;
       const pageProducts = rankedProducts.slice(start, start + salvagePageSize);
       document.getElementById("salvage-month-products").innerHTML = pageProducts.length ? pageProducts.map(item => {
-        const remaining = isNumber(item.value) && isNumber(item.salvagedValue)
-          ? Math.max(0, item.value - item.salvagedValue)
-          : null;
         return `<tr>
           <td class="commodity">${escapeHtml(item.commodity)}<br><span class="metric-sub">${escapeHtml(item.sku)}</span></td>
-          <td>${isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""}</td>
+          <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
+          <td>${moneyExact(item.exposureValue)}</td>
           <td>${moneyExact(item.value)}</td>
-          <td>${moneyExact(item.salvagedValue)}</td>
-          <td>${moneyExact(remaining)}</td>
-          <td>${formatDate(item.expiryDate)}</td>
+          <td>${moneyExact(item.remainingRisk)}</td>
+          <td>${formatDate(item.expiryDate)}${item.expiryDateNote ? `<br><span class="metric-sub">${escapeHtml(item.expiryDateNote)}</span>` : ""}</td>
         </tr>`;
-      }).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">No commodity records were supplied for ${selectedMonth} 2026.</td></tr>`;
+      }).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">No salvaged product records were supplied for commodities expiring in ${selectedMonth} 2026.</td></tr>`;
       document.getElementById("salvage-month-product-count").textContent =
-        `${rankedProducts.length} ${selectedMonth} commodit${rankedProducts.length === 1 ? "y" : "ies"} · showing ${pageProducts.length ? start + 1 : 0}-${Math.min(start + pageProducts.length, rankedProducts.length)}`;
+        `${rankedProducts.length} salvaged ${selectedMonth} product${rankedProducts.length === 1 ? "" : "s"} · showing ${pageProducts.length ? start + 1 : 0}-${Math.min(start + pageProducts.length, rankedProducts.length)}`;
       document.getElementById("salvage-month-product-total").textContent =
         "";
       document.getElementById("salvage-month-product-total").innerHTML = `
@@ -3050,11 +3105,10 @@
     }
 
     function renderSalvageRegister() {
-      const monthNumber = { May: 5, June: 6, July: 7, August: 8, September: 9, October: 10, November: 11, December: 12 }[selectedMonth];
-      const events = eventsThroughSnapshot().filter(event => event.expiryDate && new Date(`${event.expiryDate}T12:00:00`).getMonth() + 1 === monthNumber);
+      const events = salvageEventsForMonth(selectedMonth);
       document.getElementById("salvage-register-title").textContent = `${selectedMonth} detailed shipment evidence`;
       document.getElementById("salvage-register-copy").textContent =
-        `Shipment evidence for products expiring in ${selectedMonth} 2026. Monetary value is blank because it is not supplied at shipment-row level.`;
+        `Shipment evidence for products expiring in ${selectedMonth} 2026, including quantity, value salvaged, shipped date, expiry date, and institution where supplied.`;
       document.getElementById("salvage-register").innerHTML = events.length ? events.map(event =>
         `<tr><td class="commodity">${escapeHtml(event.commodity)}</td><td>${escapeHtml(event.batch)}</td><td>${isNumber(event.quantity) ? event.quantity.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(event.value)}</td><td>${formatDate(event.shippedDate)}</td><td>${formatDate(event.expiryDate)}</td><td>${escapeHtml(event.institution)}</td></tr>`
       ).join("") : `<tr><td colspan="7" class="empty-state" style="display:table-cell">No shipment records were supplied for products expiring in ${selectedMonth} 2026.</td></tr>`;
