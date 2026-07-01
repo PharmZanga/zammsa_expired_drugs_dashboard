@@ -2506,6 +2506,11 @@
     <section class="card tracker"><div class="table-wrap"><table><thead><tr><th>Recipient Institution</th><th>Shipment Records</th><th>Quantity Shipped</th><th>Province(s)</th><th>Value</th></tr></thead><tbody id="institution-table"></tbody></table></div></section>
     <div class="section-heading"><h2>National salvage and expiry summary</h2><p>Historical value reviewed from 1 January to 15 June 2026, including salvaged and expired outcomes.</p></div>
     <section class="card tracker">
+      <div class="toolbar summary-filter-toolbar">
+        <label><span class="sr-only">Summary range</span><select class="control summary-range-mode" data-summary-range-mode><option value="All">All months</option><option value="Custom">Month range</option></select></label>
+        <label><span class="sr-only">Summary start month</span><select class="control summary-range-start" data-summary-range-start></select></label>
+        <label><span class="sr-only">Summary end month</span><select class="control summary-range-end" data-summary-range-end></select></label>
+      </div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Month</th><th>Salvaged (ZMW)</th><th>Expired (ZMW)</th><th>Total Value (ZMW)</th><th>Salvage Percentage</th></tr></thead>
@@ -2530,6 +2535,11 @@
     <div class="view-header"><div><h2>National Salvage / Expiry Summary</h2></div><p>Workbook summary of salvaged value, expired value, total reviewed value, and salvage percentage.</p></div>
     <section class="metrics" id="national-summary-kpis"></section>
     <section class="card tracker">
+      <div class="toolbar summary-filter-toolbar">
+        <label><span class="sr-only">Summary range</span><select class="control summary-range-mode" data-summary-range-mode><option value="All">All months</option><option value="Custom">Month range</option></select></label>
+        <label><span class="sr-only">Summary start month</span><select class="control summary-range-start" data-summary-range-start></select></label>
+        <label><span class="sr-only">Summary end month</span><select class="control summary-range-end" data-summary-range-end></select></label>
+      </div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Month</th><th>Salvaged (ZMW)</th><th>Expired (ZMW)</th><th>Total Value (ZMW)</th><th>Salvage Percentage</th></tr></thead>
@@ -2722,6 +2732,9 @@
     let selectedCommodityId = expiryRecords[0]?.id || "";
     let selectedSnapshotId = snapshots[snapshots.length - 1]?.id || sourceData.sourceUpdated;
     let selectedWarningDate = sourceData.sourceUpdated;
+    let selectedSummaryRangeMode = "All";
+    let selectedSummaryStartMonth = monthOrder[0] || "January";
+    let selectedSummaryEndMonth = monthOrder[monthOrder.length - 1] || "December";
     let salvageProductPage = 1;
     const salvagePageSize = 20;
 
@@ -3460,8 +3473,54 @@
       });
     }
 
+    function summaryRangeMonths() {
+      if (selectedSummaryRangeMode === "All") return monthOrder;
+      const startIndex = monthOrder.indexOf(selectedSummaryStartMonth);
+      const endIndex = monthOrder.indexOf(selectedSummaryEndMonth);
+      if (startIndex === -1 || endIndex === -1) return monthOrder;
+      const from = Math.min(startIndex, endIndex);
+      const to = Math.max(startIndex, endIndex);
+      return monthOrder.slice(from, to + 1);
+    }
+
+    function summaryRangeLabel(months) {
+      if (selectedSummaryRangeMode === "All" || months.length === monthOrder.length) return "All months, Jan-Dec 2026";
+      return months.length === 1 ? `${months[0]} 2026` : `${months[0]}-${months[months.length - 1]} 2026`;
+    }
+
+    function renderSummaryRangeControls() {
+      const monthOptions = monthOrder.map(month => `<option value="${month}">${month}</option>`).join("");
+      document.querySelectorAll("[data-summary-range-mode]").forEach(select => {
+        select.value = selectedSummaryRangeMode;
+        select.onchange = () => {
+          selectedSummaryRangeMode = select.value;
+          renderNationalSummary();
+        };
+      });
+      document.querySelectorAll("[data-summary-range-start]").forEach(select => {
+        if (!select.options.length) select.innerHTML = monthOptions;
+        select.value = selectedSummaryStartMonth;
+        select.disabled = selectedSummaryRangeMode === "All";
+        select.onchange = () => {
+          selectedSummaryStartMonth = select.value;
+          selectedSummaryRangeMode = "Custom";
+          renderNationalSummary();
+        };
+      });
+      document.querySelectorAll("[data-summary-range-end]").forEach(select => {
+        if (!select.options.length) select.innerHTML = monthOptions;
+        select.value = selectedSummaryEndMonth;
+        select.disabled = selectedSummaryRangeMode === "All";
+        select.onchange = () => {
+          selectedSummaryEndMonth = select.value;
+          selectedSummaryRangeMode = "Custom";
+          renderNationalSummary();
+        };
+      });
+    }
+
     function renderNationalSummary() {
-      const summaryMonths = monthOrder;
+      const summaryMonths = summaryRangeMonths();
       const monthLabels = { January: "Jan", February: "Feb", March: "Mar", April: "Apr", May: "May", June: "Jun", July: "Jul", August: "Aug", September: "Sep", October: "Oct", November: "Nov", December: "Dec" };
       const rows = summaryMonths.map(month => {
         const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
@@ -3471,10 +3530,11 @@
         return { month, salvaged, expired, total, rate: rate(salvaged, denominator) };
       });
       const totals = {
-        salvaged: sourceData.summary.valueSalvaged,
-        expired: sourceData.summary.valueExpired,
-        total: sourceData.summary.historicalReviewedValue + sourceData.summary.valueAtRisk
+        salvaged: sum(rows, "salvaged"),
+        expired: sum(rows, "expired"),
+        total: sum(rows, "total")
       };
+      const rangeLabel = summaryRangeLabel(summaryMonths);
       const summaryMarkup = rows.map(row => `
         <tr>
           <td class="commodity">${monthLabels[row.month]}</td>
@@ -3495,10 +3555,10 @@
         if (table) table.innerHTML = summaryMarkup;
       });
       const kpis = [
-        ["Total Salvaged", moneyExact(totals.salvaged), "1 Jan-15 Jun shipped before expiry", "success"],
-        ["Total Expired", moneyExact(totals.expired), "1 Jan-15 Jun expired value", "warning"],
-        ["Total Reviewed", moneyExact(totals.total), "Salvaged + expired value", ""],
-        ["Salvage Percentage", `${rate(totals.salvaged, totals.total)}%`, "Workbook total salvage percentage", "success"]
+        ["Total Salvaged", moneyExact(totals.salvaged), rangeLabel, "success"],
+        ["Total Expired", moneyExact(totals.expired), rangeLabel, "warning"],
+        ["Total Reviewed", moneyExact(totals.total), "Filtered total value for selected months", ""],
+        ["Salvage Percentage", `${rate(totals.salvaged, totals.total)}%`, `Filtered percentage for ${rangeLabel}`, "success"]
       ];
       const kpiTarget = document.getElementById("national-summary-kpis");
       if (kpiTarget) {
@@ -3506,6 +3566,7 @@
           `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`
         ).join("");
       }
+      renderSummaryRangeControls();
     }
 
     function renderAllSnapshotViews() {
