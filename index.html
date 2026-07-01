@@ -2241,7 +2241,7 @@
         <aside class="reporting-card" aria-label="Reporting period">
           <span>Source reporting period</span>
           <strong>As of 01 July 2026</strong>
-          <p>Loaded from the ZAMMSA July raw query and 16-30 June salvage update. Blank values indicate missing unit price.</p>
+          <p>Loaded from the ZAMMSA July raw query and 16-30 June salvage update, filtered to 2026 expiries only.</p>
         </aside>
       </div>
     </div>
@@ -2284,7 +2284,7 @@
       <p>The dashboard highlights the total value of commodities at risk, commodities successfully salvaged, remaining exposure, and priority commodities requiring urgent action. It also provides forecasts of upcoming expiries, tracks ongoing salvage initiatives, and monitors implementation of agreed action points by responsible institutions.</p>
       <p><strong>Current Reporting Period:</strong> This dashboard reflects the latest bi-weekly review and includes commodities identified as being at risk of expiry, ongoing salvage interventions, completed salvage actions, and projected expiries through December 2026.</p>
     </article>
-    <div class="demo-banner"><strong>Source data loaded:</strong> Load_Query_July 1_2026 and Salvaged Products_16th Jun to 30th Jun_2026. Missing unit prices are intentionally blank.</div>
+    <div class="demo-banner"><strong>Source data loaded:</strong> Load_Query_July 1_2026 and Salvaged Products_16th Jun to 30th Jun_2026. Dashboard is filtered to 2026 expiries only; missing unit prices are intentionally blank.</div>
 
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
 
@@ -2571,7 +2571,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> Salvaged and expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December expiries. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date.</p>
+    <p class="source-note"><strong>Source note:</strong> Salvaged and expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December 2026 expiries only. Products expiring after 2026 are excluded. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date.</p>
   </main>
 
   <footer>
@@ -2584,7 +2584,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js?v=20260701update"></script>
+  <script src="assets/dashboard-data.js?v=20260701-2026only"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -2649,15 +2649,20 @@
         const values = [...set].filter(Boolean);
         return values.length <= 3 ? values.join("; ") : `${values.slice(0, 3).join("; ")} +${values.length - 3} more`;
       };
+      const firstDate = set => [...set].filter(Boolean).sort()[0] || "";
       records.forEach(item => {
-        const key = [item.month, item.sku, item.commodity, item.batch, item.unitPrice, item.expiryDate].join("||");
+        const key = [item.month, item.sku, item.commodity, item.status].join("||");
         if (!grouped.has(key)) {
           grouped.set(key, {
             ...item,
+            batch: "",
+            expiryDate: "",
             quantity: null,
             value: null,
             shippedQuantity: null,
             salvagedValue: null,
+            batchSet: new Set(),
+            expiryDateSet: new Set(),
             warehouseSet: new Set(),
             provinceSet: new Set(),
             facilitySet: new Set(),
@@ -2671,6 +2676,8 @@
         ["quantity", "value", "shippedQuantity", "salvagedValue"].forEach(field => {
           if (numeric(item[field])) current[field] = (numeric(current[field]) ? current[field] : 0) + item[field];
         });
+        addText(current.batchSet, item.batch);
+        addText(current.expiryDateSet, item.expiryDate);
         addText(current.warehouseSet, item.warehouse);
         addText(current.provinceSet, item.province);
         addText(current.facilitySet, item.facility);
@@ -2678,10 +2685,12 @@
         addText(current.statusSet, item.status);
       });
       return [...grouped.values()].map((item, index) => {
-        const { warehouseSet, provinceSet, facilitySet, institutionSet, statusSet, ...record } = item;
+        const { batchSet, expiryDateSet, warehouseSet, provinceSet, facilitySet, institutionSet, statusSet, ...record } = item;
         return {
           ...record,
-          id: `${record.month}-${record.sku}-${record.batch || "no-batch"}-${index}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+          id: `${record.month}-${record.sku}-${record.commodity}-${index}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+          batch: textList(batchSet),
+          expiryDate: firstDate(expiryDateSet),
           warehouse: textList(warehouseSet),
           province: textList(provinceSet),
           facility: textList(facilitySet),
@@ -3147,7 +3156,7 @@
         </div>`).join("");
       const ticker = document.getElementById("product-ticker");
       ticker.innerHTML = markup + markup;
-      ticker.style.setProperty("--ticker-duration", `${Math.min(3600, Math.max(900, items.length * 2))}s`);
+      ticker.style.setProperty("--ticker-duration", `${Math.min(7200, Math.max(1800, items.length * 4))}s`);
     }
 
     function renderChangesSinceReview() {
