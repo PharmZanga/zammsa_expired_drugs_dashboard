@@ -3121,12 +3121,13 @@
     function renderSalvageKpis() {
       const events = eventsThroughSnapshot();
       const commodities = new Set(events.map(event => event.sku).filter(Boolean)).size;
-      const institutions = new Set(events.map(event => event.institution).filter(Boolean)).size;
+      const totalReviewed = sourceData.summary.valueSalvaged + sourceData.summary.valueExpired;
       const metrics = [
-        ["Total Value Salvaged", moneyExact(sourceData.summary.valueSalvaged), "1 Jan-30 Jun shipped before expiry", "success"],
+        ["Total Reviewed Value", moneyExact(totalReviewed), "Salvaged + expired commodity value", ""],
+        ["Total Value Salvaged", moneyExact(sourceData.summary.valueSalvaged), "Jan-Dec expiry months, shipped before expiry", "success"],
         ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ salvaged plus expired value", "success"],
-        ["Products Salvaged", commodities, `${events.length} updated salvage rows`, ""],
-        ["Value Expired", moneyExact(sourceData.summary.valueExpired), "Jan-Jun expired value", "warning"]
+        ["Products Salvaged", commodities, `${events.length} Jan-Dec salvage shipment rows`, ""],
+        ["Value Expired", moneyExact(sourceData.summary.valueExpired), "Jan-Jun verified expired value", "warning"]
       ];
       document.getElementById("salvage-kpis").innerHTML = metrics.map(([label, value, sub, tone]) =>
         `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`
