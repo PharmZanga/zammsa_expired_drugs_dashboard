@@ -2796,11 +2796,13 @@
 
     function renderExecutive() {
       const snapshot = selectedSnapshot();
+      const totalReviewed = sourceData.summary.valueSalvaged + sourceData.summary.valueExpired;
       const metrics = [
         ["Known Value at Risk", moneyExact(snapshot.atRisk), "Jul-Dec priced raw-query rows still expiring", "danger"],
         ["Total Salvaged", moneyExact(snapshot.salvaged), "1 Jan-30 Jun shipped before expiry", "success"],
         ["Total Expired", moneyExact(snapshot.expired), "Jan-Jun expired value", "warning"],
-        ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ reviewed Jan-15 Jun value", "success"],
+        ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ salvaged plus expired value", "success"],
+        ["Total Reviewed", moneyExact(totalReviewed), "Salvaged + expired value", ""],
         ["December Exposure", moneyExact(monthlyTargets.December), "Largest remaining monthly risk", "warning"],
         ["Batch Lines Reviewed", expiryRecords.length, `${sourceData.expiredLineListCount || 0} expired rows + ${rawExpiryRecords.length - (sourceData.expiredLineListCount || 0)} July raw rows`, ""]
       ];
