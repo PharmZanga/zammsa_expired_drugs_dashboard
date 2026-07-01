@@ -682,6 +682,8 @@
     .table-footer {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
       gap: 16px;
       padding: 13px 22px;
       color: var(--muted);
@@ -1546,6 +1548,7 @@
     body[data-active-view="commodity-register"] .shared-monitor,
     body[data-active-view="warning-centre"] .shared-monitor,
     body[data-active-view="salvage-tracker"] .shared-monitor,
+    body[data-active-view="shipment-register"] .shared-monitor,
     body[data-active-view="action-tracker"] .shared-monitor,
     body[data-active-view="root-cause-analysis"] .shared-monitor,
     body[data-active-view="institution-performance"] .shared-monitor,
@@ -1562,6 +1565,8 @@
     body[data-active-view="warning-centre"] .shared-monitor .calendar,
     body[data-active-view="salvage-tracker"] .shared-monitor .section-heading,
     body[data-active-view="salvage-tracker"] .shared-monitor .calendar,
+    body[data-active-view="shipment-register"] .shared-monitor .section-heading,
+    body[data-active-view="shipment-register"] .shared-monitor .calendar,
     body[data-active-view="action-tracker"] .shared-monitor .section-heading,
     body[data-active-view="action-tracker"] .shared-monitor .calendar,
     body[data-active-view="root-cause-analysis"] .shared-monitor .section-heading,
@@ -1576,6 +1581,7 @@
     body[data-active-view="commodity-register"] .dashboard-content main,
     body[data-active-view="warning-centre"] .dashboard-content main,
     body[data-active-view="salvage-tracker"] .dashboard-content main,
+    body[data-active-view="shipment-register"] .dashboard-content main,
     body[data-active-view="action-tracker"] .dashboard-content main,
     body[data-active-view="root-cause-analysis"] .dashboard-content main,
     body[data-active-view="institution-performance"] .dashboard-content main,
@@ -1847,6 +1853,9 @@
     }
 
     .export-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border: 1px solid rgba(20, 78, 63, 0.28);
       border-radius: 999px;
       padding: 10px 14px;
@@ -1856,6 +1865,7 @@
       font-weight: 800;
       cursor: pointer;
       white-space: nowrap;
+      text-decoration: none;
       box-shadow: 0 8px 18px rgba(20, 78, 63, 0.08);
     }
 
@@ -2340,6 +2350,7 @@
         <a class="nav-link" href="#commodity-register" data-view="commodity-register"><span class="nav-icon">Rx</span><span class="nav-text">Commodity Register</span></a>
         <a class="nav-link" href="#warning-centre" data-view="warning-centre"><span class="nav-icon">!</span><span class="nav-text">Warning Centre</span></a>
         <a class="nav-link" href="#salvage-tracker" data-view="salvage-tracker"><span class="nav-icon">↻</span><span class="nav-text">Salvage Tracker</span></a>
+        <a class="nav-link" href="#shipment-register" data-view="shipment-register"><span class="nav-icon">⇄</span><span class="nav-text">Shipment Register</span></a>
         <a class="nav-link" href="#action-tracker" data-view="action-tracker"><span class="nav-icon">☷</span><span class="nav-text">Action Tracker</span></a>
         <a class="nav-link" href="#root-cause-analysis" data-view="root-cause-analysis"><span class="nav-icon">↗</span><span class="nav-text">Root Cause Analysis</span></a>
         <a class="nav-link" href="#historical-snapshots" data-view="historical-snapshots"><span class="nav-icon">◷</span><span class="nav-text">Historical Snapshots</span></a>
@@ -2470,8 +2481,12 @@
           <tbody id="salvage-month-products"></tbody>
         </table>
       </div>
-      <div class="table-footer"><span id="salvage-month-product-count"></span><span id="salvage-month-product-total"></span></div>
+      <div class="table-footer"><span id="salvage-month-product-count"></span><span id="salvage-month-product-total"></span><a class="export-button" href="#shipment-register">Open Shipment Register</a></div>
     </section>
+    </div>
+
+    <div class="dashboard-view" id="view-shipment-register" data-view="shipment-register">
+    <div class="view-header"><div><h2>Shipment Register</h2></div><div class="view-actions"><p>Permanent recipient-level salvage shipment evidence by selected expiry month.</p><button class="export-button" type="button" data-export-view="shipment-register">Export PDF</button></div></div>
     <div class="section-heading">
       <h2 id="salvage-register-title">May detailed shipment evidence</h2>
       <p id="salvage-register-copy">Permanent recipient-level movement evidence filtered to the selected expiry month.</p>
@@ -3599,6 +3614,7 @@
       "commodity-register",
       "warning-centre",
       "salvage-tracker",
+      "shipment-register",
       "action-tracker",
       "root-cause-analysis",
       "historical-snapshots",
