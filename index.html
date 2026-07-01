@@ -2283,6 +2283,18 @@
         display: block !important;
       }
 
+      body.print-section .dashboard-view.active > * {
+        display: none !important;
+      }
+
+      body.print-section .dashboard-view.active .print-target {
+        display: block !important;
+      }
+
+      body.print-section .dashboard-view.active .print-target .toolbar {
+        display: none !important;
+      }
+
       .view-header {
         padding: 0 0 12px;
         border: 0;
@@ -2467,14 +2479,17 @@
     </div>
 
     <div class="dashboard-view" id="view-salvage-tracker" data-view="salvage-tracker">
-    <div class="view-header"><div><h2>Salvage Tracker</h2></div><div class="view-actions"><p>What value has been saved, when, and through which institution?</p><button class="export-button" type="button" data-export-view="salvage-tracker">Export PDF</button></div></div>
+    <div class="view-header"><div><h2>Salvage Tracker</h2></div><div class="view-actions"><p>What value has been saved, when, and through which institution?</p><button class="export-button" type="button" data-export-view="salvage-tracker" data-export-target="salvage-month-list">Export PDF</button></div></div>
     <section class="metrics" id="salvage-kpis"></section>
     <div class="section-heading">
       <h2>Monthly salvage performance</h2>
       <p>Select a month to compare the total value expiring with the value already salvaged.</p>
     </div>
     <section class="salvage-month-grid" id="salvage-month-grid" aria-label="Monthly expiring and salvaged values"></section>
-    <section class="card tracker">
+    <section class="card tracker" id="salvage-month-list">
+      <div class="toolbar">
+        <label class="search-wrap"><span class="sr-only">Search salvaged commodities</span><input class="control" id="salvage-product-search" type="search" placeholder="Search commodity or SKU..." autocomplete="off"></label>
+      </div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Commodity</th><th>Shipped Units</th><th>Total Expiring</th><th>Value Salvaged</th><th>Remaining Risk</th><th>Expiry Date</th></tr></thead>
@@ -2750,6 +2765,7 @@
     let selectedSummaryRangeMode = "All";
     let selectedSummaryStartMonth = monthOrder[0] || "January";
     let selectedSummaryEndMonth = monthOrder[monthOrder.length - 1] || "December";
+    let salvageProductSearch = "";
     let salvageProductPage = 1;
     const salvagePageSize = 20;
 
@@ -3155,7 +3171,12 @@
       }));
 
       const stats = monthStats(selectedMonth);
-      const rankedProducts = salvagedProductsForMonth(selectedMonth).sort((a, b) => (b.value || 0) - (a.value || 0));
+      const query = salvageProductSearch.trim().toLowerCase();
+      const searchInput = document.getElementById("salvage-product-search");
+      if (searchInput && searchInput.value !== salvageProductSearch) searchInput.value = salvageProductSearch;
+      const rankedProducts = salvagedProductsForMonth(selectedMonth)
+        .filter(item => !query || `${item.commodity} ${item.sku}`.toLowerCase().includes(query))
+        .sort((a, b) => (b.value || 0) - (a.value || 0));
       const totalPages = Math.max(1, Math.ceil(rankedProducts.length / salvagePageSize));
       salvageProductPage = Math.min(Math.max(1, salvageProductPage), totalPages);
       const start = (salvageProductPage - 1) * salvagePageSize;
@@ -3169,9 +3190,9 @@
           <td>${moneyExact(item.remainingRisk)}</td>
           <td>${formatDate(item.expiryDate)}${item.expiryDateNote ? `<br><span class="metric-sub">${escapeHtml(item.expiryDateNote)}</span>` : ""}</td>
         </tr>`;
-      }).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">No salvaged product records were supplied for commodities expiring in ${selectedMonth} 2026.</td></tr>`;
+      }).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">${query ? `No salvaged products match "${escapeHtml(salvageProductSearch)}" for ${selectedMonth} 2026.` : `No salvaged product records were supplied for commodities expiring in ${selectedMonth} 2026.`}</td></tr>`;
       document.getElementById("salvage-month-product-count").textContent =
-        `${rankedProducts.length} salvaged ${selectedMonth} product${rankedProducts.length === 1 ? "" : "s"} · showing ${pageProducts.length ? start + 1 : 0}-${Math.min(start + pageProducts.length, rankedProducts.length)}`;
+        `${rankedProducts.length} salvaged ${selectedMonth} product${rankedProducts.length === 1 ? "" : "s"}${query ? ` matching "${salvageProductSearch}"` : ""} · showing ${pageProducts.length ? start + 1 : 0}-${Math.min(start + pageProducts.length, rankedProducts.length)}`;
       document.getElementById("salvage-month-product-total").textContent =
         "";
       document.getElementById("salvage-month-product-total").innerHTML = `
@@ -3189,6 +3210,13 @@
         salvageProductPage += 1;
         renderSalvageMonthSummary();
       });
+      if (searchInput) {
+        searchInput.oninput = () => {
+          salvageProductSearch = searchInput.value;
+          salvageProductPage = 1;
+          renderSalvageMonthSummary();
+        };
+      }
     }
 
     function renderSalvageRegister() {
@@ -3647,13 +3675,23 @@
 
     document.querySelectorAll("[data-export-view]").forEach(button => button.addEventListener("click", () => {
       const view = button.dataset.exportView;
+      const exportTargetId = button.dataset.exportTarget;
       activateView(view, true);
       const currentTitle = document.title;
       const reportName = button.closest(".view-header")?.querySelector("h2")?.textContent || "Dashboard Report";
       document.title = `${reportName} - National Short Expiry and Salvage Dashboard`;
+      const exportTarget = exportTargetId ? document.getElementById(exportTargetId) : null;
+      if (exportTarget) {
+        document.body.classList.add("print-section");
+        exportTarget.classList.add("print-target");
+      }
       setTimeout(() => {
         window.print();
         setTimeout(() => {
+          if (exportTarget) {
+            document.body.classList.remove("print-section");
+            exportTarget.classList.remove("print-target");
+          }
           document.title = currentTitle;
         }, 500);
       }, 120);
