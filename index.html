@@ -2423,6 +2423,10 @@
     </div>
     <section class="card tracker">
       <div class="summary-metrics" id="month-summary"></div>
+      <div class="toolbar expiry-detail-toolbar">
+        <label class="search-wrap"><span class="sr-only">Search expiry forecast commodities</span><input class="control" id="expiry-forecast-search" type="search" placeholder="Search commodity or SKU..." autocomplete="off"></label>
+        <label><span class="sr-only">Rows to show</span><select class="control" id="expiry-forecast-page-size"><option value="10">Show 10</option><option value="20">Show 20</option><option value="50">Show 50</option><option value="100">Show 100</option><option value="All">Show all</option></select></label>
+      </div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>SKU / Commodity</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Expiry Date</th></tr></thead>
@@ -2775,6 +2779,9 @@
     let selectedSummaryRangeMode = "All";
     let selectedSummaryStartMonth = monthOrder[0] || "January";
     let selectedSummaryEndMonth = monthOrder[monthOrder.length - 1] || "December";
+    let expiryForecastSearch = "";
+    let expiryForecastPage = 1;
+    let expiryForecastPageSize = 10;
     let salvageProductSearch = "";
     let salvageProductPage = 1;
     const salvagePageSize = 20;
@@ -3054,6 +3061,7 @@
       }).join("");
       document.querySelectorAll(".month-card").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.month;
+        expiryForecastPage = 1;
         salvageProductPage = 1;
         selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
         renderCalendar();
@@ -3085,8 +3093,20 @@
         thirdMetric,
         ["Historical Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
       ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
-      const rankedMonthRecords = [...stats.records].sort((a, b) => (b.value || 0) - (a.value || 0));
-      document.getElementById("expiry-table-body").innerHTML = rankedMonthRecords.length ? rankedMonthRecords.map(item => `
+      const query = expiryForecastSearch.trim().toLowerCase();
+      const searchInput = document.getElementById("expiry-forecast-search");
+      const pageSizeSelect = document.getElementById("expiry-forecast-page-size");
+      if (searchInput && searchInput.value !== expiryForecastSearch) searchInput.value = expiryForecastSearch;
+      if (pageSizeSelect) pageSizeSelect.value = expiryForecastPageSize === "All" ? "All" : String(expiryForecastPageSize);
+      const rankedMonthRecords = [...stats.records]
+        .filter(item => !query || `${item.sku} ${item.commodity} ${item.batch}`.toLowerCase().includes(query))
+        .sort((a, b) => (b.value || 0) - (a.value || 0));
+      const pageSize = expiryForecastPageSize === "All" ? rankedMonthRecords.length || 1 : expiryForecastPageSize;
+      const totalPages = Math.max(1, Math.ceil(rankedMonthRecords.length / pageSize));
+      expiryForecastPage = Math.min(Math.max(1, expiryForecastPage), totalPages);
+      const start = (expiryForecastPage - 1) * pageSize;
+      const pageRecords = rankedMonthRecords.slice(start, start + pageSize);
+      document.getElementById("expiry-table-body").innerHTML = pageRecords.length ? pageRecords.map(item => `
         <tr>
           <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.sku)}<br><span class="metric-sub">${escapeHtml(item.commodity)}</span></button></td>
           <td>${isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""}</td>
@@ -3094,13 +3114,42 @@
           <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
           <td>${moneyExact(item.value)}</td>
           <td>${formatDate(item.expiryDate)}</td>
-        </tr>`).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">Only historical monthly summary values were supplied for ${selectedMonth} 2026.</td></tr>`;
-      document.getElementById("month-record-count").textContent = `${stats.records.length} batch line${stats.records.length === 1 ? "" : "s"} from grouped source rows`;
+        </tr>`).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">${query ? `No expiry forecast records match "${escapeHtml(expiryForecastSearch)}" for ${selectedMonth} 2026.` : `Only historical monthly summary values were supplied for ${selectedMonth} 2026.`}</td></tr>`;
+      document.getElementById("month-record-count").textContent =
+        `${rankedMonthRecords.length} of ${stats.records.length} batch line${stats.records.length === 1 ? "" : "s"}${query ? ` matching "${expiryForecastSearch}"` : ""} · showing ${pageRecords.length ? start + 1 : 0}-${Math.min(start + pageRecords.length, rankedMonthRecords.length)}`;
+      document.querySelector("#month-record-count").nextElementSibling.innerHTML = `
+        <span class="pagination-controls">
+          <button class="pager-button" type="button" id="expiry-forecast-prev" ${expiryForecastPage <= 1 ? "disabled" : ""}>Previous</button>
+          <span>Page ${expiryForecastPage} of ${totalPages}</span>
+          <button class="pager-button" type="button" id="expiry-forecast-next" ${expiryForecastPage >= totalPages ? "disabled" : ""}>Next</button>
+        </span>`;
       document.querySelectorAll(".commodity-button").forEach(button => button.addEventListener("click", () => {
         selectedCommodityId = button.dataset.id;
         renderCommodity();
         document.getElementById("profile-title").scrollIntoView({ behavior: "smooth", block: "start" });
       }));
+      document.getElementById("expiry-forecast-prev")?.addEventListener("click", () => {
+        expiryForecastPage -= 1;
+        renderMonthDetail();
+      });
+      document.getElementById("expiry-forecast-next")?.addEventListener("click", () => {
+        expiryForecastPage += 1;
+        renderMonthDetail();
+      });
+      if (searchInput) {
+        searchInput.oninput = () => {
+          expiryForecastSearch = searchInput.value;
+          expiryForecastPage = 1;
+          renderMonthDetail();
+        };
+      }
+      if (pageSizeSelect) {
+        pageSizeSelect.onchange = () => {
+          expiryForecastPageSize = pageSizeSelect.value === "All" ? "All" : Number(pageSizeSelect.value);
+          expiryForecastPage = 1;
+          renderMonthDetail();
+        };
+      }
     }
 
     function renderCommodity() {
@@ -3132,6 +3181,7 @@
       if (!item) return;
       selectedMonth = item.month;
       selectedCommodityId = item.id;
+      expiryForecastPage = 1;
       renderCalendar();
       renderMonthDetail();
       renderCommodity();
@@ -3234,6 +3284,7 @@
       }).join("");
       document.querySelectorAll("[data-salvage-month]").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.salvageMonth;
+        expiryForecastPage = 1;
         salvageProductPage = 1;
         selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
         renderCalendar();
