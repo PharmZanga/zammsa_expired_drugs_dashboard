@@ -1840,6 +1840,32 @@
       text-align: right;
     }
 
+    .view-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .export-button {
+      border: 1px solid rgba(20, 78, 63, 0.28);
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: var(--green-900);
+      background: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(20, 78, 63, 0.08);
+    }
+
+    .export-button:hover,
+    .export-button:focus-visible {
+      color: #fff;
+      background: var(--green-800);
+      outline: none;
+    }
+
     @keyframes viewIn {
       from { opacity: 0; transform: translateY(4px); }
       to { opacity: 1; transform: translateY(0); }
@@ -2191,16 +2217,24 @@
     }
 
     @media print {
+      @page {
+        size: A4 landscape;
+        margin: 10mm;
+      }
+
       body {
         background: #fff;
       }
 
-      header {
-        background: #fff;
+      body > header {
+        display: none;
       }
 
       .topbar,
       .toolbar,
+      .side-nav,
+      .shared-monitor,
+      .export-button,
       footer {
         display: none;
       }
@@ -2224,6 +2258,31 @@
       main {
         width: 100%;
         margin-top: 0;
+      }
+
+      .app-shell,
+      .dashboard-content {
+        display: block;
+      }
+
+      .dashboard-view {
+        display: none !important;
+      }
+
+      .dashboard-view.active {
+        display: block !important;
+      }
+
+      .view-header {
+        padding: 0 0 12px;
+        border: 0;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      .view-header p {
+        color: var(--muted);
       }
 
       .card,
@@ -2326,7 +2385,7 @@
     </div>
 
     <div class="dashboard-view" id="view-expiry-forecast" data-view="expiry-forecast">
-    <div class="view-header"><div><h2>Expiry Forecast</h2></div><p>How much is expiring by December, and which products drive each month?</p></div>
+    <div class="view-header"><div><h2>Expiry Forecast</h2></div><div class="view-actions"><p>How much is expiring by December, and which products drive each month?</p><button class="export-button" type="button" data-export-view="expiry-forecast">Export PDF</button></div></div>
 
     <div class="section-heading">
       <h2 id="month-detail-title">May 2026 expiry detail</h2>
@@ -2360,7 +2419,7 @@
     </div>
 
     <div class="dashboard-view" id="view-warning-centre" data-view="warning-centre">
-    <div class="view-header"><div><h2>Warning Centre</h2></div><p>Which commodities need intervention now, within 90 days, or within 180 days?</p></div>
+    <div class="view-header"><div><h2>Warning Centre</h2></div><div class="view-actions"><p>Which commodities need intervention now, within 90 days, or within 180 days?</p><button class="export-button" type="button" data-export-view="warning-centre">Export PDF</button></div></div>
     <section class="snapshot-bar" aria-label="Warning centre date filter">
       <label><span>Risk calculation date</span><input class="control" id="warning-date-filter" type="date" min="2026-01-01" max="2026-12-31"></label>
       <div class="snapshot-summary" id="warning-date-summary"></div>
@@ -2397,7 +2456,7 @@
     </div>
 
     <div class="dashboard-view" id="view-salvage-tracker" data-view="salvage-tracker">
-    <div class="view-header"><div><h2>Salvage Tracker</h2></div><p>What value has been saved, when, and through which institution?</p></div>
+    <div class="view-header"><div><h2>Salvage Tracker</h2></div><div class="view-actions"><p>What value has been saved, when, and through which institution?</p><button class="export-button" type="button" data-export-view="salvage-tracker">Export PDF</button></div></div>
     <section class="metrics" id="salvage-kpis"></section>
     <div class="section-heading">
       <h2>Monthly salvage performance</h2>
@@ -3508,6 +3567,21 @@
       event.preventDefault();
       activateView(link.dataset.view, true);
     }));
+
+    document.querySelectorAll("[data-export-view]").forEach(button => button.addEventListener("click", () => {
+      const view = button.dataset.exportView;
+      activateView(view, true);
+      const currentTitle = document.title;
+      const reportName = button.closest(".view-header")?.querySelector("h2")?.textContent || "Dashboard Report";
+      document.title = `${reportName} - National Short Expiry and Salvage Dashboard`;
+      setTimeout(() => {
+        window.print();
+        setTimeout(() => {
+          document.title = currentTitle;
+        }, 500);
+      }, 120);
+    }));
+
     window.addEventListener("hashchange", () => activateView(window.location.hash.slice(1)));
 
     renderAllSnapshotViews();
