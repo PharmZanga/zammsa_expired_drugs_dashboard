@@ -690,6 +690,31 @@
       font-size: 11px;
     }
 
+    .pagination-controls {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pager-button {
+      min-width: 78px;
+      padding: 7px 10px;
+      color: var(--green-950);
+      background: #fff;
+      border: 1px solid #cfd9d3;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .pager-button:disabled {
+      cursor: not-allowed;
+      color: #98a49e;
+      background: #f2f5f3;
+    }
+
     .empty-state {
       display: none;
       padding: 38px 22px;
@@ -2638,6 +2663,8 @@
     let selectedCommodityId = expiryRecords[0]?.id || "";
     let selectedSnapshotId = snapshots[snapshots.length - 1]?.id || sourceData.sourceUpdated;
     let selectedWarningDate = sourceData.sourceUpdated;
+    let salvageProductPage = 1;
+    const salvagePageSize = 20;
 
     function aggregateBatchRecords(records) {
       const grouped = new Map();
@@ -2791,6 +2818,7 @@
       }).join("");
       document.querySelectorAll(".month-card").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.month;
+        salvageProductPage = 1;
         selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
         renderCalendar();
         renderMonthDetail();
@@ -2970,6 +2998,7 @@
       }).join("");
       document.querySelectorAll("[data-salvage-month]").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.salvageMonth;
+        salvageProductPage = 1;
         selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
         renderCalendar();
         renderMonthDetail();
@@ -2980,7 +3009,11 @@
 
       const stats = monthStats(selectedMonth);
       const rankedProducts = [...stats.records].sort((a, b) => (b.value || 0) - (a.value || 0));
-      document.getElementById("salvage-month-products").innerHTML = rankedProducts.length ? rankedProducts.map(item => {
+      const totalPages = Math.max(1, Math.ceil(rankedProducts.length / salvagePageSize));
+      salvageProductPage = Math.min(Math.max(1, salvageProductPage), totalPages);
+      const start = (salvageProductPage - 1) * salvagePageSize;
+      const pageProducts = rankedProducts.slice(start, start + salvagePageSize);
+      document.getElementById("salvage-month-products").innerHTML = pageProducts.length ? pageProducts.map(item => {
         const remaining = isNumber(item.value) && isNumber(item.salvagedValue)
           ? Math.max(0, item.value - item.salvagedValue)
           : null;
@@ -2994,9 +3027,24 @@
         </tr>`;
       }).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">No commodity records were supplied for ${selectedMonth} 2026.</td></tr>`;
       document.getElementById("salvage-month-product-count").textContent =
-        `${stats.records.length} ${selectedMonth} commodit${stats.records.length === 1 ? "y" : "ies"}`;
+        `${rankedProducts.length} ${selectedMonth} commodit${rankedProducts.length === 1 ? "y" : "ies"} · showing ${pageProducts.length ? start + 1 : 0}-${Math.min(start + pageProducts.length, rankedProducts.length)}`;
       document.getElementById("salvage-month-product-total").textContent =
-        `Total expiring: ${moneyExact(stats.total)} | Salvaged: ${moneyExact(stats.salvaged)}`;
+        "";
+      document.getElementById("salvage-month-product-total").innerHTML = `
+        <span>Total expiring: ${moneyExact(stats.total)} | Salvaged: ${moneyExact(stats.salvaged)}</span>
+        <span class="pagination-controls">
+          <button class="pager-button" type="button" id="salvage-prev" ${salvageProductPage <= 1 ? "disabled" : ""}>Previous</button>
+          <span>Page ${salvageProductPage} of ${totalPages}</span>
+          <button class="pager-button" type="button" id="salvage-next" ${salvageProductPage >= totalPages ? "disabled" : ""}>Next</button>
+        </span>`;
+      document.getElementById("salvage-prev")?.addEventListener("click", () => {
+        salvageProductPage -= 1;
+        renderSalvageMonthSummary();
+      });
+      document.getElementById("salvage-next")?.addEventListener("click", () => {
+        salvageProductPage += 1;
+        renderSalvageMonthSummary();
+      });
     }
 
     function renderSalvageRegister() {
@@ -3072,6 +3120,7 @@
         </button>`).join("");
       document.querySelectorAll("[data-forecast-month]").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.forecastMonth;
+        salvageProductPage = 1;
         selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
         window.location.hash = "expiry-forecast";
         renderCalendar();
