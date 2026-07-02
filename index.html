@@ -1481,7 +1481,7 @@
       display: flex;
       width: max-content;
       padding: 11px 0;
-      animation: productTicker var(--ticker-duration, 1200s) linear infinite;
+      animation: productTicker var(--ticker-duration, 3600s) linear infinite;
     }
 
     .ticker-shell:hover .ticker-track,
@@ -3523,7 +3523,7 @@
         </div>`).join("");
       const ticker = document.getElementById("product-ticker");
       ticker.innerHTML = markup + markup;
-      ticker.style.setProperty("--ticker-duration", `${Math.min(7200, Math.max(1800, items.length * 4))}s`);
+      ticker.style.setProperty("--ticker-duration", `${Math.min(21600, Math.max(5400, items.length * 12))}s`);
     }
 
     function renderChangesSinceReview() {
