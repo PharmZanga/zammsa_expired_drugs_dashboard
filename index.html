@@ -2958,6 +2958,28 @@
       });
     }
 
+    function salvageRegisterRecords(month = "All") {
+      const months = month === "All" ? monthOrder : [month];
+      return months.flatMap(activeMonth => salvagedProductsForMonth(activeMonth).map((item, index) => ({
+        id: `salvaged-${activeMonth}-${item.sku}-${index}`.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+        month: activeMonth,
+        sku: item.sku,
+        commodity: item.commodity,
+        batch: item.batch,
+        quantity: null,
+        unitPrice: null,
+        value: item.exposureValue,
+        shippedQuantity: item.quantity,
+        salvagedValue: item.value,
+        expiryDate: item.expiryDate,
+        status: "Salvaged",
+        warehouse: "",
+        province: "",
+        facility: "",
+        institution: item.institution
+      })));
+    }
+
     function renderSnapshotSelector() {
       const select = document.getElementById("snapshot-select");
       select.innerHTML = snapshots.map(snapshot => `<option value="${snapshot.id}" ${snapshot.id === selectedSnapshotId ? "selected" : ""}>${snapshot.label}</option>`).join("");
@@ -3558,6 +3580,7 @@
 
     function expiryRiskBand(item) {
       if (isExpiredRecord(item)) return "Expired";
+      if (currentRecordStatus(item) === "Salvaged") return "Salvaged";
       const days = daysToExpiry(item);
       if (days === null) return "";
       if (days <= 30) return "Critical";
@@ -3575,6 +3598,7 @@
       if (risk === "Expired") return "badge-overdue";
       if (risk === "High Risk") return "badge-progress";
       if (risk === "Medium Risk") return "badge-completed";
+      if (risk === "Salvaged") return "badge-completed";
       return "badge-pending";
     }
 
@@ -3588,7 +3612,12 @@
       const status = document.getElementById("expiry-status-filter").value;
       const risk = document.getElementById("expiry-risk-filter").value;
       const sort = document.getElementById("expiry-sort").value;
-      const records = expiryRecords
+      const baseRecords = status === "Salvaged"
+        ? salvageRegisterRecords(month)
+        : status === "All"
+          ? [...expiryRecords, ...salvageRegisterRecords(month)]
+          : expiryRecords;
+      const records = baseRecords
         .filter(item => month === "All" || item.month === month)
         .filter(item => status === "All" || currentRecordStatus(item) === status)
         .filter(item => risk === "All" || expiryRiskBand(item) === risk)
@@ -3618,7 +3647,7 @@
         </tr>`;
       }).join("") : `<tr><td colspan="10" class="empty-state" style="display:table-cell">No expiring commodities match the selected search and filters.</td></tr>`;
 
-      const quantity = sum(records, "quantity");
+      const quantity = sum(records, "quantity") || sum(records, "shippedQuantity");
       const pricedRecords = records.filter(item => isNumber(item.value));
       const unfilteredValueScope = !query && status === "All" && risk === "All";
       const value = pricedRecords.length ? sum(pricedRecords, "value") : null;
@@ -3631,7 +3660,7 @@
       if (query) activeParameters.unshift(`Search: "${query}"`);
       document.getElementById("expiry-register-summary").textContent = `Parameters: ${activeParameters.join(" · ")}`;
       document.getElementById("expiry-register-count").textContent =
-        `${records.length} of ${expiryRecords.length} batch lines · ${quantity.toLocaleString("en-ZM")} units`;
+        `${records.length} of ${baseRecords.length} register lines · ${quantity.toLocaleString("en-ZM")} units`;
       document.getElementById("expiry-register-value").textContent = value === null ? "Combined value:" : `Combined value: ${moneyExact(value)}`;
 
       ["expiry-search", "expiry-month-filter", "expiry-status-filter", "expiry-risk-filter", "expiry-sort"].forEach(id => {
