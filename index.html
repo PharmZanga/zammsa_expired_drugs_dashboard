@@ -2347,7 +2347,7 @@
         <aside class="reporting-card" aria-label="Reporting period">
           <span>Source reporting period</span>
           <strong>As of 01 July 2026</strong>
-          <p>Loaded from the ZAMMSA July raw query and 16-30 June salvage update, filtered to 2026 expiries only.</p>
+          <p>Loaded from the ZAMMSA July raw query, 16-30 June salvage update, and Jan-15 Jun shipped values for Jul-Dec expiries.</p>
         </aside>
       </div>
     </div>
@@ -2391,7 +2391,7 @@
       <p>The dashboard highlights the total value of commodities at risk, commodities successfully salvaged, remaining exposure, and priority commodities requiring urgent action. It also provides forecasts of upcoming expiries, tracks ongoing salvage initiatives, and monitors implementation of agreed action points by responsible institutions.</p>
       <p><strong>Current Reporting Period:</strong> This dashboard reflects the latest bi-weekly review and includes commodities identified as being at risk of expiry, ongoing salvage interventions, completed salvage actions, and projected expiries through December 2026.</p>
     </article>
-    <div class="demo-banner"><strong>Source data loaded:</strong> Load_Query_July 1_2026 and Salvaged Products_16th Jun to 30th Jun_2026. Dashboard is filtered to 2026 expiries only; missing unit prices are intentionally blank.</div>
+    <div class="demo-banner"><strong>Source data loaded:</strong> Load_Query_July 1_2026, Salvaged Products_16th Jun to 30th Jun_2026, and ZAMMSA 1 Jan-15 Jun shipped values for Jul-Dec 2026 expiries. Dashboard is filtered to 2026 expiries only; missing unit prices are intentionally blank.</div>
 
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
     <section class="card tracker executive-range-card" aria-label="Executive summary range filter">
@@ -2706,7 +2706,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> Salvaged and expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December 2026 expiries only. Products expiring after 2026 are excluded. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date.</p>
+    <p class="source-note"><strong>Source note:</strong> Salvaged values now include Jan-15 Jun shipped values for products expiring July-December 2026 plus the 16-30 Jun salvage update. Expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December 2026 expiries only. Products expiring after 2026 are excluded. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date.</p>
   </main>
 
   <footer>
@@ -3371,7 +3371,7 @@
       document.getElementById("salvage-register-copy").textContent =
         `Shipment evidence for products expiring in ${selectedMonth} 2026, including quantity, value salvaged, shipped date, expiry date, and institution where supplied.`;
       document.getElementById("salvage-register").innerHTML = events.length ? events.map(event =>
-        `<tr><td class="commodity">${escapeHtml(event.commodity)}</td><td>${escapeHtml(event.batch)}</td><td>${isNumber(event.quantity) ? event.quantity.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(event.value)}</td><td>${formatDate(event.shippedDate)}</td><td>${formatDate(event.expiryDate)}</td><td>${escapeHtml(event.institution)}</td></tr>`
+        `<tr><td class="commodity">${escapeHtml(event.commodity)}</td><td>${escapeHtml(event.batch)}</td><td>${isNumber(event.quantity) ? event.quantity.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(event.value)}</td><td>${formatDate(event.shippedDate) || escapeHtml(event.shipmentPeriod || "")}</td><td>${formatDate(event.expiryDate)}</td><td>${escapeHtml(event.institution)}</td></tr>`
       ).join("") : `<tr><td colspan="7" class="empty-state" style="display:table-cell">No shipment records were supplied for products expiring in ${selectedMonth} 2026.</td></tr>`;
       document.getElementById("salvage-register-count").textContent =
         `${events.length} ${selectedMonth} shipment record${events.length === 1 ? "" : "s"}`;
