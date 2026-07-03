@@ -2806,6 +2806,7 @@
             expiryDate: "",
             quantity: null,
             value: null,
+            totalExpiringValue: null,
             shippedQuantity: null,
             salvagedValue: null,
             batchSet: new Set(),
@@ -2820,7 +2821,7 @@
         }
         const current = grouped.get(key);
         current.sourceRows += 1;
-        ["quantity", "value", "shippedQuantity", "salvagedValue"].forEach(field => {
+        ["quantity", "value", "totalExpiringValue", "shippedQuantity", "salvagedValue"].forEach(field => {
           if (numeric(item[field])) current[field] = (numeric(current[field]) ? current[field] : 0) + item[field];
         });
         addText(current.batchSet, item.batch);
@@ -2891,11 +2892,11 @@
     const monthRecords = month => expiryRecords.filter(item => item.month === month);
     const monthStats = month => {
       const records = monthRecords(month);
-      const total = monthlyTargets[month];
+      const total = sourceData.monthlyHistoricalReviewed?.[month] ?? sourceData.monthlyTotalExpiring?.[month] ?? monthlyTargets[month];
       const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
       const expired = sourceData.monthlyValueExpired?.[month] ?? null;
       const reviewed = sourceData.monthlyHistoricalReviewed?.[month] ?? null;
-      const remaining = isNumber(total) ? total : null;
+      const remaining = isNumber(monthlyTargets[month]) ? monthlyTargets[month] : total;
       const allExpired = records.length > 0 && records.every(isExpiredRecord);
       return { records, total, salvaged, expired, reviewed, remaining, allExpired, rate: preciseRate(salvaged, reviewed) };
     };
@@ -2943,7 +2944,9 @@
         const matchingExposure = monthRecords(month).filter(record =>
           item.sku ? record.sku === item.sku : record.commodity === item.commodity
         );
-        const exposureValue = matchingExposure.some(record => isNumber(record.value)) ? sum(matchingExposure, "value") : null;
+        const exposureValue = matchingExposure.some(record => isNumber(record.totalExpiringValue) || isNumber(record.value))
+          ? matchingExposure.reduce((total, record) => total + (isNumber(record.totalExpiringValue) ? record.totalExpiringValue : (isNumber(record.value) ? record.value : 0)), 0)
+          : null;
         return {
           ...item,
           batch: shortTextList(item.batchValues),
@@ -3013,7 +3016,7 @@
       return months.map(month => {
         const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
         const expired = sourceData.monthlyValueExpired?.[month] ?? null;
-        const total = sourceData.monthlyHistoricalReviewed?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
+        const total = sourceData.monthlyHistoricalReviewed?.[month] ?? sourceData.monthlyTotalExpiring?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
         return { month, salvaged, expired, total };
       });
     }
@@ -3721,7 +3724,7 @@
       const rows = summaryMonths.map(month => {
         const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
         const expired = sourceData.monthlyValueExpired?.[month] ?? null;
-        const total = sourceData.monthlyHistoricalReviewed?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
+        const total = sourceData.monthlyHistoricalReviewed?.[month] ?? sourceData.monthlyTotalExpiring?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
         const denominator = (salvaged || 0) + (expired || 0) + (!expired && sourceData.monthlyValueAtRisk?.[month] ? sourceData.monthlyValueAtRisk[month] : 0);
         return { month, salvaged, expired, total, rate: rate(salvaged, denominator) };
       });
