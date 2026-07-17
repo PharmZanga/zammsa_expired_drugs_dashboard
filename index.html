@@ -1752,6 +1752,8 @@
       position: sticky;
       top: 0;
       z-index: 8;
+      display: flex;
+      flex-direction: column;
       height: 100vh;
       padding: 22px 14px;
       color: #fff;
@@ -1773,6 +1775,21 @@
     .nav-list {
       display: grid;
       gap: 5px;
+    }
+
+    .side-nav-credit {
+      margin: auto 10px 0;
+      padding-top: 22px;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .side-nav-credit strong {
+      display: block;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 800;
     }
 
     .nav-link {
@@ -2013,6 +2030,7 @@
       .side-nav {
         position: sticky;
         top: 0;
+        display: block;
         width: 100%;
         height: auto;
         padding: 8px 10px;
@@ -2023,6 +2041,10 @@
       .nav-list {
         display: flex;
         width: max-content;
+      }
+
+      .side-nav-credit {
+        display: none;
       }
 
       .nav-link {
@@ -2368,6 +2390,10 @@
         <a class="nav-link" href="#historical-snapshots" data-view="historical-snapshots"><span class="nav-icon">◷</span><span class="nav-text">Historical Snapshots</span></a>
         <a class="nav-link" href="#institution-performance" data-view="institution-performance"><span class="nav-icon">H</span><span class="nav-text">Institution Performance</span></a>
         <a class="nav-link" href="#national-summary" data-view="national-summary"><span class="nav-icon">Σ</span><span class="nav-text">National Summary</span></a>
+      </div>
+      <div class="side-nav-credit" aria-label="Dashboard credit">
+        <strong>&copy; 2026 Zanga Musakuzi</strong>
+        Principal Pharmacist - Data Analytics
       </div>
     </nav>
     <div class="dashboard-content">
