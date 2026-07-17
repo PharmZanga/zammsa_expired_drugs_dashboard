@@ -2,7 +2,7 @@ services:
   - type: web
     name: zammsa-expiry-salvage-dashboard
     runtime: static
-    buildCommand: ""
+    buildCommand: echo Static dashboard ready
     staticPublishPath: .
     autoDeployTrigger: commit
     headers:
