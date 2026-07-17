@@ -2985,6 +2985,9 @@
     const formatDate = value => value ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${value}T12:00:00+02:00`)) : "";
     const monthNameFromDate = value => value ? new Intl.DateTimeFormat("en-US", { month: "long" }).format(new Date(`${value}T12:00:00+02:00`)) : "";
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
+    const matchingSalvageEvents = item => salvageEvents.filter(event => event.sku === item.sku && monthNameFromDate(event.expiryDate) === item.month);
+    const recordSalvagedValue = item => isNumber(item.salvagedValue) ? item.salvagedValue : sum(matchingSalvageEvents(item), "value") || null;
+    const recordShippedQuantity = item => isNumber(item.shippedQuantity) ? item.shippedQuantity : sum(matchingSalvageEvents(item), "quantity") || null;
     const selectedSnapshot = () => snapshots.find(item => item.id === selectedSnapshotId);
     const selectedCalendarSnapshot = () => calendarSnapshots.find(item => item.id === selectedCalendarSnapshotId) || calendarSnapshots[calendarSnapshots.length - 1];
     const eventsThroughSnapshot = () => salvageEvents;
@@ -3287,8 +3290,8 @@
       document.getElementById("expiry-table-body").innerHTML = pageRecords.length ? pageRecords.map(item => `
         <tr>
           <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.sku)}<br><span class="metric-sub">${escapeHtml(item.commodity)}</span></button></td>
-          <td>${isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""}</td>
-          <td>${moneyExact(item.salvagedValue)}</td>
+          <td>${isNumber(recordShippedQuantity(item)) ? recordShippedQuantity(item).toLocaleString("en-ZM") : ""}</td>
+          <td>${moneyExact(recordSalvagedValue(item))}</td>
           <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
           <td>${moneyExact(item.value)}</td>
           <td>${formatDate(item.expiryDate)}</td>
@@ -3343,8 +3346,8 @@
       document.getElementById("timeline-subtitle").textContent = item.batch ? `${item.batch} intervention milestones` : "";
       const profile = [
         ["SKU", item.sku], ["Commodity", item.commodity], ["Batch", item.batch], ["Total Quantity", isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""],
-        ["Unit Price", moneyExact(item.unitPrice)], ["Shipped Units", isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""],
-        ["Value at Risk", moneyExact(item.value)], ["Value Salvaged", moneyExact(item.salvagedValue)], ["Expiry Date", formatDate(item.expiryDate)],
+        ["Unit Price", moneyExact(item.unitPrice)], ["Shipped Units", isNumber(recordShippedQuantity(item)) ? recordShippedQuantity(item).toLocaleString("en-ZM") : ""],
+        ["Value at Risk", moneyExact(item.value)], ["Value Salvaged", moneyExact(recordSalvagedValue(item))], ["Expiry Date", formatDate(item.expiryDate)],
         ["Lead Institution", item.institution], ["Status", item.status], ["Warehouse", item.warehouse], ["Province", item.province],
         ["Facility", item.facility], ["Date Identified", item.identified]
       ];
@@ -3795,8 +3798,8 @@
           <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
           <td>${moneyExact(item.unitPrice)}</td>
           <td>${moneyExact(item.value)}</td>
-          <td>${isNumber(item.shippedQuantity) ? item.shippedQuantity.toLocaleString("en-ZM") : ""}</td>
-          <td>${moneyExact(item.salvagedValue)}</td>
+          <td>${isNumber(recordShippedQuantity(item)) ? recordShippedQuantity(item).toLocaleString("en-ZM") : ""}</td>
+          <td>${moneyExact(recordSalvagedValue(item))}</td>
           <td>${formatDate(item.expiryDate)}</td>
           <td>${daysToExpiry(item) ?? ""}</td>
           <td>${riskValue ? `<span class="badge ${riskBadgeClass(riskValue)}">${riskValue}</span>` : ""}</td>
