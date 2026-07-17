@@ -3012,13 +3012,19 @@
       return months.length === 1 ? `${months[0]} 2026` : `${months[0]}-${months[months.length - 1]} 2026`;
     }
 
+    function monthSummaryPosition(month) {
+      const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
+      const expired = sourceData.monthlyValueExpired?.[month] ?? null;
+      const remaining = sourceData.monthlyValueAtRisk?.[month] ?? null;
+      const historical = sourceData.monthlyHistoricalReviewed?.[month] ?? null;
+      const total = isNumber(expired)
+        ? (isNumber(historical) ? historical : (salvaged || 0) + expired)
+        : (salvaged || 0) + (remaining || 0);
+      return { month, salvaged, expired, remaining, total };
+    }
+
     function monthlySummaryRows(months) {
-      return months.map(month => {
-        const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
-        const expired = sourceData.monthlyValueExpired?.[month] ?? null;
-        const total = sourceData.monthlyHistoricalReviewed?.[month] ?? sourceData.monthlyTotalExpiring?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
-        return { month, salvaged, expired, total };
-      });
+      return months.map(monthSummaryPosition);
     }
 
     function summaryTotalsForMonths(months) {
@@ -3069,7 +3075,7 @@
         ["Total Salvaged", moneyExact(totals.salvaged), rangeLabel, "success"],
         ["Total Expired", moneyExact(totals.expired), rangeLabel, "warning"],
         ["Total Reviewed", moneyExact(totals.total), "Filtered total value for selected months", ""],
-        ["Salvage Percentage", `${rate(totals.salvaged, totals.total)}%`, `Filtered percentage for ${rangeLabel}`, "success"]
+        ["Salvage Percentage", `${preciseRate(totals.salvaged, totals.total)}%`, `Filtered percentage for ${rangeLabel}`, "success"]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
       renderExecutiveRangeControls();
@@ -3722,11 +3728,8 @@
       const summaryMonths = summaryRangeMonths();
       const monthLabels = { January: "Jan", February: "Feb", March: "Mar", April: "Apr", May: "May", June: "Jun", July: "Jul", August: "Aug", September: "Sep", October: "Oct", November: "Nov", December: "Dec" };
       const rows = summaryMonths.map(month => {
-        const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
-        const expired = sourceData.monthlyValueExpired?.[month] ?? null;
-        const total = sourceData.monthlyHistoricalReviewed?.[month] ?? sourceData.monthlyTotalExpiring?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
-        const denominator = (salvaged || 0) + (expired || 0) + (!expired && sourceData.monthlyValueAtRisk?.[month] ? sourceData.monthlyValueAtRisk[month] : 0);
-        return { month, salvaged, expired, total, rate: rate(salvaged, denominator) };
+        const row = monthSummaryPosition(month);
+        return { ...row, rate: preciseRate(row.salvaged, row.total) };
       });
       const totals = {
         salvaged: sum(rows, "salvaged"),
@@ -3747,7 +3750,7 @@
           <td><strong>${moneyExact(totals.salvaged)}</strong></td>
           <td><strong>${moneyExact(totals.expired)}</strong></td>
           <td><strong>${moneyExact(totals.total)}</strong></td>
-          <td><strong>${rate(totals.salvaged, totals.total)}%</strong></td>
+          <td><strong>${preciseRate(totals.salvaged, totals.total)}%</strong></td>
         </tr>`;
       ["national-summary-table", "institution-national-summary-table"].forEach(id => {
         const table = document.getElementById(id);
@@ -3757,7 +3760,7 @@
         ["Total Salvaged", moneyExact(totals.salvaged), rangeLabel, "success"],
         ["Total Expired", moneyExact(totals.expired), rangeLabel, "warning"],
         ["Total Reviewed", moneyExact(totals.total), "Filtered total value for selected months", ""],
-        ["Salvage Percentage", `${rate(totals.salvaged, totals.total)}%`, `Filtered percentage for ${rangeLabel}`, "success"]
+        ["Salvage Percentage", `${preciseRate(totals.salvaged, totals.total)}%`, `Filtered percentage for ${rangeLabel}`, "success"]
       ];
       const kpiTarget = document.getElementById("national-summary-kpis");
       if (kpiTarget) {
