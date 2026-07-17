@@ -1,5 +1,5 @@
 window.ZAMMSA_SOURCE_DATA = {
-  "sourceUpdated": "2026-07-15",
+  "sourceUpdated": "2026-07-17",
   "monthOrder": [
     "January",
     "February",
@@ -21,12 +21,12 @@ window.ZAMMSA_SOURCE_DATA = {
     "April": 27504499.41,
     "May": 70911477.78,
     "June": 69403896.1359069,
-    "July": 103389.55149468778,
-    "August": 892443.0735000008,
-    "September": 15550703.953840874,
-    "October": 13912915.984374387,
-    "November": 30305930.062109977,
-    "December": 391352426.48455423
+    "July": 25504378.829654027,
+    "August": 49190248.680145025,
+    "September": 18033731.9699821,
+    "October": 15752894.224210203,
+    "November": 32460407.52862856,
+    "December": 395258206.7208098
   },
   "monthlyValueSalvaged": {
     "January": 4683535.0688876705,
@@ -43,13 +43,13 @@ window.ZAMMSA_SOURCE_DATA = {
     "December": 272293184.98522365
   },
   "summary": {
-    "valueAtRisk": 452117809.1098741,
+    "valueAtRisk": 536199867.95342976,
     "valueSalvaged": 686280845.0343817,
     "valueExpired": 128303855.67535895,
     "historicalReviewedValue": 231689358.21590692,
-    "remainingRisk": 452117809.1098741,
+    "remainingRisk": 536199867.95342976,
     "salvageRate": 84.24916947696552,
-    "coverage": "Updated 15 July 2026: 2026 expiries only. Jul-Dec available-risk balances reduced using the 1-15 Jul salvage report; unmatched shipped rows are retained in salvage evidence but do not reduce current available-risk stock."
+    "coverage": "Updated 17 July 2026: July-December monthly SOH/value-at-risk reconciled to Calculations_Salvage_Values_Cumulative_2026.xlsx. Commodity rows remain sourced from the available stock register; the verification workbook provides monthly SOH control totals."
   },
   "expiryRecords": [
     {
@@ -19918,14 +19918,60 @@ window.ZAMMSA_SOURCE_DATA = {
       "October": 20621.0,
       "November": 19394.0,
       "December": 35795.0
-    }
+    },
+    "sohVerificationWorkbook": "Calculations_Salvage_Values_Cumulative_2026.xlsx",
+    "sohVerificationDate": "2026-07-17",
+    "originalSohValueByMonth": {
+      "July": 27291693.429597534,
+      "August": 49969759.964606285,
+      "September": 26718120.11337178,
+      "October": 20830551.823872145,
+      "November": 38476905.31298312,
+      "December": 417399938.7441122
+    },
+    "verifiedCurrentSohValueByMonth": {
+      "July": 25504378.829654027,
+      "August": 49190248.680145025,
+      "September": 18033731.9699821,
+      "October": 15752894.224210203,
+      "November": 32460407.52862856,
+      "December": 395258206.7208098
+    },
+    "salvagePeriodsByExpiryMonth": {
+      "July": {
+        "16-30 Jun": 1736597.1607118377,
+        "1-15 Jul": 50717.43923167134
+      },
+      "August": {
+        "16-30 Jun": 741571.757,
+        "1-15 Jul": 37939.52746125861
+      },
+      "September": {
+        "16-30 Jun": 6504679.47431648,
+        "1-15 Jul": 2179708.6690732
+      },
+      "October": {
+        "16-30 Jun": 2900250.063995275,
+        "1-15 Jul": 2177407.535666667
+      },
+      "November": {
+        "16-30 Jun": 3014803.4086545575,
+        "1-15 Jul": 3001694.3756999993
+      },
+      "December": {
+        "16-30 Jun": 13569383.296314247,
+        "1-15 Jul": 8572348.726988131
+      }
+    },
+    "sohFormula": "Current Value of SOH = Original Value of SOH - 16-30 Jun shipped value - 1-15 Jul shipped value, with later salvage periods to be subtracted cumulatively as supplied.",
+    "dashboardCorrection": "Monthly July-December value-at-risk and monthly total expiring values set to the verification workbook Current Value of SOH. Product-level values were not force-scaled because the workbook does not provide product-level SOH values."
   },
   "monthlyTotalExpiring": {
-    "July": 386237.9446786877,
-    "August": 896422.6450000008,
-    "September": 21109643.812424533,
-    "October": 15696316.289869662,
-    "November": 33168820.49435433,
-    "December": 398378212.8156821
+    "July": 25504378.829654027,
+    "August": 49190248.680145025,
+    "September": 18033731.9699821,
+    "October": 15752894.224210203,
+    "November": 32460407.52862856,
+    "December": 395258206.7208098
   }
 };
