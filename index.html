@@ -1253,6 +1253,70 @@
       font-size: 12px;
     }
 
+    .timeline.graph {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      padding: 18px;
+    }
+
+    .timeline.graph::before {
+      display: none;
+    }
+
+    .timeline-step {
+      position: relative;
+      min-height: 112px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff, rgba(240, 246, 242, 0.82));
+      box-shadow: 0 14px 28px rgba(15, 45, 37, 0.08);
+    }
+
+    .timeline-step::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -13px;
+      width: 13px;
+      height: 2px;
+      background: var(--green-700);
+      opacity: 0.5;
+    }
+
+    .timeline-step:last-child::after {
+      display: none;
+    }
+
+    .timeline-step span {
+      display: inline-grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: var(--green-900);
+      color: #fff;
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .timeline-step time {
+      display: block;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .timeline-step strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
     .alerts {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -2401,8 +2465,12 @@
     <section class="shared-monitor" aria-label="Monthly expiry calendar and commodity scoreboard">
       <div class="section-heading">
         <h2>Monthly expiry calendar</h2>
-        <p>January-June show historical salvage/expiry summaries; June-December show available stock still expiring. Select a month to update the detail.</p>
+        <p>January-June show actual expired value from historical summaries; July-December show remaining risk at the selected review date.</p>
       </div>
+      <section class="snapshot-bar" aria-label="Monthly calendar date filter">
+        <label><span>Calendar review date</span><select class="control" id="calendar-snapshot-select"></select></label>
+        <div class="snapshot-summary" id="calendar-snapshot-summary"></div>
+      </section>
       <section class="calendar" id="month-calendar" aria-label="Clickable monthly expiry calendar"></section>
       <section class="ticker-shell" aria-label="Moving product scoreboard">
         <div class="ticker-track" id="product-ticker"></div>
@@ -2473,7 +2541,7 @@
       </article>
       <article class="card">
         <div class="card-header"><div><h3>Salvage timeline</h3><p id="timeline-subtitle">Recorded intervention milestones</p></div></div>
-        <div class="timeline" id="salvage-timeline"></div>
+        <div class="timeline graph" id="salvage-timeline"></div>
       </article>
     </section>
     </div>
@@ -2790,6 +2858,10 @@
     const isExpiredRecord = item => item.status === "Expired";
     const activeRiskRecords = () => expiryRecords.filter(item => !isExpiredRecord(item));
     const snapshots = buildSnapshots();
+    const calendarSnapshots = [
+      { id: "2026-06-30", label: "30 June 2026", note: "Original SOH less 16-30 June shipped values" },
+      { id: "2026-07-15", label: "15 July 2026", note: "30 June position less 1-15 July shipped values" }
+    ];
     const expiryDates = Object.fromEntries(monthOrder.map(month => [
       month,
       expiryRecords.find(item => item.month === month)?.expiryDate || ""
@@ -2798,6 +2870,7 @@
     let selectedMonth = monthOrder[0] || "June";
     let selectedCommodityId = expiryRecords[0]?.id || "";
     let selectedSnapshotId = snapshots[snapshots.length - 1]?.id || sourceData.sourceUpdated;
+    let selectedCalendarSnapshotId = "2026-07-15";
     let selectedWarningDate = sourceData.sourceUpdated;
     let selectedExecutiveRangeMode = "All";
     let selectedExecutiveStartMonth = monthOrder[0] || "January";
@@ -2913,18 +2986,39 @@
     const monthNameFromDate = value => value ? new Intl.DateTimeFormat("en-US", { month: "long" }).format(new Date(`${value}T12:00:00+02:00`)) : "";
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
     const selectedSnapshot = () => snapshots.find(item => item.id === selectedSnapshotId);
+    const selectedCalendarSnapshot = () => calendarSnapshots.find(item => item.id === selectedCalendarSnapshotId) || calendarSnapshots[calendarSnapshots.length - 1];
     const eventsThroughSnapshot = () => salvageEvents;
     const salvagedForRecord = () => null;
     const monthRecords = month => expiryRecords.filter(item => item.month === month);
+    const isHistoricalMonth = month => isNumber(sourceData.monthlyValueExpired?.[month]);
+    const futureRemainingForSnapshot = month => {
+      if (isHistoricalMonth(month)) return null;
+      const audit = sourceData.calculationAudit || {};
+      if (selectedCalendarSnapshotId === "2026-06-30") {
+        const original = audit.originalSohValueByMonth?.[month];
+        const latest = audit.lastTwoWeekShippedValuesByMonth?.[month] || 0;
+        return isNumber(original) ? Math.max(original - latest, 0) : sourceData.monthlyValueAtRisk?.[month] ?? null;
+      }
+      return audit.verifiedCurrentSohValueByMonth?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
+    };
+    const futureSalvagedForSnapshot = month => {
+      if (isHistoricalMonth(month)) return sourceData.monthlyValueSalvaged?.[month] ?? null;
+      const current = sourceData.monthlyValueSalvaged?.[month] ?? null;
+      if (selectedCalendarSnapshotId !== "2026-06-30") return current;
+      const latest = sourceData.calculationAudit?.latestSalvageValuesByMonth?.[month] || 0;
+      return isNumber(current) ? Math.max(current - latest, 0) : current;
+    };
     const monthStats = month => {
       const records = monthRecords(month);
-      const total = sourceData.monthlyHistoricalReviewed?.[month] ?? sourceData.monthlyTotalExpiring?.[month] ?? monthlyTargets[month];
-      const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
+      const historical = sourceData.monthlyHistoricalReviewed?.[month] ?? null;
+      const remaining = futureRemainingForSnapshot(month);
+      const total = historical ?? remaining ?? sourceData.monthlyTotalExpiring?.[month] ?? monthlyTargets[month];
+      const salvaged = futureSalvagedForSnapshot(month);
       const expired = sourceData.monthlyValueExpired?.[month] ?? null;
-      const reviewed = sourceData.monthlyHistoricalReviewed?.[month] ?? null;
-      const remaining = isNumber(monthlyTargets[month]) ? monthlyTargets[month] : total;
+      const reviewed = historical;
+      const remainingValue = isNumber(remaining) ? remaining : isNumber(monthlyTargets[month]) ? monthlyTargets[month] : total;
       const allExpired = records.length > 0 && records.every(isExpiredRecord);
-      return { records, total, salvaged, expired, reviewed, remaining, allExpired, rate: preciseRate(salvaged, reviewed) };
+      return { records, total, salvaged, expired, reviewed, remaining: remainingValue, allExpired, rate: preciseRate(salvaged, reviewed) };
     };
     const alertLevel = value => !isNumber(value) ? "" : value > 1000000 ? "Critical" : value >= 500000 ? "Moderate" : "Controlled";
 
@@ -3107,14 +3201,41 @@
       renderExecutiveRangeControls();
     }
 
+    function renderCalendarSnapshotControls() {
+      const select = document.getElementById("calendar-snapshot-select");
+      if (!select) return;
+      select.innerHTML = calendarSnapshots.map(snapshot => `<option value="${snapshot.id}" ${snapshot.id === selectedCalendarSnapshotId ? "selected" : ""}>${snapshot.label}</option>`).join("");
+      const snapshot = selectedCalendarSnapshot();
+      const julDec = monthOrder.filter(month => !isHistoricalMonth(month));
+      const remaining = sum(julDec.map(month => ({ value: futureRemainingForSnapshot(month) || 0 })), "value");
+      document.getElementById("calendar-snapshot-summary").innerHTML = `
+        <div><span>Review date</span><strong>${escapeHtml(snapshot.label)}</strong></div>
+        <div><span>Jul-Dec remaining risk</span><strong>${moneyExact(remaining)}</strong></div>
+        <div><span>Basis</span><strong>${escapeHtml(snapshot.note)}</strong></div>`;
+      select.onchange = () => {
+        selectedCalendarSnapshotId = select.value;
+        renderCalendar();
+        renderMonthDetail();
+        renderCommodity();
+        renderSalvageMonthSummary();
+        renderExecutive();
+      };
+    }
+
     function renderCalendar() {
+      renderCalendarSnapshotControls();
       document.getElementById("month-calendar").innerHTML = monthOrder.map(month => {
         const stats = monthStats(month);
         const quantity = sum(stats.records, "quantity");
-        const detail = stats.records.length
-          ? `${stats.records.length} rows · ${quantity.toLocaleString("en-ZM")} units`
-          : isNumber(sourceData.monthlyHistoricalReviewed?.[month]) ? "historical summary" : "";
-        return `<button class="month-card ${month === selectedMonth ? "active" : ""}" type="button" data-month="${month}" aria-pressed="${month === selectedMonth}"><span>${month}</span><strong>${money(stats.total)}</strong><small>${detail}</small></button>`;
+        const historical = isHistoricalMonth(month);
+        const displayValue = historical ? stats.expired : stats.remaining;
+        const detail = historical
+          ? `Reviewed ${money(stats.reviewed)} · Salvaged ${money(stats.salvaged)}`
+          : stats.records.length
+            ? `${stats.records.length} rows · ${quantity.toLocaleString("en-ZM")} units`
+            : "";
+        const valueLabel = historical ? "Expired" : selectedCalendarSnapshot().label;
+        return `<button class="month-card ${month === selectedMonth ? "active" : ""}" type="button" data-month="${month}" aria-pressed="${month === selectedMonth}"><span>${month}</span><strong>${money(displayValue)}</strong><small>${escapeHtml(valueLabel)} · ${detail}</small></button>`;
       }).join("");
       document.querySelectorAll(".month-card").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.month;
@@ -3135,7 +3256,7 @@
       document.getElementById("month-detail-copy").textContent = stats.records.length
         ? stats.allExpired
           ? `Expired product lines supplied for ${selectedMonth}: ${moneyExact(stats.expired)} expired out of ${moneyExact(stats.reviewed)} reviewed.`
-          : `Available value still expiring: ${moneyExact(stats.total)}.${stats.records.some(isExpiredRecord) ? ` Expired historical product lines are also shown for ${selectedMonth}.` : ""}`
+          : `Available value still expiring at ${selectedCalendarSnapshot().label}: ${moneyExact(stats.remaining)}.${stats.records.some(isExpiredRecord) ? ` Expired historical product lines are also shown for ${selectedMonth}.` : ""}`
         : isNumber(sourceData.monthlyHistoricalReviewed?.[selectedMonth])
           ? `Historical reviewed value: ${moneyExact(sourceData.monthlyHistoricalReviewed[selectedMonth])}. Product-level available-unit records are not supplied for this month.`
         : "No monetary value was supplied for this month.";
@@ -3145,7 +3266,7 @@
           ? ["Remaining Risk", money(stats.remaining)]
           : ["Expired", money(sourceData.monthlyValueExpired?.[selectedMonth])];
       document.getElementById("month-summary").innerHTML = [
-        ["Total Expiring", money(stats.total)],
+        [isHistoricalMonth(selectedMonth) ? "Total Reviewed" : `Remaining Risk (${selectedCalendarSnapshot().label})`, money(isHistoricalMonth(selectedMonth) ? stats.total : stats.remaining)],
         ["Salvaged", money(stats.salvaged)],
         thirdMetric,
         ["Historical Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
@@ -3229,7 +3350,7 @@
       ];
       document.getElementById("commodity-profile").innerHTML = profile.map(([label, value]) => `<div class="profile-item"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("");
       document.getElementById("salvage-timeline").innerHTML = item.timeline.length
-        ? item.timeline.map(([date, event]) => `<div class="timeline-item"><time>${escapeHtml(date)}</time><strong>${escapeHtml(event)}</strong></div>`).join("")
+        ? item.timeline.map(([date, event], index) => `<div class="timeline-step"><span>${index + 1}</span><time>${escapeHtml(date)}</time><strong>${escapeHtml(event)}</strong></div>`).join("")
         : '<div class="warning-empty">No intervention timeline was supplied.</div>';
     }
 
