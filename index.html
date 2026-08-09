@@ -1542,26 +1542,26 @@
     }
 
     .ticker-track {
-      display: flex;
-      width: max-content;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
       padding: 11px 0;
-      animation: productTicker var(--ticker-duration, 3600s) linear infinite;
-    }
-
-    .ticker-shell:hover .ticker-track,
-    .ticker-shell:focus-within .ticker-track {
-      animation-play-state: paused;
+      animation: none;
     }
 
     .ticker-item {
       display: grid;
-      grid-template-columns: minmax(220px, 1.5fr) minmax(110px, .6fr) minmax(150px, .8fr) minmax(130px, .7fr);
+      grid-template-columns: minmax(130px, 1.4fr) minmax(72px, .6fr) minmax(110px, .8fr) minmax(88px, .7fr);
       align-items: center;
       gap: 16px;
-      min-width: 650px;
+      min-width: 0;
       padding: 12px 24px;
       color: #fff;
       border-right: 1px solid rgba(255, 255, 255, 0.15);
+      transition: background 180ms ease;
+    }
+
+    .ticker-item:hover {
+      background: rgba(255, 255, 255, 0.07);
     }
 
     .ticker-item span,
@@ -1595,6 +1595,209 @@
       from { transform: translateX(0); }
       to { transform: translateX(-50%); }
     }
+
+    .forecast-kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 20px 22px 0;
+    }
+
+    .forecast-kpi {
+      min-height: 98px;
+      padding: 16px;
+      background: linear-gradient(180deg, #fff, var(--surface-soft));
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    .forecast-kpi:hover {
+      transform: translateY(-2px);
+      border-color: #9fbcb1;
+      box-shadow: 0 12px 28px rgba(15, 45, 37, 0.08);
+    }
+
+    .forecast-kpi span,
+    .forecast-kpi strong,
+    .forecast-kpi small {
+      display: block;
+    }
+
+    .forecast-kpi span {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .forecast-kpi strong {
+      margin-top: 8px;
+      color: var(--ink);
+      font-size: clamp(1rem, 1.45vw, 1.45rem);
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+    }
+
+    .forecast-kpi small {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.35;
+    }
+
+    .forecast-kpi .positive { color: var(--green-700); }
+    .forecast-kpi .negative { color: var(--red); }
+
+    .risk-explain {
+      margin: 12px 22px 0;
+      padding: 10px 12px;
+      color: var(--muted);
+      background: #f7faf8;
+      border: 1px dashed #bdd2ca;
+      border-radius: 11px;
+      font-size: 11px;
+    }
+
+    .risk-band-panel {
+      margin: 14px 22px 18px;
+      padding: 18px;
+      background: #202320;
+      border-radius: 18px;
+      color: #fff;
+    }
+
+    .risk-band-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .risk-band-head h3 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .risk-band-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: #d8ddd8;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .risk-band-legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .risk-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    .risk-band-chart {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      align-items: end;
+      gap: 16px;
+      min-height: 218px;
+    }
+
+    .risk-month {
+      display: grid;
+      align-content: end;
+      gap: 10px;
+      min-width: 0;
+      color: #dadeda;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .risk-month:hover .risk-stack,
+    .risk-month:focus-visible .risk-stack,
+    .risk-month.active .risk-stack {
+      outline: 2px solid rgba(255, 255, 255, 0.58);
+      outline-offset: 3px;
+    }
+
+    .risk-stack {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-start;
+      height: 156px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 7px;
+      transition: outline-color 160ms ease;
+    }
+
+    .risk-segment {
+      width: 100%;
+      min-height: 2px;
+      border-top: 1px solid rgba(32, 35, 32, 0.7);
+      transition: filter 180ms ease, opacity 180ms ease;
+    }
+
+    .risk-segment:hover,
+    .risk-segment.active {
+      filter: brightness(1.15);
+    }
+
+    .risk-month-label {
+      display: block;
+      color: #cfd4cf;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .risk-filter-note {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 14px;
+      color: #c7cec8;
+      font-size: 11px;
+    }
+
+    .risk-clear {
+      padding: 0;
+      color: #fff;
+      background: transparent;
+      border: 0;
+      font-weight: 800;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .row-risk-critical { background: rgba(190, 55, 55, 0.055); }
+    .row-risk-high { background: rgba(177, 105, 18, 0.06); }
+    .row-risk-medium { background: rgba(38, 126, 92, 0.045); }
+
+    tr.row-risk-critical td:first-child { box-shadow: inset 4px 0 0 #e5484d; }
+    tr.row-risk-high td:first-child { box-shadow: inset 4px 0 0 var(--amber); }
+    tr.row-risk-medium td:first-child { box-shadow: inset 4px 0 0 var(--green-700); }
+    tr.row-risk-longer td:first-child { box-shadow: inset 4px 0 0 #b8b8b0; }
+
+    .trend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .trend-down { color: var(--green-700); }
+    .trend-flat { color: var(--muted); }
 
     .shared-monitor {
       margin-bottom: 22px;
@@ -2065,12 +2268,17 @@
 
       .answer-strip,
       .change-grid,
-      .kpi-grid {
+      .kpi-grid,
+      .forecast-kpi-strip {
         grid-template-columns: repeat(2, 1fr);
       }
 
       .calendar {
         grid-template-columns: repeat(4, 1fr);
+      }
+
+      .risk-band-chart {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
       .salvage-month-grid {
@@ -2208,6 +2416,16 @@
 
       .toolbar {
         grid-template-columns: 1fr;
+      }
+
+      .forecast-kpi-strip,
+      .risk-band-chart {
+        grid-template-columns: 1fr;
+      }
+
+      .risk-band-head,
+      .risk-filter-note {
+        display: block;
       }
 
       .expiry-filter-toolbar,
@@ -2516,14 +2734,26 @@
       <p id="month-detail-copy">Batch-level exposure and salvage status for the selected month.</p>
     </div>
     <section class="card tracker">
+      <div class="forecast-kpi-strip" id="expiry-kpi-strip"></div>
       <div class="summary-metrics" id="month-summary"></div>
+      <div class="risk-explain">Value at Risk = S.O.H × Unit Price, excluding already-salvaged stock. Values reflect the selected calendar review date where historical reductions are available.</div>
+      <section class="risk-band-panel" aria-label="Value at risk by month and risk band">
+        <div class="risk-band-head">
+          <h3>Value at risk by month</h3>
+          <div class="risk-band-legend" id="risk-band-legend"></div>
+        </div>
+        <div class="risk-band-chart" id="risk-band-chart"></div>
+        <div class="risk-filter-note"><span id="risk-band-filter-note">Click a month or risk band segment to filter the list below.</span><button class="risk-clear" type="button" id="risk-band-clear" hidden>Clear risk filter</button></div>
+      </section>
       <div class="toolbar expiry-detail-toolbar">
         <label class="search-wrap"><span class="sr-only">Search expiry forecast commodities</span><input class="control" id="expiry-forecast-search" type="search" placeholder="Search commodity or SKU..." autocomplete="off"></label>
         <label><span class="sr-only">Rows to show</span><select class="control" id="expiry-forecast-page-size"><option value="10">Show 10</option><option value="20">Show 20</option><option value="50">Show 50</option><option value="100">Show 100</option><option value="All">Show all</option></select></label>
+        <button class="export-button" type="button" id="expiry-filtered-csv">Export Filtered CSV</button>
+        <button class="export-button" type="button" id="expiry-filtered-pdf">Export Filtered PDF</button>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>SKU / Commodity</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Expiry Date</th></tr></thead>
+          <thead><tr><th>SKU / Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th></tr></thead>
           <tbody id="expiry-table-body"></tbody>
         </table>
       </div>
@@ -2882,9 +3112,16 @@
     let expiryForecastSearch = "";
     let expiryForecastPage = 1;
     let expiryForecastPageSize = 10;
+    let selectedForecastRiskBand = "All";
     let salvageProductSearch = "";
     let salvageProductPage = 1;
     const salvagePageSize = 20;
+    const forecastRiskBands = [
+      { name: "Critical", label: "Critical", color: "#e5484d" },
+      { name: "High Risk", label: "High", color: "#f5a524" },
+      { name: "Medium Risk", label: "Medium", color: "#259d74" },
+      { name: "Longer Term", label: "Longer", color: "#b8b8b0" }
+    ];
 
     function aggregateBatchRecords(records) {
       const grouped = new Map();
@@ -3053,6 +3290,77 @@
       return { records, total, salvaged, expired, reviewed, remaining: remainingValue, allExpired, rate: preciseRate(salvaged, reviewed) };
     };
     const alertLevel = value => !isNumber(value) ? "" : value > 1000000 ? "Critical" : value >= 500000 ? "Moderate" : "Controlled";
+
+    function daysToExpiryFromCalendarSnapshot(item) {
+      if (!item.expiryDate) return null;
+      return Math.ceil((new Date(`${item.expiryDate}T12:00:00+02:00`) - new Date(`${selectedCalendarSnapshotId}T12:00:00+02:00`)) / 86400000);
+    }
+
+    function forecastRiskBand(item) {
+      const days = daysToExpiryFromCalendarSnapshot(item);
+      if (days === null) return "";
+      if (days <= 30) return "Critical";
+      if (days <= 90) return "High Risk";
+      if (days <= 180) return "Medium Risk";
+      return "Longer Term";
+    }
+
+    function riskBandTone(risk) {
+      if (risk === "Critical") return "critical";
+      if (risk === "High Risk") return "high";
+      if (risk === "Medium Risk") return "medium";
+      return "longer";
+    }
+
+    function previousCalendarSnapshotId() {
+      const index = calendarSnapshots.findIndex(snapshot => snapshot.id === selectedCalendarSnapshotId);
+      return index > 0 ? calendarSnapshots[index - 1].id : null;
+    }
+
+    function remainingForSnapshotId(month, snapshotId) {
+      const activeSnapshot = selectedCalendarSnapshotId;
+      selectedCalendarSnapshotId = snapshotId;
+      const value = futureRemainingForSnapshot(month);
+      selectedCalendarSnapshotId = activeSnapshot;
+      return value;
+    }
+
+    function monthChangeVsPrevious(month, currentValue) {
+      const previousId = previousCalendarSnapshotId();
+      if (!previousId || !isNumber(currentValue)) return null;
+      const previousValue = remainingForSnapshotId(month, previousId);
+      if (!isNumber(previousValue) || previousValue === 0) return null;
+      return ((currentValue - previousValue) / previousValue) * 100;
+    }
+
+    function recordTrend(item) {
+      const reduced = (recordSalvagedValue(item) || 0) > 0 || (recordShippedQuantity(item) || 0) > 0 || (isNumber(item.totalExpiringValue) && isNumber(item.value) && item.totalExpiringValue > item.value);
+      return reduced ? { label: "Reduced", symbol: "▼", className: "trend-down" } : { label: "No change", symbol: "–", className: "trend-flat" };
+    }
+
+    function animateNumberText(element, target, formatter) {
+      if (!element || !isNumber(target)) return;
+      const start = performance.now();
+      const duration = 600;
+      const step = now => {
+        const progress = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        element.textContent = formatter(target * eased);
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    function animateForecastKpis(values) {
+      document.querySelectorAll("[data-animate-money]").forEach(element => {
+        const key = element.dataset.animateMoney;
+        if (isNumber(values[key])) animateNumberText(element, values[key], money);
+      });
+      document.querySelectorAll("[data-animate-number]").forEach(element => {
+        const key = element.dataset.animateNumber;
+        if (isNumber(values[key])) animateNumberText(element, values[key], value => Math.round(value).toLocaleString("en-ZM"));
+      });
+    }
 
     function shortTextList(values) {
       const uniqueValues = [...new Set(values.filter(Boolean).map(value => String(value).trim()).filter(Boolean))].sort();
@@ -3246,11 +3554,14 @@
         <div><span>Basis</span><strong>${escapeHtml(snapshot.note)}</strong></div>`;
       select.onchange = () => {
         selectedCalendarSnapshotId = select.value;
+        selectedForecastRiskBand = "All";
+        expiryForecastPage = 1;
         renderCalendar();
         renderMonthDetail();
         renderCommodity();
         renderSalvageMonthSummary();
         renderExecutive();
+        renderProductTicker();
       };
     }
 
@@ -3272,6 +3583,7 @@
       document.querySelectorAll(".month-card").forEach(button => button.addEventListener("click", () => {
         selectedMonth = button.dataset.month;
         expiryForecastPage = 1;
+        selectedForecastRiskBand = "All";
         salvageProductPage = 1;
         selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
         renderCalendar();
@@ -3283,6 +3595,7 @@
     }
 
     function renderMonthDetail() {
+      return renderForecastDetail();
       const stats = monthStats(selectedMonth);
       document.getElementById("month-detail-title").textContent = `${selectedMonth} 2026 expiry detail`;
       document.getElementById("month-detail-copy").textContent = stats.records.length
@@ -3362,6 +3675,236 @@
       }
     }
 
+    function forecastFilteredRecords() {
+      const query = expiryForecastSearch.trim().toLowerCase();
+      const stats = monthStats(selectedMonth);
+      return [...stats.records]
+        .filter(item => selectedForecastRiskBand === "All" || forecastRiskBand(item) === selectedForecastRiskBand)
+        .filter(item => !query || `${item.sku} ${item.commodity} ${item.batch} ${item.expiryDate}`.toLowerCase().includes(query))
+        .sort((a, b) => {
+          const dayA = daysToExpiryFromCalendarSnapshot(a);
+          const dayB = daysToExpiryFromCalendarSnapshot(b);
+          return (dayA ?? 99999) - (dayB ?? 99999) || (b.value || 0) - (a.value || 0) || a.commodity.localeCompare(b.commodity);
+        });
+    }
+
+    function renderForecastKpiStrip(stats) {
+      const records = stats.records.filter(item => !isExpiredRecord(item));
+      const criticalSkus = new Set(records.filter(item => forecastRiskBand(item) === "Critical").map(item => item.sku || item.commodity)).size;
+      const topCommodity = [...records].filter(item => isNumber(item.value)).sort((a, b) => (b.value || 0) - (a.value || 0))[0];
+      const monthRisk = isHistoricalMonth(selectedMonth) ? stats.expired : stats.remaining;
+      const change = monthChangeVsPrevious(selectedMonth, monthRisk);
+      const changeLabel = change === null ? "No prior review" : `${change > 0 ? "Up" : "Down"} ${Math.abs(change).toFixed(1)}%`;
+      const changeClass = change === null ? "" : change > 0 ? "negative" : "positive";
+      document.getElementById("expiry-kpi-strip").innerHTML = [
+        `<article class="forecast-kpi"><span>Total value at risk this month</span><strong data-animate-money="monthRisk">${money(monthRisk)}</strong><small>${escapeHtml(selectedCalendarSnapshot().label)}</small></article>`,
+        `<article class="forecast-kpi"><span>Change vs last review</span><strong class="${changeClass}">${escapeHtml(changeLabel)}</strong><small>${escapeHtml(previousCalendarSnapshotId() ? "Compared with previous snapshot" : "First available snapshot")}</small></article>`,
+        `<article class="forecast-kpi"><span>SKUs in Critical band</span><strong data-animate-number="criticalSkus">${criticalSkus.toLocaleString("en-ZM")}</strong><small>30 days or less from review date</small></article>`,
+        `<article class="forecast-kpi"><span>Top salvage-eligible commodity</span><strong>${topCommodity ? escapeHtml(topCommodity.commodity) : "No active commodity"}</strong><small>${topCommodity ? moneyExact(topCommodity.value) : "No row-level record available"}</small></article>`
+      ].join("");
+      animateForecastKpis({ monthRisk, criticalSkus });
+    }
+
+    function renderRiskBandChart() {
+      const horizonMonths = monthOrder.filter(month => ["July", "August", "September", "October", "November", "December"].includes(month));
+      const monthBands = horizonMonths.map(month => {
+        const records = monthRecords(month).filter(item => !isExpiredRecord(item));
+        const bands = Object.fromEntries(forecastRiskBands.map(band => [band.name, 0]));
+        records.forEach(item => {
+          const band = forecastRiskBand(item);
+          if (band in bands) bands[band] += isNumber(item.value) ? item.value : 0;
+        });
+        return { month, bands, total: Object.values(bands).reduce((total, value) => total + value, 0) };
+      });
+      const maxTotal = Math.max(...monthBands.map(item => item.total), 1);
+      document.getElementById("risk-band-legend").innerHTML = forecastRiskBands.map(band => `<span><i class="risk-dot" style="background:${band.color}"></i>${band.label}</span>`).join("");
+      document.getElementById("risk-band-chart").innerHTML = monthBands.map(item => {
+        const height = Math.max(18, (item.total / maxTotal) * 156);
+        const segments = forecastRiskBands.map(band => {
+          const value = item.bands[band.name] || 0;
+          const share = item.total ? (value / item.total) * 100 : 0;
+          return `<button class="risk-segment ${selectedMonth === item.month && selectedForecastRiskBand === band.name ? "active" : ""}" type="button" title="${item.month} ${band.label}: ${moneyExact(value)}" data-month="${item.month}" data-risk-band="${band.name}" style="height:${share}%; background:${band.color}" aria-label="${item.month} ${band.label} ${moneyExact(value)}"></button>`;
+        }).join("");
+        return `<div class="risk-month ${selectedMonth === item.month ? "active" : ""}" role="button" tabindex="0" data-month="${item.month}" aria-label="${item.month} total ${moneyExact(item.total)}"><span class="risk-stack" style="height:${height}px">${segments}</span><span class="risk-month-label">${item.month.slice(0, 3)}</span></div>`;
+      }).join("");
+      document.getElementById("risk-band-filter-note").textContent = selectedForecastRiskBand === "All"
+        ? `${selectedMonth} 2026 shown below, sorted by days-to-expiry. Data as of ${selectedCalendarSnapshot().label}.`
+        : `${selectedMonth} 2026 filtered to ${selectedForecastRiskBand}. Data as of ${selectedCalendarSnapshot().label}.`;
+      const clear = document.getElementById("risk-band-clear");
+      clear.hidden = selectedForecastRiskBand === "All";
+      clear.onclick = () => {
+        selectedForecastRiskBand = "All";
+        expiryForecastPage = 1;
+        renderMonthDetail();
+      };
+      document.querySelectorAll(".risk-month").forEach(button => {
+        const activateMonth = () => {
+          selectedMonth = button.dataset.month;
+          selectedForecastRiskBand = "All";
+          selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
+          expiryForecastPage = 1;
+          renderCalendar();
+          renderMonthDetail();
+          renderCommodity();
+        };
+        button.addEventListener("click", event => {
+        if (event.target.classList.contains("risk-segment")) return;
+          activateMonth();
+        });
+        button.addEventListener("keydown", event => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            activateMonth();
+          }
+        });
+      });
+      document.querySelectorAll(".risk-segment").forEach(button => button.addEventListener("click", event => {
+        event.stopPropagation();
+        selectedMonth = button.dataset.month;
+        selectedForecastRiskBand = button.dataset.riskBand;
+        selectedCommodityId = monthRecords(selectedMonth).find(item => forecastRiskBand(item) === selectedForecastRiskBand)?.id || monthRecords(selectedMonth)[0]?.id || "";
+        expiryForecastPage = 1;
+        renderCalendar();
+        renderMonthDetail();
+        renderCommodity();
+      }));
+    }
+
+    function renderForecastDetail() {
+      const stats = monthStats(selectedMonth);
+      document.getElementById("month-detail-title").textContent = `${selectedMonth} 2026 expiry detail`;
+      document.getElementById("month-detail-copy").textContent = stats.records.length
+        ? stats.allExpired
+          ? `Expired product lines supplied for ${selectedMonth}: ${moneyExact(stats.expired)} expired out of ${moneyExact(stats.reviewed)} reviewed.`
+          : `Available value still expiring at ${selectedCalendarSnapshot().label}: ${moneyExact(stats.remaining)}.${stats.records.some(isExpiredRecord) ? ` Expired historical product lines are also shown for ${selectedMonth}.` : ""}`
+        : isNumber(sourceData.monthlyHistoricalReviewed?.[selectedMonth])
+          ? `Historical reviewed value: ${moneyExact(sourceData.monthlyHistoricalReviewed[selectedMonth])}. Product-level available-unit records are not supplied for this month.`
+        : `No monetary value was supplied for this month. Data as of ${selectedCalendarSnapshot().label}.`;
+      renderForecastKpiStrip(stats);
+      const thirdMetric = stats.allExpired
+        ? ["Expired", money(stats.expired)]
+        : stats.records.length
+          ? ["Remaining Risk", money(stats.remaining)]
+          : ["Expired", money(sourceData.monthlyValueExpired?.[selectedMonth])];
+      document.getElementById("month-summary").innerHTML = [
+        [isHistoricalMonth(selectedMonth) ? "Total Reviewed" : `Remaining Risk (${selectedCalendarSnapshot().label})`, money(isHistoricalMonth(selectedMonth) ? stats.total : stats.remaining)],
+        ["Salvaged", money(stats.salvaged)],
+        thirdMetric,
+        ["Historical Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
+      ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
+      renderRiskBandChart();
+      const searchInput = document.getElementById("expiry-forecast-search");
+      const pageSizeSelect = document.getElementById("expiry-forecast-page-size");
+      if (searchInput && searchInput.value !== expiryForecastSearch) searchInput.value = expiryForecastSearch;
+      if (pageSizeSelect) pageSizeSelect.value = expiryForecastPageSize === "All" ? "All" : String(expiryForecastPageSize);
+      const rankedMonthRecords = forecastFilteredRecords();
+      const pageSize = expiryForecastPageSize === "All" ? rankedMonthRecords.length || 1 : expiryForecastPageSize;
+      const totalPages = Math.max(1, Math.ceil(rankedMonthRecords.length / pageSize));
+      expiryForecastPage = Math.min(Math.max(1, expiryForecastPage), totalPages);
+      const start = (expiryForecastPage - 1) * pageSize;
+      const pageRecords = rankedMonthRecords.slice(start, start + pageSize);
+      document.getElementById("expiry-table-body").innerHTML = pageRecords.length ? pageRecords.map(item => {
+        const risk = forecastRiskBand(item);
+        const trend = recordTrend(item);
+        const days = daysToExpiryFromCalendarSnapshot(item);
+        return `
+        <tr class="row-risk-${riskBandTone(risk)}">
+          <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.sku)}<br><span class="metric-sub">${escapeHtml(item.commodity)}</span></button></td>
+          <td><span class="badge ${riskBadgeClass(risk)}">${escapeHtml(risk)}</span></td>
+          <td>${days ?? ""}</td>
+          <td>${isNumber(recordShippedQuantity(item)) ? recordShippedQuantity(item).toLocaleString("en-ZM") : ""}</td>
+          <td>${moneyExact(recordSalvagedValue(item))}</td>
+          <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
+          <td>${moneyExact(item.value)}</td>
+          <td><span class="trend-pill ${trend.className}" title="${escapeHtml(trend.label)}">${trend.symbol}</span></td>
+          <td>${formatDate(item.expiryDate)}</td>
+        </tr>`;
+      }).join("") : `<tr><td colspan="9" class="empty-state" style="display:table-cell">${expiryForecastSearch ? `No expiry forecast records match "${escapeHtml(expiryForecastSearch)}" for ${selectedMonth} 2026.` : `Only historical monthly summary values were supplied for ${selectedMonth} 2026.`}</td></tr>`;
+      const filterSuffix = selectedForecastRiskBand === "All" ? "" : ` · ${selectedForecastRiskBand}`;
+      document.getElementById("month-record-count").textContent =
+        `${rankedMonthRecords.length} of ${stats.records.length} batch line${stats.records.length === 1 ? "" : "s"}${filterSuffix}${expiryForecastSearch ? ` matching "${expiryForecastSearch}"` : ""} · showing ${pageRecords.length ? start + 1 : 0}-${Math.min(start + pageRecords.length, rankedMonthRecords.length)}`;
+      document.querySelector("#month-record-count").nextElementSibling.innerHTML = `
+        <span class="pagination-controls">
+          <button class="pager-button" type="button" id="expiry-forecast-prev" ${expiryForecastPage <= 1 ? "disabled" : ""}>Previous</button>
+          <span>Page ${expiryForecastPage} of ${totalPages}</span>
+          <button class="pager-button" type="button" id="expiry-forecast-next" ${expiryForecastPage >= totalPages ? "disabled" : ""}>Next</button>
+        </span>`;
+      document.querySelectorAll(".commodity-button").forEach(button => button.addEventListener("click", () => {
+        selectedCommodityId = button.dataset.id;
+        renderCommodity();
+        document.getElementById("profile-title").scrollIntoView({ behavior: "smooth", block: "start" });
+      }));
+      document.getElementById("expiry-forecast-prev")?.addEventListener("click", () => {
+        expiryForecastPage -= 1;
+        renderMonthDetail();
+      });
+      document.getElementById("expiry-forecast-next")?.addEventListener("click", () => {
+        expiryForecastPage += 1;
+        renderMonthDetail();
+      });
+      if (searchInput) {
+        searchInput.oninput = () => {
+          expiryForecastSearch = searchInput.value;
+          expiryForecastPage = 1;
+          renderMonthDetail();
+        };
+      }
+      if (pageSizeSelect) {
+        pageSizeSelect.onchange = () => {
+          expiryForecastPageSize = pageSizeSelect.value === "All" ? "All" : Number(pageSizeSelect.value);
+          expiryForecastPage = 1;
+          renderMonthDetail();
+        };
+      }
+      document.getElementById("expiry-filtered-csv").onclick = exportFilteredExpiryCsv;
+      document.getElementById("expiry-filtered-pdf").onclick = exportFilteredExpiryPdf;
+    }
+
+    function filteredExpiryExportRows() {
+      return forecastFilteredRecords().map(item => {
+        const trend = recordTrend(item);
+        return {
+          sku: item.sku,
+          commodity: item.commodity,
+          risk: forecastRiskBand(item),
+          days: daysToExpiryFromCalendarSnapshot(item),
+          shippedUnits: recordShippedQuantity(item),
+          salvagedValue: recordSalvagedValue(item),
+          soh: item.quantity,
+          valueAtRisk: item.value,
+          trend: trend.label,
+          expiryDate: item.expiryDate
+        };
+      });
+    }
+
+    function exportFilteredExpiryCsv() {
+      const rows = filteredExpiryExportRows();
+      const headers = ["SKU", "Commodity", "Risk", "Days", "Shipped Units", "Salvaged Value", "S.O.H", "Value at Risk", "Trend", "Expiry Date"];
+      const csv = [headers, ...rows.map(row => [row.sku, row.commodity, row.risk, row.days ?? "", row.shippedUnits ?? "", row.salvagedValue ?? "", row.soh ?? "", row.valueAtRisk ?? "", row.trend, row.expiryDate])]
+        .map(values => values.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `zammsa-expiry-forecast-${selectedMonth.toLowerCase()}-${selectedForecastRiskBand.toLowerCase().replace(/\s+/g, "-")}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function exportFilteredExpiryPdf() {
+      const rows = filteredExpiryExportRows();
+      const title = `${selectedMonth} 2026 Expiry Forecast - ${selectedForecastRiskBand === "All" ? "All Risk Bands" : selectedForecastRiskBand}`;
+      const html = `<!doctype html><html><head><title>${escapeHtml(title)}</title><style>
+        body{font-family:Arial,sans-serif;margin:24px;color:#10231d}h1{font-size:22px}p{color:#5f716b;font-size:12px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border-bottom:1px solid #d9e3df;padding:8px;text-align:left}th{background:#f2f6f4;text-transform:uppercase;font-size:9px}.critical{color:#c73939}.high{color:#a56300}.medium{color:#166b51}
+      </style></head><body><h1>${escapeHtml(title)}</h1><p>Data as of ${escapeHtml(selectedCalendarSnapshot().label)}. Value at Risk = S.O.H × Unit Price, excluding already-salvaged stock.</p><table><thead><tr><th>SKU</th><th>Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th></tr></thead><tbody>${rows.map(row => `<tr><td>${escapeHtml(row.sku)}</td><td>${escapeHtml(row.commodity)}</td><td>${escapeHtml(row.risk)}</td><td>${row.days ?? ""}</td><td>${isNumber(row.shippedUnits) ? row.shippedUnits.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.salvagedValue)}</td><td>${isNumber(row.soh) ? row.soh.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.valueAtRisk)}</td><td>${escapeHtml(row.trend)}</td><td>${formatDate(row.expiryDate)}</td></tr>`).join("")}</tbody></table></body></html>`;
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) return;
+      printWindow.document.write(html);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(() => printWindow.print(), 180);
+    }
+
     function renderCommodity() {
       const item = expiryRecords.find(record => record.id === selectedCommodityId) || monthRecords(selectedMonth)[0];
       if (!item) {
@@ -3391,6 +3934,7 @@
       if (!item) return;
       selectedMonth = item.month;
       selectedCommodityId = item.id;
+      selectedForecastRiskBand = "All";
       expiryForecastPage = 1;
       renderCalendar();
       renderMonthDetail();
@@ -3701,7 +4245,9 @@
     }
 
     function renderProductTicker() {
-      const items = [...expiryRecords].sort((a, b) => a.expiryDate.localeCompare(b.expiryDate) || a.commodity.localeCompare(b.commodity));
+      const items = [...activeRiskRecords()]
+        .sort((a, b) => (daysToExpiryFromCalendarSnapshot(a) ?? 99999) - (daysToExpiryFromCalendarSnapshot(b) ?? 99999) || (b.value || 0) - (a.value || 0))
+        .slice(0, 4);
       const markup = items.map(item => `
         <div class="ticker-item">
           <div><small>Product</small><span title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span></div>
@@ -3710,8 +4256,7 @@
           <div><small>Expiry Date</small><strong>${formatDate(item.expiryDate)}</strong></div>
         </div>`).join("");
       const ticker = document.getElementById("product-ticker");
-      ticker.innerHTML = markup + markup;
-      ticker.style.setProperty("--ticker-duration", `${Math.min(21600, Math.max(5400, items.length * 12))}s`);
+      ticker.innerHTML = markup || '<div class="ticker-item"><div><small>Data as of</small><span>No active expiry rows loaded</span></div><div></div><div></div><div></div></div>';
     }
 
     function renderChangesSinceReview() {
