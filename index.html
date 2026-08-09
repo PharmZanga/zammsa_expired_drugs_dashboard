@@ -107,7 +107,7 @@
     .hero-inner,
     main,
     .footer-inner {
-      width: min(1180px, calc(100% - 32px));
+      width: min(1420px, calc(100% - 28px));
       margin-inline: auto;
     }
 
@@ -1523,6 +1523,10 @@
       box-shadow: var(--shadow);
     }
 
+    .shared-monitor .ticker-shell {
+      margin: 0 0 14px;
+    }
+
     .ticker-shell::before,
     .ticker-shell::after {
       content: "";
@@ -1560,6 +1564,16 @@
       color: #fff;
       background: rgba(255, 255, 255, 0.035);
       transition: background 180ms ease;
+    }
+
+    .ticker-title {
+      grid-column: 1 / -1;
+      padding: 11px 16px 4px;
+      color: #b8d2c9;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .ticker-item:hover {
@@ -2091,9 +2105,9 @@
 
     .app-shell {
       display: grid;
-      grid-template-columns: 245px minmax(0, 1fr);
-      width: min(1480px, 100%);
-      margin: 0 auto;
+      grid-template-columns: 224px minmax(0, 1fr);
+      width: 100%;
+      margin: 0;
       align-items: start;
     }
 
@@ -2104,7 +2118,7 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      padding: 22px 14px;
+      padding: 22px 10px;
       color: #fff;
       background: #0e342c;
       border-right: 1px solid rgba(255, 255, 255, 0.08);
@@ -2169,6 +2183,7 @@
 
     .dashboard-content {
       min-width: 0;
+      padding-right: 12px;
     }
 
     .dashboard-content main {
@@ -2773,6 +2788,9 @@
     <div class="dashboard-content">
   <main id="main-content">
     <section class="shared-monitor" aria-label="Monthly expiry calendar and commodity scoreboard">
+      <section class="ticker-shell" aria-label="Selected month product scoreboard">
+        <div class="ticker-track" id="product-ticker"></div>
+      </section>
       <div class="section-heading">
         <h2>Monthly expiry calendar</h2>
         <p>January-June show actual expired value from historical summaries; July-December show remaining risk at the selected review date.</p>
@@ -2782,9 +2800,6 @@
         <div class="snapshot-summary" id="calendar-snapshot-summary"></div>
       </section>
       <section class="calendar" id="month-calendar" aria-label="Clickable monthly expiry calendar"></section>
-      <section class="ticker-shell" aria-label="Priority product scoreboard">
-        <div class="ticker-track" id="product-ticker"></div>
-      </section>
     </section>
 
     <div class="dashboard-view active" id="view-executive-summary" data-view="executive-summary">
@@ -4510,7 +4525,8 @@
           </div>
         </div>`).join("");
       const ticker = document.getElementById("product-ticker");
-      ticker.innerHTML = markup || `<div class="ticker-item"><div><small>${escapeHtml(selectedMonth)} 2026</small><span>No product-level rows loaded for this month</span></div></div>`;
+      ticker.innerHTML = `<div class="ticker-title">${escapeHtml(selectedMonth)} 2026 drugs expiring / expired - top product information</div>` +
+        (markup || `<div class="ticker-item"><div><small>${escapeHtml(selectedMonth)} 2026</small><span>No product-level rows loaded for this month</span></div></div>`);
     }
 
     function renderChangesSinceReview() {
