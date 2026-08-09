@@ -40,6 +40,8 @@
       margin: 0;
       color: var(--ink);
       background:
+        linear-gradient(rgba(238, 243, 240, 0.88), rgba(238, 243, 240, 0.93)),
+        url("assets/medical-supply-header.png") center top / cover fixed no-repeat,
         radial-gradient(circle at 88% 0%, rgba(255, 185, 65, 0.15), transparent 28rem),
         #eef3f0;
       font-family: Inter, "Segoe UI", Arial, sans-serif;
@@ -370,10 +372,11 @@
     }
 
     .card {
-      background: var(--surface);
+      background: rgba(255, 255, 255, 0.9);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: 0 8px 28px rgba(24, 39, 33, 0.045);
+      backdrop-filter: blur(2px);
     }
 
     .card-header {
@@ -1543,7 +1546,7 @@
 
     .ticker-track {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 1px;
       padding: 1px;
       animation: none;
@@ -1580,8 +1583,16 @@
 
     .ticker-meta {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+
+    .ticker-meta div {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      min-width: 0;
     }
 
     .ticker-item small {
@@ -1595,6 +1606,8 @@
       margin-top: 2px;
       font-size: 11px;
       overflow: hidden;
+      max-width: 70%;
+      text-align: right;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -1674,6 +1687,10 @@
       background: #202320;
       border-radius: 18px;
       color: #fff;
+    }
+
+    .executive-risk-panel {
+      margin: 18px 0 0;
     }
 
     .risk-band-head {
@@ -2174,10 +2191,11 @@
       gap: 18px;
       margin-bottom: 14px;
       padding: 18px 22px;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.9);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(2px);
     }
 
     .view-header h2 {
@@ -2771,6 +2789,15 @@
 
     <div class="dashboard-view active" id="view-executive-summary" data-view="executive-summary">
       <div class="view-header"><div><h2>Executive Summary</h2></div><p>What is happening across the national short-expiry portfolio?</p></div>
+    <div class="subtab-layout" data-subtabs="executive-summary">
+      <nav class="subtab-nav" aria-label="Executive summary sections">
+        <button class="subtab-button active" type="button" data-subtab-target="executive-brief">Brief</button>
+        <button class="subtab-button" type="button" data-subtab-target="executive-kpis">KPIs</button>
+        <button class="subtab-button" type="button" data-subtab-target="executive-charts">Charts</button>
+        <button class="subtab-button" type="button" data-subtab-target="executive-alerts-panel">Alerts</button>
+      </nav>
+      <div>
+    <section class="subtab-panel active" data-subtab-panel="executive-brief">
     <article class="card executive-narrative">
       <h3>Executive Summary</h3>
       <p>The National Short Expiry and Salvage Dashboard provides real-time visibility of pharmaceutical and medical commodities at risk of expiry across the national health supply chain. The dashboard supports the Ministry of Health, National Supply Chain Coordinating Unit (Control Tower), ZAMMSA, and key stakeholders in monitoring short-dated commodities, coordinating salvage interventions, and tracking progress towards reducing commodity wastage.</p>
@@ -2778,7 +2805,9 @@
       <p><strong>Current Reporting Period:</strong> This dashboard reflects the latest bi-weekly review and includes commodities identified as being at risk of expiry, ongoing salvage interventions, completed salvage actions, and projected expiries through December 2026.</p>
     </article>
     <div class="demo-banner"><strong>Source data loaded:</strong> Load_Query_July 1_2026, Salvaged Products_16th Jun to 30th Jun_2026, and ZAMMSA 1 Jan-15 Jun shipped values for Jul-Dec 2026 expiries. Dashboard is filtered to 2026 expiries only; missing unit prices are intentionally blank.</div>
+    </section>
 
+    <section class="subtab-panel" data-subtab-panel="executive-kpis">
     <section class="metrics" id="executive-metrics" aria-label="Executive summary"></section>
     <section class="card tracker executive-range-card" aria-label="Executive summary range filter">
       <div class="toolbar summary-filter-toolbar">
@@ -2787,17 +2816,33 @@
         <label><span class="sr-only">Executive summary end month</span><select class="control" data-executive-range-end></select></label>
       </div>
     </section>
+    </section>
 
+    <section class="subtab-panel" data-subtab-panel="executive-alerts-panel">
     <div class="section-heading">
       <h2>Changes since last review</h2>
       <p>Bi-weekly movement in new risk, salvage, expiry outcomes, and institutional engagement.</p>
     </div>
     <section class="change-grid" id="changes-since-review"></section>
+    <section class="alerts" id="executive-alerts" style="margin-top:18px"></section>
+    </section>
+
+    <section class="subtab-panel" data-subtab-panel="executive-charts">
     <section class="planning-grid" style="margin-top:18px">
       <article class="card"><div class="card-header"><div><h3>Value at risk vs salvage</h3><p>Bi-weekly national movement</p></div></div><div class="chart-body" id="executive-trend-chart"></div></article>
       <article class="card"><div class="card-header"><div><h3>Expiry forecast by month</h3><p>May-December source coverage</p></div></div><div class="risk-list" id="executive-forecast-chart"></div></article>
     </section>
-    <section class="alerts" id="executive-alerts" style="margin-top:18px"></section>
+    <section class="risk-band-panel executive-risk-panel" aria-label="Executive value at risk by month and risk band">
+      <div class="risk-band-head">
+        <h3>Value at risk by month</h3>
+        <div class="risk-band-legend" id="executive-risk-band-legend"></div>
+      </div>
+      <div class="risk-band-chart" id="executive-risk-band-chart"></div>
+      <div class="risk-filter-note"><span>Click a month on the Expiry Forecast page to filter the commodity list.</span></div>
+    </section>
+    </section>
+      </div>
+    </div>
     </div>
 
     <div class="dashboard-view" id="view-expiry-forecast" data-view="expiry-forecast">
@@ -3720,6 +3765,7 @@
         renderCommodity();
         renderSalvageMonthSummary();
         renderExecutive();
+        renderExecutiveCharts();
         renderProductTicker();
       };
     }
@@ -3750,6 +3796,7 @@
         renderCommodity();
         renderSalvageMonthSummary();
         renderSalvageRegister();
+        renderProductTicker();
       }));
     }
 
@@ -3906,6 +3953,7 @@
           renderCalendar();
           renderMonthDetail();
           renderCommodity();
+          renderProductTicker();
         };
         button.addEventListener("click", event => {
         if (event.target.classList.contains("risk-segment")) return;
@@ -3927,6 +3975,7 @@
         renderCalendar();
         renderMonthDetail();
         renderCommodity();
+        renderProductTicker();
       }));
     }
 
@@ -4208,6 +4257,7 @@
         renderCommodity();
         renderSalvageMonthSummary();
         renderSalvageRegister();
+        renderProductTicker();
       }));
 
       const stats = monthStats(selectedMonth);
@@ -4346,6 +4396,45 @@
       document.getElementById("executive-alerts").innerHTML = `
         <article class="alert-card critical"><span>Critical alert</span><strong>${critical.length}</strong><small>Commodities expiring within 30 days of ${selectedSnapshot().label}</small></article>
         <article class="alert-card moderate"><span>High-risk alert</span><strong>${high.length}</strong><small>Commodities expiring within 31-90 days</small></article>`;
+      renderExecutiveRiskBandChart();
+    }
+
+    function renderExecutiveRiskBandChart() {
+      const chart = document.getElementById("executive-risk-band-chart");
+      const legend = document.getElementById("executive-risk-band-legend");
+      if (!chart || !legend) return;
+      const horizonMonths = monthOrder.filter(month => ["July", "August", "September", "October", "November", "December"].includes(month));
+      const monthBands = horizonMonths.map(month => {
+        const records = monthRecords(month).filter(item => !isExpiredRecord(item));
+        const bands = Object.fromEntries(forecastRiskBands.map(band => [band.name, 0]));
+        records.forEach(item => {
+          const band = forecastRiskBand(item);
+          if (band in bands) bands[band] += isNumber(item.value) ? item.value : 0;
+        });
+        return { month, bands, total: Object.values(bands).reduce((total, value) => total + value, 0) };
+      });
+      const maxTotal = Math.max(...monthBands.map(item => item.total), 1);
+      legend.innerHTML = forecastRiskBands.map(band => `<span><i class="risk-dot" style="background:${band.color}"></i>${band.label}</span>`).join("");
+      chart.innerHTML = monthBands.map(item => {
+        const height = Math.max(18, (item.total / maxTotal) * 156);
+        const segments = forecastRiskBands.map(band => {
+          const value = item.bands[band.name] || 0;
+          const share = item.total ? (value / item.total) * 100 : 0;
+          return `<span class="risk-segment" title="${item.month} ${band.label}: ${moneyExact(value)}" style="height:${share}%; background:${band.color}"></span>`;
+        }).join("");
+        return `<button class="risk-month ${selectedMonth === item.month ? "active" : ""}" type="button" data-executive-risk-month="${item.month}" aria-label="${item.month} total ${moneyExact(item.total)}"><span class="risk-stack" style="height:${height}px">${segments}</span><span class="risk-month-label">${item.month.slice(0, 3)}</span></button>`;
+      }).join("");
+      document.querySelectorAll("[data-executive-risk-month]").forEach(button => button.addEventListener("click", () => {
+        selectedMonth = button.dataset.executiveRiskMonth;
+        selectedForecastRiskBand = "All";
+        expiryForecastPage = 1;
+        selectedCommodityId = monthRecords(selectedMonth)[0]?.id || "";
+        renderCalendar();
+        renderMonthDetail();
+        renderCommodity();
+        renderProductTicker();
+        activateView("expiry-forecast", true);
+      }));
     }
 
     function renderRootCauseAnalysis() {
@@ -4407,8 +4496,9 @@
     }
 
     function renderProductTicker() {
-      const items = [...activeRiskRecords()]
-        .sort((a, b) => (daysToExpiryFromCalendarSnapshot(a) ?? 99999) - (daysToExpiryFromCalendarSnapshot(b) ?? 99999) || (b.value || 0) - (a.value || 0))
+      const items = monthRecords(selectedMonth)
+        .filter(item => item.expiryDate)
+        .sort((a, b) => (b.value || 0) - (a.value || 0) || (daysToExpiryFromCalendarSnapshot(a) ?? 99999) - (daysToExpiryFromCalendarSnapshot(b) ?? 99999))
         .slice(0, 4);
       const markup = items.map(item => `
         <div class="ticker-item">
@@ -4420,7 +4510,7 @@
           </div>
         </div>`).join("");
       const ticker = document.getElementById("product-ticker");
-      ticker.innerHTML = markup || '<div class="ticker-item"><div><small>Data as of</small><span>No active expiry rows loaded</span></div></div>';
+      ticker.innerHTML = markup || `<div class="ticker-item"><div><small>${escapeHtml(selectedMonth)} 2026</small><span>No product-level rows loaded for this month</span></div></div>`;
     }
 
     function renderChangesSinceReview() {
