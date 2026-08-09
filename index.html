@@ -282,7 +282,7 @@
     .metrics {
       display: grid;
       grid-template-columns: repeat(6, minmax(0, 1fr));
-      margin-bottom: 28px;
+      margin-bottom: 18px;
       overflow: hidden;
       background: var(--surface);
       border: 1px solid rgba(220, 229, 223, 0.8);
@@ -292,7 +292,7 @@
 
     .metric {
       min-width: 0;
-      padding: 17px 10px;
+      padding: 14px 10px;
       border-right: 1px solid var(--line);
     }
 
@@ -302,7 +302,7 @@
 
     .metric-label {
       display: block;
-      min-height: 38px;
+      min-height: 30px;
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
@@ -343,8 +343,8 @@
       display: flex;
       align-items: end;
       justify-content: space-between;
-      gap: 24px;
-      margin: 34px 0 14px;
+      gap: 18px;
+      margin: 22px 0 12px;
     }
 
     .section-heading h2 {
@@ -1543,20 +1543,19 @@
 
     .ticker-track {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      padding: 11px 0;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1px;
+      padding: 1px;
       animation: none;
     }
 
     .ticker-item {
       display: grid;
-      grid-template-columns: minmax(130px, 1.4fr) minmax(72px, .6fr) minmax(110px, .8fr) minmax(88px, .7fr);
-      align-items: center;
-      gap: 16px;
+      gap: 8px;
       min-width: 0;
-      padding: 12px 24px;
+      padding: 12px 16px;
       color: #fff;
-      border-right: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.035);
       transition: background 180ms ease;
     }
 
@@ -1574,8 +1573,15 @@
       overflow: hidden;
       font-size: 12px;
       font-weight: 800;
+      line-height: 1.25;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .ticker-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
     }
 
     .ticker-item small {
@@ -1588,6 +1594,8 @@
     .ticker-item strong {
       margin-top: 2px;
       font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
@@ -1800,8 +1808,8 @@
     .trend-flat { color: var(--muted); }
 
     .shared-monitor {
-      margin-bottom: 22px;
-      padding: 18px;
+      margin-bottom: 14px;
+      padding: 14px;
       background: rgba(255, 255, 255, 0.72);
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -1853,7 +1861,64 @@
     body[data-active-view="root-cause-analysis"] .dashboard-content main,
     body[data-active-view="institution-performance"] .dashboard-content main,
     body[data-active-view="national-summary"] .dashboard-content main {
-      margin-top: 24px;
+      margin-top: 18px;
+    }
+
+    .subtab-layout {
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .subtab-nav {
+      position: sticky;
+      top: 16px;
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .subtab-button {
+      padding: 12px 13px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      font-size: 12px;
+      font-weight: 900;
+      text-align: left;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease;
+    }
+
+    .subtab-button:hover,
+    .subtab-button:focus-visible {
+      color: var(--green-900);
+      background: #f4f8f6;
+      outline: none;
+    }
+
+    .subtab-button.active {
+      color: #fff;
+      background: var(--green-950);
+      border-color: var(--green-950);
+    }
+
+    .subtab-panel {
+      display: none;
+    }
+
+    .subtab-panel.active {
+      display: block;
+    }
+
+    .subtab-panel > .section-heading:first-child {
+      margin-top: 0;
     }
 
     #view-commodity-register .tracker {
@@ -2106,9 +2171,9 @@
       display: flex;
       align-items: end;
       justify-content: space-between;
-      gap: 24px;
-      margin-bottom: 18px;
-      padding: 23px 25px;
+      gap: 18px;
+      margin-bottom: 14px;
+      padding: 18px 22px;
       background: #fff;
       border: 1px solid var(--line);
       border-radius: var(--radius);
@@ -2291,6 +2356,15 @@
 
       .warning-grid {
         grid-template-columns: 1fr;
+      }
+
+      .subtab-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .subtab-nav {
+        position: static;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       }
     }
 
@@ -2690,7 +2764,7 @@
         <div class="snapshot-summary" id="calendar-snapshot-summary"></div>
       </section>
       <section class="calendar" id="month-calendar" aria-label="Clickable monthly expiry calendar"></section>
-      <section class="ticker-shell" aria-label="Moving product scoreboard">
+      <section class="ticker-shell" aria-label="Priority product scoreboard">
         <div class="ticker-track" id="product-ticker"></div>
       </section>
     </section>
@@ -2729,6 +2803,14 @@
     <div class="dashboard-view" id="view-expiry-forecast" data-view="expiry-forecast">
     <div class="view-header"><div><h2>Expiry Forecast</h2></div><div class="view-actions"><p>How much is expiring by December, and which products drive each month?</p><button class="export-button" type="button" data-export-view="expiry-forecast">Export PDF</button></div></div>
 
+    <div class="subtab-layout" data-subtabs="expiry-forecast">
+      <nav class="subtab-nav" aria-label="Expiry forecast sections">
+        <button class="subtab-button active" type="button" data-subtab-target="expiry-overview">Risk Overview</button>
+        <button class="subtab-button" type="button" data-subtab-target="expiry-commodities">Commodity List</button>
+        <button class="subtab-button" type="button" data-subtab-target="expiry-profile">Drill-Down</button>
+      </nav>
+      <div>
+    <section class="subtab-panel active" data-subtab-panel="expiry-overview">
     <div class="section-heading">
       <h2 id="month-detail-title">May 2026 expiry detail</h2>
       <p id="month-detail-copy">Batch-level exposure and salvage status for the selected month.</p>
@@ -2745,6 +2827,10 @@
         <div class="risk-band-chart" id="risk-band-chart"></div>
         <div class="risk-filter-note"><span id="risk-band-filter-note">Click a month or risk band segment to filter the list below.</span><button class="risk-clear" type="button" id="risk-band-clear" hidden>Clear risk filter</button></div>
       </section>
+    </section>
+    </section>
+    <section class="subtab-panel" data-subtab-panel="expiry-commodities">
+    <section class="card tracker">
       <div class="toolbar expiry-detail-toolbar">
         <label class="search-wrap"><span class="sr-only">Search expiry forecast commodities</span><input class="control" id="expiry-forecast-search" type="search" placeholder="Search commodity or SKU..." autocomplete="off"></label>
         <label><span class="sr-only">Rows to show</span><select class="control" id="expiry-forecast-page-size"><option value="10">Show 10</option><option value="20">Show 20</option><option value="50">Show 50</option><option value="100">Show 100</option><option value="All">Show all</option></select></label>
@@ -2759,7 +2845,9 @@
       </div>
       <div class="table-footer"><span id="month-record-count"></span><span>Click a commodity to open its lifecycle profile</span></div>
     </section>
+    </section>
 
+    <section class="subtab-panel" data-subtab-panel="expiry-profile">
     <div class="section-heading">
       <h2>Commodity drill-down</h2>
       <p>Lifecycle view of the selected commodity, from identification through engagement and salvage outcome.</p>
@@ -2774,6 +2862,9 @@
         <div class="timeline graph" id="salvage-timeline"></div>
       </article>
     </section>
+    </section>
+      </div>
+    </div>
     </div>
 
     <div class="dashboard-view" id="view-warning-centre" data-view="warning-centre">
@@ -2815,12 +2906,21 @@
 
     <div class="dashboard-view" id="view-salvage-tracker" data-view="salvage-tracker">
     <div class="view-header"><div><h2>Salvage Tracker</h2></div><div class="view-actions"><p>What value has been saved, when, and through which institution?</p><button class="export-button" type="button" data-export-view="salvage-tracker" data-export-target="salvage-month-list">Export PDF</button></div></div>
+    <div class="subtab-layout" data-subtabs="salvage-tracker">
+      <nav class="subtab-nav" aria-label="Salvage tracker sections">
+        <button class="subtab-button active" type="button" data-subtab-target="salvage-overview">Monthly Overview</button>
+        <button class="subtab-button" type="button" data-subtab-target="salvage-products">Product List</button>
+      </nav>
+      <div>
+    <section class="subtab-panel active" data-subtab-panel="salvage-overview">
     <section class="metrics" id="salvage-kpis"></section>
     <div class="section-heading">
       <h2>Monthly salvage performance</h2>
       <p>Select a month to compare the total value expiring with the value already salvaged.</p>
     </div>
     <section class="salvage-month-grid" id="salvage-month-grid" aria-label="Monthly expiring and salvaged values"></section>
+    </section>
+    <section class="subtab-panel" data-subtab-panel="salvage-products">
     <section class="card tracker" id="salvage-month-list">
       <div class="toolbar">
         <label class="search-wrap"><span class="sr-only">Search salvaged commodities</span><input class="control" id="salvage-product-search" type="search" placeholder="Search commodity or SKU..." autocomplete="off"></label>
@@ -2833,6 +2933,9 @@
       </div>
       <div class="table-footer"><span id="salvage-month-product-count"></span><span id="salvage-month-product-total"></span><a class="export-button" href="#shipment-register">Open Shipment Register</a></div>
     </section>
+    </section>
+      </div>
+    </div>
     </div>
 
     <div class="dashboard-view" id="view-shipment-register" data-view="shipment-register">
@@ -2854,7 +2957,18 @@
 
     <div class="dashboard-view" id="view-institution-performance" data-view="institution-performance">
     <div class="view-header"><div><h2>Institution Performance</h2></div><p>Which institutions and provinces hold responsibility for active interventions?</p></div>
+    <div class="subtab-layout" data-subtabs="institution-performance">
+      <nav class="subtab-nav" aria-label="Institution performance sections">
+        <button class="subtab-button active" type="button" data-subtab-target="institution-overview">Overview</button>
+        <button class="subtab-button" type="button" data-subtab-target="institution-army">Zambia Army</button>
+        <button class="subtab-button" type="button" data-subtab-target="institution-engagement">Engagement</button>
+        <button class="subtab-button" type="button" data-subtab-target="institution-summary-panel">National Summary</button>
+      </nav>
+      <div>
+    <section class="subtab-panel active" data-subtab-panel="institution-overview">
     <section class="institution-summary" id="institution-summary"></section>
+    </section>
+    <section class="subtab-panel" data-subtab-panel="institution-army">
     <div class="section-heading">
       <h2>Zambia Army initiative tracker</h2>
       <p>Dedicated institutional follow-up for the June-November 2026 salvage opportunity.</p>
@@ -2867,8 +2981,12 @@
         </table>
       </div>
     </section>
+    </section>
+    <section class="subtab-panel" data-subtab-panel="institution-engagement">
     <div class="section-heading"><h2>Engagement performance</h2><p>Commodity count, portfolio value, and current intervention status by institution.</p></div>
     <section class="card tracker"><div class="table-wrap"><table><thead><tr><th>Recipient Institution</th><th>Shipment Records</th><th>Quantity Shipped</th><th>Province(s)</th><th>Value</th></tr></thead><tbody id="institution-table"></tbody></table></div></section>
+    </section>
+    <section class="subtab-panel" data-subtab-panel="institution-summary-panel">
     <div class="section-heading"><h2>National salvage and expiry summary</h2><p>Historical value reviewed from 1 January to 15 June 2026, including salvaged and expired outcomes.</p></div>
     <section class="card tracker">
       <div class="toolbar summary-filter-toolbar">
@@ -2894,11 +3012,24 @@
         </ol>
       </div>
     </section>
+    </section>
+      </div>
+    </div>
     </div>
 
     <div class="dashboard-view" id="view-national-summary" data-view="national-summary">
     <div class="view-header"><div><h2>National Salvage / Expiry Summary</h2></div><p>Workbook summary of salvaged value, expired value, total reviewed value, and salvage percentage.</p></div>
+    <div class="subtab-layout" data-subtabs="national-summary">
+      <nav class="subtab-nav" aria-label="National summary sections">
+        <button class="subtab-button active" type="button" data-subtab-target="summary-kpis">KPI View</button>
+        <button class="subtab-button" type="button" data-subtab-target="summary-table-view">Summary Table</button>
+        <button class="subtab-button" type="button" data-subtab-target="summary-notes">Notes</button>
+      </nav>
+      <div>
+    <section class="subtab-panel active" data-subtab-panel="summary-kpis">
     <section class="metrics" id="national-summary-kpis"></section>
+    </section>
+    <section class="subtab-panel" data-subtab-panel="summary-table-view">
     <section class="card tracker">
       <div class="toolbar summary-filter-toolbar">
         <label><span class="sr-only">Summary range</span><select class="control summary-range-mode" data-summary-range-mode><option value="All">All months</option><option value="Custom">Month range</option></select></label>
@@ -2911,6 +3042,10 @@
           <tbody id="national-summary-table"></tbody>
         </table>
       </div>
+    </section>
+    </section>
+    <section class="subtab-panel" data-subtab-panel="summary-notes">
+    <section class="card tracker">
       <div class="source-note">
         <strong>Note:</strong>
         <ol>
@@ -2923,22 +3058,39 @@
         </ol>
       </div>
     </section>
+    </section>
+      </div>
+    </div>
     </div>
 
     <div class="dashboard-view" id="view-historical-snapshots" data-view="historical-snapshots">
     <div class="view-header"><div><h2>Historical Snapshots</h2></div><p>Reconstruct the national position as it existed on any bi-weekly review date.</p></div>
+    <div class="subtab-layout" data-subtabs="historical-snapshots">
+      <nav class="subtab-nav" aria-label="Historical snapshot sections">
+        <button class="subtab-button active" type="button" data-subtab-target="snapshot-selector-panel">Snapshot KPI</button>
+        <button class="subtab-button" type="button" data-subtab-target="snapshot-trend-panel">Trend Chart</button>
+        <button class="subtab-button" type="button" data-subtab-target="snapshot-table-panel">Data Table</button>
+      </nav>
+      <div>
+    <section class="subtab-panel active" data-subtab-panel="snapshot-selector-panel">
     <section class="snapshot-bar" aria-label="Historical snapshot selector">
       <label><span>View historical snapshot</span><select class="control" id="snapshot-select"></select></label>
       <div class="snapshot-summary" id="snapshot-summary"></div>
     </section>
+    </section>
+    <section class="subtab-panel" data-subtab-panel="snapshot-trend-panel">
     <div class="section-heading">
       <h2>Salvage performance trend</h2>
       <p>Bi-weekly movement shows whether remaining risk is declining while cumulative salvage increases.</p>
     </div>
     <section class="card">
-      <div class="card-header"><div><h3>TWG performance, May-June 2026</h3><p>Values in ZMW millions</p></div></div>
+      <div class="card-header"><div><h3>TWG performance, Jan-July 2026</h3><p>Values in ZMW millions; salvage rate recalculates by selected snapshot</p></div></div>
       <div class="trend-legend"><span><i style="background:#b73a3a"></i>Value at risk</span><span><i style="background:#28715f"></i>Value salvaged</span><span><i style="background:#2c6fa5"></i>Salvage rate</span></div>
       <div class="chart-body" id="performance-chart"></div>
+    </section>
+    </section>
+    <section class="subtab-panel" data-subtab-panel="snapshot-table-panel">
+    <section class="card">
       <div class="table-wrap">
         <table>
           <thead><tr><th>Review date</th><th>At risk</th><th>Salvaged</th><th>Remaining</th><th>Salvage Rate</th></tr></thead>
@@ -2946,6 +3098,9 @@
         </table>
       </div>
     </section>
+    </section>
+      </div>
+    </div>
     </div>
 
     <div class="dashboard-view" id="view-root-cause-analysis" data-view="root-cause-analysis">
@@ -3200,15 +3355,18 @@
       return monthDates.map(([month, id, label], index) => {
         salvaged += sourceData.monthlyValueSalvaged?.[month] || 0;
         expired += sourceData.monthlyValueExpired?.[month] || 0;
-        const historicalReviewed = salvaged + expired;
+        const totalReviewed = salvaged + expired;
         const isLatest = index === monthDates.length - 1;
+        const atRisk = isLatest ? (totalReviewed || sourceData.summary.historicalReviewedValue || sourceData.summary.valueAtRisk) : totalReviewed;
+        const snapshotRate = atRisk ? (salvaged / atRisk) * 100 : 0;
         return {
           id,
           label,
-          atRisk: isLatest ? sourceData.summary.valueAtRisk : historicalReviewed,
+          atRisk,
           salvaged,
           expired,
-          remainingRisk: isLatest ? sourceData.summary.valueAtRisk : expired,
+          remainingRisk: expired,
+          salvageRate: snapshotRate,
           totalCommodities: isLatest ? activeRiskRecords().length : expiryRecords.filter(item => item.status === "Expired" && item.expiryDate <= id).length
         };
       });
@@ -3450,7 +3608,8 @@
       document.getElementById("snapshot-summary").innerHTML = `
         <div><span>Value at risk</span><strong>${moneyExact(snapshot.atRisk)}</strong></div>
         <div><span>Value salvaged</span><strong>${moneyExact(snapshot.salvaged)}</strong></div>
-        <div><span>Expired value</span><strong>${moneyExact(snapshot.expired)}</strong></div>`;
+        <div><span>Expired value</span><strong>${moneyExact(snapshot.expired)}</strong></div>
+        <div><span>Salvage rate</span><strong>${snapshot.salvageRate.toFixed(2)}%</strong></div>`;
       select.addEventListener("change", () => {
         selectedSnapshotId = select.value;
         renderAllSnapshotViews();
@@ -3649,6 +3808,7 @@
       document.querySelectorAll(".commodity-button").forEach(button => button.addEventListener("click", () => {
         selectedCommodityId = button.dataset.id;
         renderCommodity();
+        activateSubtab("expiry-forecast", "expiry-profile");
         document.getElementById("profile-title").scrollIntoView({ behavior: "smooth", block: "start" });
       }));
       document.getElementById("expiry-forecast-prev")?.addEventListener("click", () => {
@@ -3832,6 +3992,7 @@
       document.querySelectorAll(".commodity-button").forEach(button => button.addEventListener("click", () => {
         selectedCommodityId = button.dataset.id;
         renderCommodity();
+        activateSubtab("expiry-forecast", "expiry-profile");
         document.getElementById("profile-title").scrollIntoView({ behavior: "smooth", block: "start" });
       }));
       document.getElementById("expiry-forecast-prev")?.addEventListener("click", () => {
@@ -3942,6 +4103,7 @@
       renderSalvageMonthSummary();
       renderSalvageRegister();
       activateView("expiry-forecast", true);
+      activateSubtab("expiry-forecast", "expiry-profile");
       setTimeout(() => document.getElementById("profile-title")?.scrollIntoView({ behavior: "smooth", block: "start" }), 120);
     }
 
@@ -4197,7 +4359,7 @@
       const x = index => snapshots.length === 1 ? (left + right) / 2 : left + index * ((right - left) / (snapshots.length - 1));
       const y = value => bottom - (value / max) * (bottom - top);
       const line = field => snapshots.map((item, index) => `${x(index)},${y(item[field] / 1000000)}`).join(" ");
-      const rateY = () => bottom - (sourceData.summary.salvageRate / 100) * (bottom - top);
+      const rateY = item => bottom - ((item.salvageRate || 0) / 100) * (bottom - top);
       document.getElementById("performance-chart").innerHTML = `
         <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly value at risk, value salvaged, and salvage rate trend">
           ${[0, max / 3, max * 2 / 3, max].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="18" y="${y(value) + 4}">${Math.round(value)}M</text>`).join("")}
@@ -4207,7 +4369,7 @@
           ${snapshots.map((item, index) => `<circle cx="${x(index)}" cy="${y(item.atRisk / 1000000)}" r="5" fill="#fff" stroke="#b73a3a" stroke-width="3"/><circle cx="${x(index)}" cy="${y(item.salvaged / 1000000)}" r="5" fill="#fff" stroke="#28715f" stroke-width="3"/><circle cx="${x(index)}" cy="${rateY(item)}" r="4" fill="#fff" stroke="#2c6fa5" stroke-width="2"/><text x="${x(index)}" y="232" text-anchor="middle">${item.label.replace(" 2026", "")}</text>`).join("")}
         </svg>`;
       document.getElementById("performance-table").innerHTML = snapshots.map(item => {
-        return `<tr><td class="commodity">${item.label}</td><td>${moneyExact(item.atRisk)}</td><td>${moneyExact(item.salvaged)}</td><td>${moneyExact(item.remainingRisk)}</td><td>${sourceData.summary.salvageRate.toFixed(2)}%</td></tr>`;
+        return `<tr><td class="commodity">${item.label}</td><td>${moneyExact(item.atRisk)}</td><td>${moneyExact(item.salvaged)}</td><td>${moneyExact(item.remainingRisk)}</td><td>${item.salvageRate.toFixed(2)}%</td></tr>`;
       }).join("");
     }
 
@@ -4251,12 +4413,14 @@
       const markup = items.map(item => `
         <div class="ticker-item">
           <div><small>Product</small><span title="${escapeHtml(item.commodity)}">${escapeHtml(item.commodity)}</span></div>
-          <div><small>Quantity</small><strong>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</strong></div>
-          <div><small>Value</small><strong>${moneyExact(item.value)}</strong></div>
-          <div><small>Expiry Date</small><strong>${formatDate(item.expiryDate)}</strong></div>
+          <div class="ticker-meta">
+            <div><small>Quantity</small><strong>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</strong></div>
+            <div><small>Value</small><strong>${moneyExact(item.value)}</strong></div>
+            <div><small>Expiry</small><strong>${formatDate(item.expiryDate)}</strong></div>
+          </div>
         </div>`).join("");
       const ticker = document.getElementById("product-ticker");
-      ticker.innerHTML = markup || '<div class="ticker-item"><div><small>Data as of</small><span>No active expiry rows loaded</span></div><div></div><div></div><div></div></div>';
+      ticker.innerHTML = markup || '<div class="ticker-item"><div><small>Data as of</small><span>No active expiry rows loaded</span></div></div>';
     }
 
     function renderChangesSinceReview() {
@@ -4519,6 +4683,26 @@
       renderExpiryRegister();
     }
 
+    function activateSubtab(group, target) {
+      const container = document.querySelector(`[data-subtabs="${group}"]`);
+      if (!container) return;
+      container.querySelectorAll(".subtab-button").forEach(button => {
+        button.classList.toggle("active", button.dataset.subtabTarget === target);
+      });
+      container.querySelectorAll(".subtab-panel").forEach(panel => {
+        panel.classList.toggle("active", panel.dataset.subtabPanel === target);
+      });
+    }
+
+    function setupSubtabs() {
+      document.querySelectorAll("[data-subtabs]").forEach(container => {
+        const group = container.dataset.subtabs;
+        container.querySelectorAll(".subtab-button").forEach(button => {
+          button.addEventListener("click", () => activateSubtab(group, button.dataset.subtabTarget));
+        });
+      });
+    }
+
     const dashboardViews = [
       "executive-summary",
       "expiry-forecast",
@@ -4555,6 +4739,8 @@
       event.preventDefault();
       activateView(link.dataset.view, true);
     }));
+
+    setupSubtabs();
 
     document.querySelectorAll("[data-export-view]").forEach(button => button.addEventListener("click", () => {
       const view = button.dataset.exportView;
