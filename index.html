@@ -107,7 +107,7 @@
     .hero-inner,
     main,
     .footer-inner {
-      width: min(1420px, calc(100% - 28px));
+      width: min(1720px, calc(100% - 28px));
       margin-inline: auto;
     }
 
@@ -2129,7 +2129,7 @@
 
     .app-shell {
       display: grid;
-      grid-template-columns: 224px minmax(0, 1fr);
+      grid-template-columns: 196px minmax(0, 1fr);
       width: 100%;
       margin: 0;
       align-items: start;
@@ -2142,7 +2142,7 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      padding: 22px 10px;
+      padding: 22px 8px;
       color: #fff;
       background: #0e342c;
       border-right: 1px solid rgba(255, 255, 255, 0.08);
@@ -2182,9 +2182,9 @@
     .nav-link {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
       min-height: 42px;
-      padding: 10px 12px;
+      padding: 10px 10px;
       color: #dcebe6;
       border-radius: 9px;
       font-size: 12px;
@@ -2207,10 +2207,12 @@
 
     .dashboard-content {
       min-width: 0;
-      padding-right: 12px;
+      padding: 0 14px 0 12px;
     }
 
     .dashboard-content main {
+      width: 100%;
+      margin-inline: 0;
       margin-top: -30px;
     }
 
@@ -2339,6 +2341,22 @@
       padding-top: 12px;
       border-top: 1px solid rgba(255, 255, 255, 0.14);
       color: #fff;
+    }
+
+    @media (min-width: 1500px) {
+      .app-shell {
+        grid-template-columns: 188px minmax(0, 1fr);
+      }
+
+      .dashboard-content {
+        padding-left: 10px;
+        padding-right: 18px;
+      }
+
+      .side-nav-title,
+      .side-nav-credit {
+        margin-inline: 8px;
+      }
     }
 
     @media (max-width: 980px) {
