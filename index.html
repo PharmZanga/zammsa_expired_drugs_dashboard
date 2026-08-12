@@ -2902,7 +2902,7 @@
     <section class="card tracker">
       <div class="forecast-kpi-strip" id="expiry-kpi-strip"></div>
       <div class="summary-metrics" id="month-summary"></div>
-      <div class="risk-explain">Value at Risk = S.O.H x Unit Price, excluding already-salvaged stock. Values reflect the selected calendar review date where historical reductions are available. Lamotrigine EM2991 is flagged for price reconciliation before official totals are changed.</div>
+      <div class="risk-explain">Value at Risk = S.O.H x Unit Price, excluding already-salvaged stock. Values reflect the selected calendar review date where historical reductions are available. Lamotrigine EM2991 uses the contract reference price while the CSC/Inventory reconciliation note remains visible.</div>
       <section class="risk-band-panel" aria-label="Value at risk by month and risk band">
         <div class="risk-band-head">
           <h3>Value at risk by month</h3>
@@ -3269,7 +3269,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> Salvaged values now include Jan-15 Jun shipped values for products expiring July-December 2026 plus the 16-30 Jun salvage update. Expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December 2026 expiries only. Products expiring after 2026 are excluded. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date. Lamotrigine EM2991 is under price reconciliation: contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39, while the Excel sheet currently reflects K618.30. Official totals have not been silently overwritten pending CSC/Inventory confirmation.</p>
+    <p class="source-note"><strong>Source note:</strong> Salvaged values now include Jan-15 Jun shipped values for products expiring July-December 2026 plus the 16-30 Jun salvage update. Expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December 2026 expiries only. Products expiring after 2026 are excluded. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up.</p>
   </main>
 
   <footer>
@@ -3467,8 +3467,8 @@
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
     const priceVerificationNotes = {
       EM2991: {
-        title: "Price verification pending",
-        detail: "Lamotrigine contract reference: USD 2.29 per pack x K18.51 = ZMW 42.39. Excel unit price K618.30 remains under CSC/Inventory reconciliation before official totals are changed."
+        title: "Contract price applied",
+        detail: "Lamotrigine contract reference applied: USD 2.29 per pack x K18.51 = ZMW 42.39. Excel unit price K618.30 was replaced in dashboard values; CSC/Inventory reconciliation note retained for audit follow-up."
       }
     };
     const priceVerificationNote = item => priceVerificationNotes[item?.sku] || (String(item?.commodity || "").toLowerCase().includes("lamotrigine") ? priceVerificationNotes.EM2991 : null);
@@ -4161,7 +4161,7 @@
       const title = `${selectedMonth} 2026 Expiry Forecast - ${selectedForecastRiskBand === "All" ? "All Risk Bands" : selectedForecastRiskBand}`;
       const html = `<!doctype html><html><head><title>${escapeHtml(title)}</title><style>
         body{font-family:Arial,sans-serif;margin:24px;color:#10231d}h1{font-size:22px}p{color:#5f716b;font-size:12px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border-bottom:1px solid #d9e3df;padding:8px;text-align:left}th{background:#f2f6f4;text-transform:uppercase;font-size:9px}.critical{color:#c73939}.high{color:#a56300}.medium{color:#166b51}
-      </style></head><body><h1>${escapeHtml(title)}</h1><p>Data as of ${escapeHtml(selectedCalendarSnapshot().label)}. Value at Risk = S.O.H x Unit Price, excluding already-salvaged stock. Lamotrigine EM2991 is flagged for CSC/Inventory price reconciliation.</p><table><thead><tr><th>SKU</th><th>Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th><th>Price Note</th></tr></thead><tbody>${rows.map(row => `<tr><td>${escapeHtml(row.sku)}</td><td>${escapeHtml(row.commodity)}</td><td>${escapeHtml(row.risk)}</td><td>${row.days ?? ""}</td><td>${isNumber(row.shippedUnits) ? row.shippedUnits.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.salvagedValue)}</td><td>${isNumber(row.soh) ? row.soh.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.valueAtRisk)}</td><td>${escapeHtml(row.trend)}</td><td>${formatDate(row.expiryDate)}</td><td>${escapeHtml(row.priceNote)}</td></tr>`).join("")}</tbody></table></body></html>`;
+      </style></head><body><h1>${escapeHtml(title)}</h1><p>Data as of ${escapeHtml(selectedCalendarSnapshot().label)}. Value at Risk = S.O.H x Unit Price, excluding already-salvaged stock. Lamotrigine EM2991 uses the contract reference price and remains noted for CSC/Inventory audit follow-up.</p><table><thead><tr><th>SKU</th><th>Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th><th>Price Note</th></tr></thead><tbody>${rows.map(row => `<tr><td>${escapeHtml(row.sku)}</td><td>${escapeHtml(row.commodity)}</td><td>${escapeHtml(row.risk)}</td><td>${row.days ?? ""}</td><td>${isNumber(row.shippedUnits) ? row.shippedUnits.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.salvagedValue)}</td><td>${isNumber(row.soh) ? row.soh.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.valueAtRisk)}</td><td>${escapeHtml(row.trend)}</td><td>${formatDate(row.expiryDate)}</td><td>${escapeHtml(row.priceNote)}</td></tr>`).join("")}</tbody></table></body></html>`;
       const printWindow = window.open("", "_blank");
       if (!printWindow) return;
       printWindow.document.write(html);

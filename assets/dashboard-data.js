@@ -18,15 +18,15 @@ window.ZAMMSA_SOURCE_DATA = {
     "January": 16602809.55,
     "February": 13862705.35,
     "March": 33403969.99,
-    "April": 27504499.41,
+    "April": 22779140.6295,
     "May": 70911477.78,
-    "June": 69403896.1359069,
+    "June": 62538447.991806895,
     "July": 54915613.31625192,
     "August": 44131177.643995486,
     "September": 17065531.6533341,
     "October": 13351594.577543536,
     "November": 28700770.6315738,
-    "December": 387067888.8390956
+    "December": 108985248.67629561
   },
   "monthlyValueSalvaged": {
     "January": 4683535.0688876705,
@@ -36,20 +36,20 @@ window.ZAMMSA_SOURCE_DATA = {
     "May": 38235392.6962122,
     "June": 21526286.287683874,
     "July": 27149995.81140388,
-    "August": 79290049.7444961,
+    "August": 79270468.7330961,
     "September": 79764831.33894378,
     "October": 65541529.01538788,
     "November": 71054057.55182765,
-    "December": 280483502.8669379
+    "December": 278846184.76663786
   },
   "summary": {
-    "valueAtRisk": 490316963.3455425,
-    "valueSalvaged": 706669468.8710309,
-    "valueExpired": 156069473.18020698,
-    "historicalReviewedValue": 286604971.53215885,
-    "remainingRisk": 490316963.3455425,
-    "salvageRate": 81.91000016654655,
-    "coverage": "Updated 31 July 2026: incorporated 16-31 July shipped values and July expired product register. July is now treated as a historical expiry month; August-December remaining SOH/value-at-risk is reduced cumulatively."
+    "valueAtRisk": 212234323.18274248,
+    "valueSalvaged": 705012569.7593309,
+    "valueExpired": 144478666.25560698,
+    "historicalReviewedValue": 275014164.60755885,
+    "remainingRisk": 212234323.18274248,
+    "salvageRate": 82.99232998172256,
+    "coverage": "Updated 31 July 2026: incorporated 16-31 July shipped values and July expired product register. July is now treated as a historical expiry month; August-December remaining SOH/value-at-risk is reduced cumulatively. Lamotrigine EM2991 was repriced using contract reference USD 2.29 at K18.51/USD = ZMW 42.3879 per pack."
   },
   "expiryRecords": [
     {
@@ -2474,9 +2474,9 @@ window.ZAMMSA_SOURCE_DATA = {
       "commodity": "Lamotrigine Tablet 50mg(30)",
       "batch": "",
       "quantity": 8205,
-      "value": 5073151.5,
+      "value": 347792.7195,
       "shippedQuantity": null,
-      "unitPrice": 618.3,
+      "unitPrice": 42.3879,
       "salvagedValue": null,
       "expiryDate": "2026-04-30",
       "warehouse": "",
@@ -3839,9 +3839,9 @@ window.ZAMMSA_SOURCE_DATA = {
       "commodity": "Lamotrigine Tablet 50mg(30)",
       "batch": "",
       "quantity": 11921,
-      "value": 7370754.3,
+      "value": 505306.1559,
       "shippedQuantity": null,
-      "unitPrice": 618.3,
+      "unitPrice": 42.3879,
       "salvagedValue": null,
       "expiryDate": "2026-06-30",
       "warehouse": "",
@@ -6704,11 +6704,11 @@ window.ZAMMSA_SOURCE_DATA = {
       "commodity": "Lamotrigine Tablet 50mg(30)",
       "batch": "K12934; K12948; K12923 +32 more",
       "quantity": 483468,
-      "value": 298575833.40000004,
-      "totalExpiringValue": 299971954.8,
+      "value": 20493193.2372,
+      "totalExpiringValue": 20564744.0124,
       "shippedQuantity": 2296,
-      "unitPrice": 618.3,
-      "salvagedValue": 1419616.7999999998,
+      "unitPrice": 42.3879,
+      "salvagedValue": 97322.6184,
       "expiryDate": "2026-12-31",
       "warehouse": "Dispatch; LA5; LA1-P +1 more",
       "province": "",
@@ -11569,7 +11569,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2991",
       "batch": "",
       "quantity": 570,
-      "value": 352431,
+      "value": 24161.103,
       "shippedDate": "2026-06-30",
       "expiryDate": "2026-12-31",
       "institution": "",
@@ -16883,7 +16883,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2991",
       "batch": "",
       "quantity": 547.0,
-      "value": 338210.1,
+      "value": 23186.1813,
       "shippedDate": "",
       "shipmentPeriod": "1 Jan-15 Jun 2026",
       "expiryDate": "2026-12-31",
@@ -18085,8 +18085,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "batch": "",
       "quantity": 10,
       "unitPrice": 618.3,
-      "value": 6183.0,
-      "valueSalvaged": 6183.0,
+      "value": 423.879,
+      "valueSalvaged": 423.879,
       "shippedDate": "2026-07-15",
       "shipmentPeriod": "1 Jul-15 Jul 2026",
       "expiryDate": "2026-08-31",
@@ -19207,8 +19207,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "batch": "",
       "quantity": 38,
       "unitPrice": 618.3,
-      "value": 23495.399999999998,
-      "valueSalvaged": 23495.399999999998,
+      "value": 1610.7402,
+      "valueSalvaged": 1610.7402,
       "shippedDate": "2026-07-15",
       "shipmentPeriod": "1 Jul-15 Jul 2026",
       "expiryDate": "2026-12-31",
@@ -19632,8 +19632,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "batch": "",
       "quantity": 24,
       "unitPrice": 618.3,
-      "value": 14839.199999999999,
-      "valueSalvaged": 14839.199999999999,
+      "value": 1017.3096,
+      "valueSalvaged": 1017.3096,
       "shippedDate": "2026-07-31",
       "shipmentPeriod": "16 Jul-31 Jul 2026",
       "expiryDate": "2026-08-31",
@@ -20703,8 +20703,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "batch": "",
       "quantity": 1688,
       "unitPrice": 618.3,
-      "value": 1043690.3999999999,
-      "valueSalvaged": 1043690.3999999999,
+      "value": 71550.7752,
+      "valueSalvaged": 71550.7752,
       "shippedDate": "2026-07-31",
       "shipmentPeriod": "16 Jul-31 Jul 2026",
       "expiryDate": "2026-12-31",
@@ -20941,9 +20941,9 @@ window.ZAMMSA_SOURCE_DATA = {
     "January": 11919274.48,
     "February": 12010503.37,
     "March": 10791916.64,
-    "April": 13028466.26,
+    "April": 8303107.4795,
     "May": 32676085.08,
-    "June": 47877609.84535895,
+    "June": 41012161.70125895,
     "July": 27765617.504848037,
     "August": null,
     "September": null,
@@ -20955,9 +20955,9 @@ window.ZAMMSA_SOURCE_DATA = {
     "January": 16602809.55,
     "February": 13862705.35,
     "March": 33403969.99,
-    "April": 27504499.41,
+    "April": 22779140.6295,
     "May": 70911477.78,
-    "June": 69403896.1359069,
+    "June": 62538447.991806895,
     "July": 54915613.31625192,
     "August": null,
     "September": null,
@@ -20995,7 +20995,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "September": 6504679.47431648,
       "October": 2900250.063995275,
       "November": 3014803.4086545575,
-      "December": 13569383.296314247
+      "December": 13241113.399314247
     },
     "latestSalvageWorkbook": "Salvaged products_16th Jul to 31st Jul_2026.xlsx",
     "latestSalvagePeriod": "16 Jul-31 Jul 2026",
@@ -21031,7 +21031,7 @@ window.ZAMMSA_SOURCE_DATA = {
         "sku": "EM2991",
         "commodity": "Lamotrigine Tablet 50mg(30)",
         "unmatchedQuantity": 24.0,
-        "unmatchedValue": 14839.199999999999
+        "unmatchedValue": 1017.3096
       },
       {
         "month": "August",
@@ -21291,11 +21291,11 @@ window.ZAMMSA_SOURCE_DATA = {
     "latestReductionMethod": "Matched 16-31 Jul shipments to active product rows by SKU and expiry month where possible; monthly control totals subtract the full shipped value.",
     "latestSalvageValuesByMonth": {
       "July": 10098.058416,
-      "August": 5059071.036149538,
+      "August": 5045249.145749538,
       "September": 968200.316648,
       "October": 2401299.646666667,
       "November": 3759636.8970547616,
-      "December": 8190317.881714252
+      "December": 7218178.256914252
     },
     "latestSalvageQuantitiesByMonth": {
       "July": 54.0,
@@ -21313,7 +21313,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "September": 26718120.11337178,
       "October": 20830551.823872145,
       "November": 38476905.31298312,
-      "December": 417399938.7441122
+      "December": 137992727.9565122
     },
     "verifiedCurrentSohValueByMonth": {
       "July": 0,
@@ -21321,7 +21321,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "September": 17065531.6533341,
       "October": 13351594.577543536,
       "November": 28700770.6315738,
-      "December": 387067888.8390956
+      "December": 108985248.67629561
     },
     "salvagePeriodsByExpiryMonth": {
       "July": {
@@ -21331,8 +21331,8 @@ window.ZAMMSA_SOURCE_DATA = {
       },
       "August": {
         "16-30 Jun": 741571.757,
-        "1-15 Jul": 37939.52746125861,
-        "16-31 Jul": 5059071.036149538
+        "1-15 Jul": 32180.40646125861,
+        "16-31 Jul": 5045249.145749538
       },
       "September": {
         "16-30 Jun": 6504679.47431648,
@@ -21350,16 +21350,28 @@ window.ZAMMSA_SOURCE_DATA = {
         "16-31 Jul": 3759636.8970547616
       },
       "December": {
-        "16-30 Jun": 13569383.296314247,
-        "1-15 Jul": 8572348.726988131,
-        "16-31 Jul": 8190317.881714252
+        "16-30 Jun": 13241113.399314247,
+        "1-15 Jul": 8550464.06718813,
+        "16-31 Jul": 7218178.256914252
       }
     },
     "sohFormula": "Current Value of SOH = Original Value of SOH - 16-30 Jun shipped value - 1-15 Jul shipped value - 16-31 Jul shipped value, with July closed into expired value after month-end.",
     "dashboardCorrection": "Monthly July-December values updated through 31 July. July expired value was added from the July expired register; August-December remaining SOH uses cumulative shipped reductions.",
     "julyExpiredValue": 27765617.504848037,
     "julyExpiredQuantity": 530839.0,
-    "julyExpiredRows": 31
+    "julyExpiredRows": 31,
+    "lamotriginePriceCorrection": {
+      "sku": "EM2991",
+      "commodity": "Lamotrigine Tablet 50mg(30)",
+      "oldExcelUnitPrice": 618.3,
+      "contractUsd": 2.29,
+      "exchangeRate": 18.51,
+      "correctedUnitPriceZmw": 42.3879,
+      "expiredValueReduction": 11590806.9246,
+      "activeRiskReduction": 278082640.1628,
+      "salvagedValueReduction": 1656899.1117,
+      "note": "Correction applied after ZAMMSA price clarification; CSC/Inventory reconciliation note retained in dashboard."
+    }
   },
   "monthlyTotalExpiring": {
     "July": null,
