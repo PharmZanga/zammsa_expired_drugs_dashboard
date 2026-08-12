@@ -16890,7 +16890,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "institution": "",
       "province": "",
       "sourceWorkbook": "Salvaged products _1st Jan to 15th Jun_26(Jul to Dec Expiries).xlsx",
-      "unitPrice": 618.3
+      "unitPrice": 42.3879
     },
     {
       "commodity": "Esomeprazole Tablet  20mg(500)",
@@ -18084,7 +18084,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2991",
       "batch": "",
       "quantity": 10,
-      "unitPrice": 618.3,
+      "unitPrice": 42.3879,
       "value": 423.879,
       "valueSalvaged": 423.879,
       "shippedDate": "2026-07-15",
@@ -19206,7 +19206,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2991",
       "batch": "",
       "quantity": 38,
-      "unitPrice": 618.3,
+      "unitPrice": 42.3879,
       "value": 1610.7402,
       "valueSalvaged": 1610.7402,
       "shippedDate": "2026-07-15",
@@ -19631,7 +19631,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2991",
       "batch": "",
       "quantity": 24,
-      "unitPrice": 618.3,
+      "unitPrice": 42.3879,
       "value": 1017.3096,
       "valueSalvaged": 1017.3096,
       "shippedDate": "2026-07-31",
