@@ -799,6 +799,30 @@
       font-size: 11px;
     }
 
+    .price-audit {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      padding: 4px 8px;
+      color: #7a4b00;
+      background: #fff4d8;
+      border: 1px solid #efd18b;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .price-audit-detail {
+      display: block;
+      margin-top: 5px;
+      color: #7a4b00;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+
     .answer-strip {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -2878,7 +2902,7 @@
     <section class="card tracker">
       <div class="forecast-kpi-strip" id="expiry-kpi-strip"></div>
       <div class="summary-metrics" id="month-summary"></div>
-      <div class="risk-explain">Value at Risk = S.O.H × Unit Price, excluding already-salvaged stock. Values reflect the selected calendar review date where historical reductions are available.</div>
+      <div class="risk-explain">Value at Risk = S.O.H x Unit Price, excluding already-salvaged stock. Values reflect the selected calendar review date where historical reductions are available. Lamotrigine EM2991 is flagged for price reconciliation before official totals are changed.</div>
       <section class="risk-band-panel" aria-label="Value at risk by month and risk band">
         <div class="risk-band-head">
           <h3>Value at risk by month</h3>
@@ -3245,7 +3269,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> Salvaged values now include Jan-15 Jun shipped values for products expiring July-December 2026 plus the 16-30 Jun salvage update. Expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December 2026 expiries only. Products expiring after 2026 are excluded. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date.</p>
+    <p class="source-note"><strong>Source note:</strong> Salvaged values now include Jan-15 Jun shipped values for products expiring July-December 2026 plus the 16-30 Jun salvage update. Expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December 2026 expiries only. Products expiring after 2026 are excluded. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date. Lamotrigine EM2991 is under price reconciliation: contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39, while the Excel sheet currently reflects K618.30. Official totals have not been silently overwritten pending CSC/Inventory confirmation.</p>
   </main>
 
   <footer>
@@ -3441,6 +3465,21 @@
     const formatDate = value => value ? new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${value}T12:00:00+02:00`)) : "";
     const monthNameFromDate = value => value ? new Intl.DateTimeFormat("en-US", { month: "long" }).format(new Date(`${value}T12:00:00+02:00`)) : "";
     const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
+    const priceVerificationNotes = {
+      EM2991: {
+        title: "Price verification pending",
+        detail: "Lamotrigine contract reference: USD 2.29 per pack x K18.51 = ZMW 42.39. Excel unit price K618.30 remains under CSC/Inventory reconciliation before official totals are changed."
+      }
+    };
+    const priceVerificationNote = item => priceVerificationNotes[item?.sku] || (String(item?.commodity || "").toLowerCase().includes("lamotrigine") ? priceVerificationNotes.EM2991 : null);
+    const priceAuditBadge = item => {
+      const note = priceVerificationNote(item);
+      return note ? `<span class="price-audit" title="${escapeHtml(note.detail)}">${escapeHtml(note.title)}</span>` : "";
+    };
+    const priceAuditDetail = item => {
+      const note = priceVerificationNote(item);
+      return note ? `<span class="price-audit-detail">${escapeHtml(note.detail)}</span>` : "";
+    };
     const matchingSalvageEvents = item => salvageEvents.filter(event => event.sku === item.sku && monthNameFromDate(event.expiryDate) === item.month);
     const recordSalvagedValue = item => isNumber(item.salvagedValue) ? item.salvagedValue : sum(matchingSalvageEvents(item), "value") || null;
     const recordShippedQuantity = item => isNumber(item.shippedQuantity) ? item.shippedQuantity : sum(matchingSalvageEvents(item), "quantity") || null;
@@ -3852,7 +3891,7 @@
       const pageRecords = rankedMonthRecords.slice(start, start + pageSize);
       document.getElementById("expiry-table-body").innerHTML = pageRecords.length ? pageRecords.map(item => `
         <tr>
-          <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.sku)}<br><span class="metric-sub">${escapeHtml(item.commodity)}</span></button></td>
+          <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.sku)}<br><span class="metric-sub">${escapeHtml(item.commodity)}</span>${priceAuditBadge(item)}</button></td>
           <td>${isNumber(recordShippedQuantity(item)) ? recordShippedQuantity(item).toLocaleString("en-ZM") : ""}</td>
           <td>${moneyExact(recordSalvagedValue(item))}</td>
           <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
@@ -4033,7 +4072,7 @@
         const days = daysToExpiryFromCalendarSnapshot(item);
         return `
         <tr class="row-risk-${riskBandTone(risk)}">
-          <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.sku)}<br><span class="metric-sub">${escapeHtml(item.commodity)}</span></button></td>
+          <td><button class="commodity-button" type="button" data-id="${item.id}">${escapeHtml(item.sku)}<br><span class="metric-sub">${escapeHtml(item.commodity)}</span>${priceAuditBadge(item)}</button></td>
           <td><span class="badge ${riskBadgeClass(risk)}">${escapeHtml(risk)}</span></td>
           <td>${days ?? ""}</td>
           <td>${isNumber(recordShippedQuantity(item)) ? recordShippedQuantity(item).toLocaleString("en-ZM") : ""}</td>
@@ -4098,15 +4137,16 @@
           soh: item.quantity,
           valueAtRisk: item.value,
           trend: trend.label,
-          expiryDate: item.expiryDate
+          expiryDate: item.expiryDate,
+          priceNote: priceVerificationNote(item)?.detail || ""
         };
       });
     }
 
     function exportFilteredExpiryCsv() {
       const rows = filteredExpiryExportRows();
-      const headers = ["SKU", "Commodity", "Risk", "Days", "Shipped Units", "Salvaged Value", "S.O.H", "Value at Risk", "Trend", "Expiry Date"];
-      const csv = [headers, ...rows.map(row => [row.sku, row.commodity, row.risk, row.days ?? "", row.shippedUnits ?? "", row.salvagedValue ?? "", row.soh ?? "", row.valueAtRisk ?? "", row.trend, row.expiryDate])]
+      const headers = ["SKU", "Commodity", "Risk", "Days", "Shipped Units", "Salvaged Value", "S.O.H", "Value at Risk", "Trend", "Expiry Date", "Price Verification Note"];
+      const csv = [headers, ...rows.map(row => [row.sku, row.commodity, row.risk, row.days ?? "", row.shippedUnits ?? "", row.salvagedValue ?? "", row.soh ?? "", row.valueAtRisk ?? "", row.trend, row.expiryDate, row.priceNote])]
         .map(values => values.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
       const link = document.createElement("a");
@@ -4121,7 +4161,7 @@
       const title = `${selectedMonth} 2026 Expiry Forecast - ${selectedForecastRiskBand === "All" ? "All Risk Bands" : selectedForecastRiskBand}`;
       const html = `<!doctype html><html><head><title>${escapeHtml(title)}</title><style>
         body{font-family:Arial,sans-serif;margin:24px;color:#10231d}h1{font-size:22px}p{color:#5f716b;font-size:12px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border-bottom:1px solid #d9e3df;padding:8px;text-align:left}th{background:#f2f6f4;text-transform:uppercase;font-size:9px}.critical{color:#c73939}.high{color:#a56300}.medium{color:#166b51}
-      </style></head><body><h1>${escapeHtml(title)}</h1><p>Data as of ${escapeHtml(selectedCalendarSnapshot().label)}. Value at Risk = S.O.H × Unit Price, excluding already-salvaged stock.</p><table><thead><tr><th>SKU</th><th>Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th></tr></thead><tbody>${rows.map(row => `<tr><td>${escapeHtml(row.sku)}</td><td>${escapeHtml(row.commodity)}</td><td>${escapeHtml(row.risk)}</td><td>${row.days ?? ""}</td><td>${isNumber(row.shippedUnits) ? row.shippedUnits.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.salvagedValue)}</td><td>${isNumber(row.soh) ? row.soh.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.valueAtRisk)}</td><td>${escapeHtml(row.trend)}</td><td>${formatDate(row.expiryDate)}</td></tr>`).join("")}</tbody></table></body></html>`;
+      </style></head><body><h1>${escapeHtml(title)}</h1><p>Data as of ${escapeHtml(selectedCalendarSnapshot().label)}. Value at Risk = S.O.H x Unit Price, excluding already-salvaged stock. Lamotrigine EM2991 is flagged for CSC/Inventory price reconciliation.</p><table><thead><tr><th>SKU</th><th>Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th><th>Price Note</th></tr></thead><tbody>${rows.map(row => `<tr><td>${escapeHtml(row.sku)}</td><td>${escapeHtml(row.commodity)}</td><td>${escapeHtml(row.risk)}</td><td>${row.days ?? ""}</td><td>${isNumber(row.shippedUnits) ? row.shippedUnits.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.salvagedValue)}</td><td>${isNumber(row.soh) ? row.soh.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.valueAtRisk)}</td><td>${escapeHtml(row.trend)}</td><td>${formatDate(row.expiryDate)}</td><td>${escapeHtml(row.priceNote)}</td></tr>`).join("")}</tbody></table></body></html>`;
       const printWindow = window.open("", "_blank");
       if (!printWindow) return;
       printWindow.document.write(html);
@@ -4148,6 +4188,8 @@
         ["Lead Institution", item.institution], ["Status", item.status], ["Warehouse", item.warehouse], ["Province", item.province],
         ["Facility", item.facility], ["Date Identified", item.identified]
       ];
+      const auditNote = priceVerificationNote(item);
+      if (auditNote) profile.push(["Price Verification", auditNote.detail]);
       document.getElementById("commodity-profile").innerHTML = profile.map(([label, value]) => `<div class="profile-item"><span>${label}</span><strong>${escapeHtml(value)}</strong></div>`).join("");
       document.getElementById("salvage-timeline").innerHTML = item.timeline.length
         ? item.timeline.map(([date, event], index) => `<div class="timeline-step"><span>${index + 1}</span><time>${escapeHtml(date)}</time><strong>${escapeHtml(event)}</strong></div>`).join("")
@@ -4637,10 +4679,10 @@
         const statusValue = currentRecordStatus(item);
         const riskValue = expiryRiskBand(item);
         return `<tr>
-          <td class="commodity">${escapeHtml(item.commodity)}<br><span class="metric-sub">${escapeHtml(item.sku)}</span></td>
+          <td class="commodity">${escapeHtml(item.commodity)}<br><span class="metric-sub">${escapeHtml(item.sku)}</span>${priceAuditBadge(item)}</td>
           <td>${escapeHtml(item.batch)}</td>
           <td>${isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""}</td>
-          <td>${moneyExact(item.unitPrice)}</td>
+          <td>${moneyExact(item.unitPrice)}${priceAuditDetail(item)}</td>
           <td>${moneyExact(item.value)}</td>
           <td>${isNumber(recordShippedQuantity(item)) ? recordShippedQuantity(item).toLocaleString("en-ZM") : ""}</td>
           <td>${moneyExact(recordSalvagedValue(item))}</td>
