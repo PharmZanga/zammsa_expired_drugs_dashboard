@@ -2964,11 +2964,9 @@
     <section class="subtab-panel active" data-subtab-panel="executive-brief">
     <article class="card executive-narrative">
       <h3>Executive Summary</h3>
-      <p>The National Short Expiry and Salvage Dashboard provides real-time visibility of pharmaceutical and medical commodities at risk of expiry across the national health supply chain. The dashboard supports the Ministry of Health, National Supply Chain Coordinating Unit (Control Tower), ZAMMSA, and key stakeholders in monitoring short-dated commodities, coordinating salvage interventions, and tracking progress towards reducing commodity wastage.</p>
-      <p>The dashboard highlights the total value of commodities at risk, commodities successfully salvaged, remaining exposure, and priority commodities requiring urgent action. It also provides forecasts of upcoming expiries, tracks ongoing salvage initiatives, and monitors implementation of agreed action points by responsible institutions.</p>
-      <p><strong>Current Reporting Period:</strong> This dashboard reflects the latest bi-weekly review and includes commodities identified as being at risk of expiry, ongoing salvage interventions, completed salvage actions, and projected expiries through December 2026.</p>
+      <div id="executive-brief-narrative"></div>
     </article>
-    <div class="demo-banner"><strong>Source data loaded:</strong> Load_Query_July 1_2026, Salvaged Products_16th Jun to 30th Jun_2026, and ZAMMSA 1 Jan-15 Jun shipped values for Jul-Dec 2026 expiries. Dashboard is filtered to 2026 expiries only; missing unit prices are intentionally blank.</div>
+    <div class="demo-banner" id="executive-brief-source"></div>
     </section>
 
     <section class="subtab-panel" data-subtab-panel="executive-kpis">
@@ -3413,7 +3411,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> Salvaged values include the Jan-15 Jun baseline plus 16-30 Jun, 1-15 Jul, and 16-31 Jul shipment updates, and are filtered by the selected review date where a historical snapshot is used. Expired values are counted only for expiry months closed by the selected review date. Current remaining-risk values use the latest verified July 2026 reconciliation for 2026 expiries; products expiring after 2026 are excluded. Values are calculated only where a verified, historical, or corrected unit price is available; otherwise value fields remain blank. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up.</p>
+    <p class="source-note" id="global-source-note"></p>
   </main>
 
   <footer>
@@ -3648,6 +3646,7 @@
     const selectedCalendarSnapshot = () => calendarSnapshots.find(item => item.id === selectedCalendarSnapshotId) || calendarSnapshots[calendarSnapshots.length - 1];
     const salvagedForRecord = () => null;
     const monthRecords = month => expiryRecords.filter(item => item.month === month);
+    const remainingRiskRecordsForSnapshot = () => expiryRecords.filter(item => !isExpiredRecord(item) && !isHistoricalMonth(item.month));
     const monthEndDates = {
       January: "2026-01-31",
       February: "2026-02-28",
@@ -4007,6 +4006,28 @@
       ];
     }
 
+    function renderGlobalSourceNote() {
+      const target = document.getElementById("global-source-note");
+      if (!target) return;
+      const snapshot = selectedCalendarSnapshot();
+      const shipmentText = selectedCalendarSnapshotId === "2026-06-30"
+        ? "Jan-15 Jun baseline plus 16-30 Jun shipment update only; July shipment updates are excluded."
+        : selectedCalendarSnapshotId === "2026-07-15"
+          ? "Jan-15 Jun baseline plus 16-30 Jun and 1-15 Jul shipment updates; 16-31 Jul shipments are excluded."
+          : "Jan-15 Jun baseline plus 16-30 Jun, 1-15 Jul, and 16-31 Jul shipment updates.";
+      const stockText = selectedCalendarSnapshotId === "2026-06-30"
+        ? "30 June reconstructed stock position."
+        : selectedCalendarSnapshotId === "2026-07-15"
+          ? "15 July reconstructed stock position."
+          : "31 July verified stock position.";
+      const expiredText = selectedCalendarSnapshotId === "2026-06-30"
+        ? "Expired values include only months closed by 30 June 2026."
+        : selectedCalendarSnapshotId === "2026-07-15"
+          ? "Expired values include only months closed by 15 July 2026."
+          : "Expired values include months closed by 31 July 2026, including the July expired register.";
+      target.innerHTML = `<strong>Source note:</strong> Selected review date: ${escapeHtml(snapshot.label)}. Stock position: ${stockText} Shipment cut-off: ${shipmentText} ${expiredText} Products expiring after 2026 are excluded. Values are calculated only where a verified, historical, or corrected unit price is available; otherwise value fields remain blank. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up.`;
+    }
+
     function monthlySummaryRows(months) {
       return months.map(monthSummaryPosition);
     }
@@ -4053,16 +4074,44 @@
 
     function renderExecutive() {
       const months = monthsInRange(selectedExecutiveRangeMode, selectedExecutiveStartMonth, selectedExecutiveEndMonth);
-      const totals = summaryTotalsForMonths(months);
+      const totals = summaryTotalsForSnapshot(months);
+      const snapshot = selectedCalendarSnapshot();
+      const previous = previousCalendarSnapshot();
+      const previousTotals = previous ? summaryTotalsForSnapshot(months, previous.id) : null;
       const rangeLabel = monthRangeLabel(selectedExecutiveRangeMode, months);
+      const movement = previousTotals ? `Change since ${previous.label}` : "First available review snapshot";
       const metrics = [
-        ["Total Salvaged", moneyExact(totals.salvaged), rangeLabel, "success"],
-        ["Total Expired", moneyExact(totals.expired), rangeLabel, "warning"],
-        ["Total Reviewed", moneyExact(totals.total), "Filtered total value for selected months", ""],
-        ["Salvage Percentage", `${preciseRate(totals.salvaged, totals.total)}%`, `Filtered percentage for ${rangeLabel}`, "success"]
+        ["Known value at risk", moneyExact(totals.remaining), `As of ${snapshot.label} · ${rangeLabel}`, "danger"],
+        ["Cumulative salvaged", moneyExact(totals.salvaged), previousTotals ? `${movement}: ${moneyExact(totals.salvaged - previousTotals.salvaged)}` : movement, "success"],
+        ["Cumulative expired", moneyExact(totals.expired), previousTotals ? `${movement}: ${moneyExact(totals.expired - previousTotals.expired)}` : movement, "warning"],
+        ["Total reviewed", moneyExact(totals.total), `Salvaged + expired + remaining as of ${snapshot.label}`, ""],
+        ["Salvage rate", `${preciseRate(totals.salvaged, totals.total)}%`, `Salvaged / reviewed · ${snapshot.label}`, "success"],
+        ["Expiry-loss rate", `${preciseRate(totals.expired, totals.total)}%`, `Expired / reviewed · ${snapshot.label}`, "warning"],
+        ["Remaining-risk rate", `${preciseRate(totals.remaining, totals.total)}%`, `Remaining / reviewed · ${snapshot.label}`, "danger"]
       ];
       document.getElementById("executive-metrics").innerHTML = metrics.map(([label, value, sub, tone]) => `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`).join("");
       renderExecutiveRangeControls();
+    }
+
+    function renderExecutiveBrief() {
+      const target = document.getElementById("executive-brief-narrative");
+      const source = document.getElementById("executive-brief-source");
+      if (!target) return;
+      const snapshot = selectedCalendarSnapshot();
+      const previous = previousCalendarSnapshot();
+      const totals = summaryTotalsForSnapshot(monthOrder);
+      const previousTotals = previous ? summaryTotalsForSnapshot(monthOrder, previous.id) : null;
+      const urgentValue = riskBandRowsForSummary().filter(row => row.label === "Already expired" || row.label === "0-30 days").reduce((value, row) => value + row.value, 0);
+      const movementText = previousTotals
+        ? `Compared with ${previous.label}, remaining risk ${totals.remaining <= previousTotals.remaining ? "reduced" : "increased"} by ${moneyExact(Math.abs(totals.remaining - previousTotals.remaining))}, while ${moneyExact(Math.max(0, totals.salvaged - previousTotals.salvaged))} was newly salvaged and ${moneyExact(Math.max(0, totals.expired - previousTotals.expired))} newly expired.`
+        : "No previous approved review is available for comparison.";
+      target.innerHTML = `
+        <p>The National Short Expiry and Salvage Dashboard provides review-date visibility of pharmaceutical and medical commodities at risk of expiry across the national health supply chain.</p>
+        <p>As of <strong>${escapeHtml(snapshot.label)}</strong>, ${moneyExact(totals.total)} had been reviewed. ${moneyExact(totals.salvaged)} had been successfully salvaged, ${moneyExact(totals.expired)} had expired, and ${moneyExact(totals.remaining)} remained at risk.</p>
+        <p><strong>Current Reporting Period:</strong> ${movementText} Of the remaining risk, ${moneyExact(urgentValue)} is already expired or due within 30 days of ${escapeHtml(snapshot.label)}.</p>`;
+      if (source) {
+        source.innerHTML = `<strong>Snapshot source:</strong> ${escapeHtml(snapshot.note)}. Shipment, expiry and remaining-risk values are filtered to ${escapeHtml(snapshot.label)}; later movements are excluded from this Executive Summary view.`;
+      }
     }
 
     function renderCalendarSnapshotControls() {
@@ -4080,13 +4129,7 @@
         selectedCalendarSnapshotId = select.value;
         selectedForecastRiskBand = "All";
         expiryForecastPage = 1;
-        renderCalendar();
-        renderMonthDetail();
-        renderCommodity();
-        renderSalvageMonthSummary();
-        renderExecutive();
-        renderExecutiveCharts();
-        renderProductTicker();
+        renderAllSnapshotViews();
       };
     }
 
@@ -4714,11 +4757,21 @@
         renderSalvageMonthSummary();
         renderSalvageRegister();
       }));
-      const critical = activeRiskRecords().filter(item => daysToExpiry(item) !== null && daysToExpiry(item) <= 30);
-      const high = activeRiskRecords().filter(item => daysToExpiry(item) > 30 && daysToExpiry(item) <= 90);
+      const snapshot = selectedCalendarSnapshot();
+      const remainingRecords = remainingRiskRecordsForSnapshot();
+      const critical = remainingRecords.filter(item => {
+        const days = daysToExpiryFromCalendarSnapshot(item);
+        return days !== null && days >= 0 && days <= 30;
+      });
+      const high = remainingRecords.filter(item => {
+        const days = daysToExpiryFromCalendarSnapshot(item);
+        return days !== null && days >= 31 && days <= 90;
+      });
+      const criticalValue = sum(critical, "value");
+      const highValue = sum(high, "value");
       document.getElementById("executive-alerts").innerHTML = `
-        <article class="alert-card critical"><span>Critical alert</span><strong>${critical.length}</strong><small>Commodities expiring within 30 days of ${selectedSnapshot().label}</small></article>
-        <article class="alert-card moderate"><span>High-risk alert</span><strong>${high.length}</strong><small>Commodities expiring within 31-90 days</small></article>`;
+        <article class="alert-card critical"><span>Critical alert</span><strong>${critical.length}</strong><small>${moneyExact(criticalValue)} expiring within 30 days of ${snapshot.label}</small></article>
+        <article class="alert-card moderate"><span>High-risk alert</span><strong>${high.length}</strong><small>${moneyExact(highValue)} expiring within 31-90 days of ${snapshot.label}</small></article>`;
       renderExecutiveRiskBandChart();
     }
 
@@ -4728,7 +4781,7 @@
       if (!chart || !legend) return;
       const horizonMonths = monthOrder.filter(month => ["July", "August", "September", "October", "November", "December"].includes(month));
       const monthBands = horizonMonths.map(month => {
-        const records = monthRecords(month).filter(item => !isExpiredRecord(item));
+        const records = monthRecords(month).filter(item => !isExpiredRecord(item) && !isHistoricalMonth(item.month));
         const bands = Object.fromEntries(forecastRiskBands.map(band => [band.name, 0]));
         records.forEach(item => {
           const band = forecastRiskBand(item);
@@ -4846,11 +4899,28 @@
     }
 
     function renderChangesSinceReview() {
+      const months = monthOrder;
+      const snapshot = selectedCalendarSnapshot();
+      const previous = previousCalendarSnapshot();
+      const totals = summaryTotalsForSnapshot(months);
+      const previousTotals = previous ? summaryTotalsForSnapshot(months, previous.id) : null;
+      const periodLabel = previous ? `From ${previous.label} to ${snapshot.label}` : `As of ${snapshot.label}`;
+      const remainingChange = previousTotals ? totals.remaining - previousTotals.remaining : null;
+      const newlyCritical = previous
+        ? remainingRiskRecordsForSnapshot().filter(item => {
+            const currentDays = daysToExpiryFromCalendarSnapshot(item);
+            const activeSnapshotId = selectedCalendarSnapshotId;
+            selectedCalendarSnapshotId = previous.id;
+            const previousDays = daysToExpiryFromCalendarSnapshot(item);
+            selectedCalendarSnapshotId = activeSnapshotId;
+            return currentDays !== null && currentDays >= 0 && currentDays <= 30 && (previousDays === null || previousDays > 30);
+          }).length
+        : 0;
       const cards = [
-        { className: "risk", title: "Known value at risk", lines: [[moneyExact(sourceData.summary.valueAtRisk), "Jul-Dec priced raw-query rows still expiring"]] },
-        { className: "", title: "Successfully salvaged", lines: [[moneyExact(sourceData.summary.valueSalvaged), "1 Jan-30 Jun shipped before expiry"]] },
-        { className: "expired", title: "Expired", lines: [[moneyExact(sourceData.summary.valueExpired), "Jan-Jun expired value"]] },
-        { className: "partner", title: "Partners engaged", lines: [["", "Engagement status not supplied"]] }
+        { className: "risk", title: "Remaining value at risk", lines: [[moneyExact(totals.remaining), `As of ${snapshot.label}`], [previousTotals ? `${remainingChange >= 0 ? "Increased" : "Reduced"} by ${moneyExact(Math.abs(remainingChange))}` : "No previous approved review", periodLabel]] },
+        { className: "", title: "Successfully salvaged", lines: [[previousTotals ? moneyExact(Math.max(0, totals.salvaged - previousTotals.salvaged)) : moneyExact(totals.salvaged), previousTotals ? "Newly salvaged during period" : "Cumulative salvaged"], [moneyExact(totals.salvaged), `Cumulative as of ${snapshot.label}`]] },
+        { className: "expired", title: "Expired", lines: [[previousTotals ? moneyExact(Math.max(0, totals.expired - previousTotals.expired)) : moneyExact(totals.expired), previousTotals ? "Newly expired during period" : "Cumulative expired"], [moneyExact(totals.expired), `Cumulative as of ${snapshot.label}`]] },
+        { className: "partner", title: "Operational movement", lines: [[previousTotals ? String(newlyCritical) : "N/A", previousTotals ? "Products newly entering 30-day warning window" : "No previous approved review"], ["Not available", "Engagement status not captured in selected snapshot"]] }
       ];
       document.getElementById("changes-since-review").innerHTML = cards.map(card => `
         <article class="card change-card ${card.className}">
@@ -5203,6 +5273,7 @@
 
     function renderAllSnapshotViews() {
       renderSnapshotSelector();
+      renderExecutiveBrief();
       renderExecutive();
       renderExecutiveCharts();
       renderCalendar();
@@ -5223,6 +5294,7 @@
       renderActionTracker();
       renderInterventionPortfolio();
       renderExpiryRegister();
+      renderGlobalSourceNote();
     }
 
     function activateSubtab(group, target) {
