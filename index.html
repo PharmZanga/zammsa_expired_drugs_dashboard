@@ -823,6 +823,99 @@
       line-height: 1.4;
     }
 
+    .management-narrative {
+      margin-bottom: 14px;
+      padding: 18px 20px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--green-700);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .management-narrative strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--green-800);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .management-narrative p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .summary-panel-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .compact-list {
+      display: grid;
+      gap: 10px;
+      padding: 18px 20px;
+    }
+
+    .compact-list-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+    }
+
+    .compact-list-item:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .compact-list-item strong {
+      display: block;
+      overflow: hidden;
+      color: var(--ink);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .compact-list-item span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .compact-list-item b {
+      color: var(--green-800);
+      white-space: nowrap;
+    }
+
+    .summary-source-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .summary-source-table th,
+    .summary-source-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .summary-source-table th {
+      color: var(--muted);
+      background: var(--surface-soft);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
     .answer-strip {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -3124,7 +3217,7 @@
           <li>Salvage percentages are calculated retrospectively using actual salvaged and expired values.</li>
           <li>Total values are estimates because some product unit prices are manually entered and may vary by source tab.</li>
           <li>January-June tabs show shipped and expired product tables; June-December available-unit tabs show remaining quantities expiring in 2026.</li>
-          <li>This analysis includes orders shipped from 1 January 2026 to 15 June 2026.</li>
+          <li>This analysis follows the selected calendar review date and excludes shipment or stock movements after that date.</li>
         </ol>
       </div>
     </section>
@@ -3134,7 +3227,11 @@
     </div>
 
     <div class="dashboard-view" id="view-national-summary" data-view="national-summary">
-    <div class="view-header"><div><h2>National Salvage / Expiry Summary</h2></div><p>Workbook summary of salvaged value, expired value, total reviewed value, and salvage percentage.</p></div>
+    <div class="view-header"><div><h2>National Salvage / Expiry Summary</h2></div><div class="view-actions"><p>As-of snapshot of salvaged value, expired value, remaining risk, and portfolio reconciliation.</p><button class="export-button" type="button" id="national-summary-csv">Export CSV</button><button class="export-button" type="button" data-export-view="national-summary">Export PDF</button></div></div>
+    <section class="snapshot-bar" aria-label="National summary review date">
+      <label><span>Calendar review date</span><select class="control" id="national-summary-snapshot-select"></select></label>
+      <div class="snapshot-summary" id="national-summary-snapshot-summary"></div>
+    </section>
     <div class="subtab-layout" data-subtabs="national-summary">
       <nav class="subtab-nav" aria-label="National summary sections">
         <button class="subtab-button active" type="button" data-subtab-target="summary-kpis">KPI View</button>
@@ -3143,7 +3240,27 @@
       </nav>
       <div>
     <section class="subtab-panel active" data-subtab-panel="summary-kpis">
+    <section class="management-narrative" id="national-summary-narrative"></section>
     <section class="metrics" id="national-summary-kpis"></section>
+    <section class="summary-panel-grid">
+      <article class="card">
+        <div class="card-header"><div><h3>Portfolio reconciliation</h3><p>Movement since the previous review date</p></div></div>
+        <div class="compact-list" id="national-summary-reconciliation"></div>
+      </article>
+      <article class="card">
+        <div class="card-header"><div><h3>Top management priorities</h3><p>Highest remaining value at risk as of selected date</p></div></div>
+        <div class="compact-list" id="national-summary-priorities"></div>
+      </article>
+    </section>
+    <section class="card tracker" style="margin-top:14px">
+      <div class="card-header"><div><h3>Remaining risk by expiry band</h3><p>Days to expiry from the selected review date</p></div></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Band</th><th>Products</th><th>Batches</th><th>Quantity</th><th>Value</th><th>% of Remaining Risk</th></tr></thead>
+          <tbody id="national-summary-risk-bands"></tbody>
+        </table>
+      </div>
+    </section>
     </section>
     <section class="subtab-panel" data-subtab-panel="summary-table-view">
     <section class="card tracker">
@@ -3154,7 +3271,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Month</th><th>Salvaged (ZMW)</th><th>Expired (ZMW)</th><th>Total Value (ZMW)</th><th>Salvage Percentage</th></tr></thead>
+          <thead><tr><th>Month</th><th>Original Value</th><th>Value Salvaged</th><th>Value Expired</th><th>Remaining Risk</th><th>Salvage Rate</th><th>Expiry-Loss Rate</th><th>Remaining-Risk Rate</th><th>Products</th><th>Batches</th><th>Status</th></tr></thead>
           <tbody id="national-summary-table"></tbody>
         </table>
       </div>
@@ -3162,16 +3279,11 @@
     </section>
     <section class="subtab-panel" data-subtab-panel="summary-notes">
     <section class="card tracker">
-      <div class="source-note">
-        <strong>Note:</strong>
-        <ol>
-          <li>Salvaged indicates value of products that would have expired in a given month but were shipped.</li>
-          <li>Expired indicates the value of products that expired in a given month.</li>
-          <li>Salvage percentages are calculated retrospectively using actual salvaged and expired values.</li>
-          <li>Total values are estimates because some product unit prices are manually entered and may vary by source tab.</li>
-          <li>January-June tabs show shipped and expired product tables; June-December available-unit tabs show remaining quantities expiring in 2026.</li>
-          <li>This analysis includes orders shipped from 1 January 2026 to 15 June 2026.</li>
-        </ol>
+      <div class="table-wrap">
+        <table class="summary-source-table">
+          <thead><tr><th>Data source</th><th>Cut-off date</th><th>Records used</th><th>Limitations / notes</th></tr></thead>
+          <tbody id="national-summary-notes"></tbody>
+        </table>
       </div>
     </section>
     </section>
@@ -3301,7 +3413,7 @@
     </section>
     </div>
 
-    <p class="source-note"><strong>Source note:</strong> Salvaged values now include Jan-15 Jun shipped values for products expiring July-December 2026 plus the 16-30 Jun salvage update. Expired values are updated through 30 June 2026. Current expiry risk is from the 1 July 2026 ZAMMSA raw query for July-December 2026 expiries only. Products expiring after 2026 are excluded. The raw query does not contain unit price, so values are calculated only where a prior unit price was available; otherwise value fields remain blank. Warning bands recalculate from the selected warning date. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up.</p>
+    <p class="source-note"><strong>Source note:</strong> Salvaged values include the Jan-15 Jun baseline plus 16-30 Jun, 1-15 Jul, and 16-31 Jul shipment updates, and are filtered by the selected review date where a historical snapshot is used. Expired values are counted only for expiry months closed by the selected review date. Current remaining-risk values use the latest verified July 2026 reconciliation for 2026 expiries; products expiring after 2026 are excluded. Values are calculated only where a verified, historical, or corrected unit price is available; otherwise value fields remain blank. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up.</p>
   </main>
 
   <footer>
@@ -3512,12 +3624,28 @@
       const note = priceVerificationNote(item);
       return note ? `<span class="price-audit-detail">${escapeHtml(note.detail)}</span>` : "";
     };
-    const matchingSalvageEvents = item => salvageEvents.filter(event => event.sku === item.sku && monthNameFromDate(event.expiryDate) === item.month);
+    function inferredShipmentCutoff(event) {
+      if (event.shippedDate) return event.shippedDate;
+      const period = String(event.shipmentPeriod || "").toLowerCase();
+      if (period.includes("16-31 jul")) return "2026-07-31";
+      if (period.includes("1-15 jul")) return "2026-07-15";
+      if (period.includes("16-30 jun")) return "2026-06-30";
+      if (period.includes("1 jan-15 jun")) return "2026-06-15";
+      return "";
+    }
+
+    function shipmentIncludedBySnapshot(event, snapshotId = selectedCalendarSnapshotId) {
+      const cutoff = inferredShipmentCutoff(event);
+      if (!cutoff) return true;
+      return new Date(`${cutoff}T12:00:00+02:00`) <= new Date(`${snapshotId}T12:00:00+02:00`);
+    }
+
+    const eventsThroughSnapshot = (snapshotId = selectedCalendarSnapshotId) => salvageEvents.filter(event => shipmentIncludedBySnapshot(event, snapshotId));
+    const matchingSalvageEvents = (item, snapshotId = selectedCalendarSnapshotId) => eventsThroughSnapshot(snapshotId).filter(event => event.sku === item.sku && monthNameFromDate(event.expiryDate) === item.month);
     const recordSalvagedValue = item => isNumber(item.salvagedValue) ? item.salvagedValue : sum(matchingSalvageEvents(item), "value") || null;
     const recordShippedQuantity = item => isNumber(item.shippedQuantity) ? item.shippedQuantity : sum(matchingSalvageEvents(item), "quantity") || null;
     const selectedSnapshot = () => snapshots.find(item => item.id === selectedSnapshotId);
     const selectedCalendarSnapshot = () => calendarSnapshots.find(item => item.id === selectedCalendarSnapshotId) || calendarSnapshots[calendarSnapshots.length - 1];
-    const eventsThroughSnapshot = () => salvageEvents;
     const salvagedForRecord = () => null;
     const monthRecords = month => expiryRecords.filter(item => item.month === month);
     const monthEndDates = {
@@ -3771,6 +3899,112 @@
         ? (isNumber(historical) ? historical : (salvaged || 0) + expired)
         : (salvaged || 0) + (remaining || 0);
       return { month, salvaged, expired, remaining, total };
+    }
+
+    function snapshotMonthPosition(month, snapshotId = selectedCalendarSnapshotId) {
+      const activeSnapshotId = selectedCalendarSnapshotId;
+      selectedCalendarSnapshotId = snapshotId;
+      const snapshotDate = new Date(`${snapshotId}T12:00:00+02:00`);
+      const monthEnd = monthEndDates[month] ? new Date(`${monthEndDates[month]}T12:00:00+02:00`) : null;
+      const records = monthRecords(month);
+      const isExpiredBySnapshot = monthEnd && snapshotDate >= monthEnd && isNumber(sourceData.monthlyValueExpired?.[month]);
+      const originalValue = isNumber(sourceData.monthlyHistoricalReviewed?.[month])
+        ? sourceData.monthlyHistoricalReviewed[month]
+        : sourceData.calculationAudit?.originalSohValueByMonth?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
+      const originalQty = isNumber(sourceData.monthlyUnitsAtRisk?.[month]) ? sourceData.monthlyUnitsAtRisk[month] : null;
+      const salvaged = futureSalvagedForSnapshot(month) ?? 0;
+      const expired = isExpiredBySnapshot ? (sourceData.monthlyValueExpired?.[month] ?? 0) : 0;
+      const remaining = isExpiredBySnapshot ? 0 : (futureRemainingForSnapshot(month) ?? sourceData.monthlyValueAtRisk?.[month] ?? 0);
+      const total = (salvaged || 0) + (expired || 0) + (remaining || 0);
+      const status = isExpiredBySnapshot
+        ? "Closed / expired register loaded"
+        : remaining > 0
+          ? "Active risk"
+          : salvaged > 0
+            ? "Resolved"
+            : "No value loaded";
+      selectedCalendarSnapshotId = activeSnapshotId;
+      return {
+        month,
+        records,
+        originalQty,
+        originalValue,
+        salvaged,
+        expired,
+        remaining,
+        total,
+        products: new Set(records.map(item => item.sku || item.commodity)).size,
+        batches: records.reduce((count, item) => count + (item.batch ? String(item.batch).split(";").filter(Boolean).length : 0), 0),
+        status
+      };
+    }
+
+    function summaryRowsForSnapshot(months, snapshotId = selectedCalendarSnapshotId) {
+      return months.map(month => snapshotMonthPosition(month, snapshotId));
+    }
+
+    function summaryTotalsForSnapshot(months, snapshotId = selectedCalendarSnapshotId) {
+      const rows = summaryRowsForSnapshot(months, snapshotId);
+      const remaining = sum(rows, "remaining");
+      const salvaged = sum(rows, "salvaged");
+      const expired = sum(rows, "expired");
+      return {
+        rows,
+        salvaged,
+        expired,
+        remaining,
+        total: salvaged + expired + remaining
+      };
+    }
+
+    function previousCalendarSnapshot() {
+      const index = calendarSnapshots.findIndex(snapshot => snapshot.id === selectedCalendarSnapshotId);
+      return index > 0 ? calendarSnapshots[index - 1] : null;
+    }
+
+    function dateLabelForSnapshotId(snapshotId) {
+      return calendarSnapshots.find(snapshot => snapshot.id === snapshotId)?.label || snapshotId;
+    }
+
+    function riskBandRowsForSummary() {
+      const activeRows = expiryRecords.filter(item => !isExpiredRecord(item) && !isHistoricalMonth(item.month));
+      const bands = [
+        { label: "Already expired", test: days => days < 0 },
+        { label: "0-30 days", test: days => days >= 0 && days <= 30 },
+        { label: "31-60 days", test: days => days >= 31 && days <= 60 },
+        { label: "61-90 days", test: days => days >= 61 && days <= 90 },
+        { label: "91-180 days", test: days => days >= 91 && days <= 180 },
+        { label: "More than 180 days", test: days => days > 180 }
+      ];
+      const totalRisk = sum(activeRows, "value");
+      return bands.map(band => {
+        const items = activeRows.filter(item => {
+          const days = daysToExpiryFromCalendarSnapshot(item);
+          return days !== null && band.test(days);
+        });
+        return {
+          ...band,
+          products: new Set(items.map(item => item.sku || item.commodity)).size,
+          batches: items.reduce((count, item) => count + (item.batch ? String(item.batch).split(";").filter(Boolean).length : 0), 0),
+          quantity: sum(items, "quantity"),
+          value: sum(items, "value"),
+          share: totalRisk ? (sum(items, "value") / totalRisk) * 100 : 0
+        };
+      });
+    }
+
+    function summaryDataSources() {
+      const snapshot = selectedCalendarSnapshot();
+      const audit = sourceData.calculationAudit || {};
+      const stockCutoff = selectedCalendarSnapshotId === "2026-06-30" ? "30 June 2026" : selectedCalendarSnapshotId === "2026-07-15" ? "15 July 2026" : "31 July 2026";
+      const shipmentCutoff = selectedCalendarSnapshotId === "2026-06-30" ? "30 June 2026" : selectedCalendarSnapshotId === "2026-07-15" ? "15 July 2026" : "31 July 2026";
+      return [
+        ["Calendar review snapshot", snapshot.label, "Selected as-of review date", snapshot.note],
+        ["ZAMMSA available-unit query", stockCutoff, "July-December stock still expiring", audit.sohFormula || "Remaining SOH reconstructed from available source workbooks."],
+        ["Salvage shipment reports", shipmentCutoff, "Confirmed shipment values up to selected date", "Transactions after the selected date are excluded from historical as-of summaries."],
+        ["Expired product registers", stockCutoff, "Expired values only where expiry month had closed by selected date", "Future expiry months are not counted as expired before their expiry date."],
+        ["Pricing and data quality", sourceData.sourceUpdated, `${sourceData.pricingGaps?.rowsMissingUnitPrice || 0} rows missing unit price`, "Lamotrigine EM2991 restated using contract reference price; unpriced quantities remain excluded from value totals."]
+      ];
     }
 
     function monthlySummaryRows(months) {
@@ -4803,40 +5037,67 @@
     function renderNationalSummary() {
       const summaryMonths = summaryRangeMonths();
       const monthLabels = { January: "Jan", February: "Feb", March: "Mar", April: "Apr", May: "May", June: "Jun", July: "Jul", August: "Aug", September: "Sep", October: "Oct", November: "Nov", December: "Dec" };
-      const rows = summaryMonths.map(month => {
-        const row = monthSummaryPosition(month);
-        return { ...row, rate: preciseRate(row.salvaged, row.total) };
-      });
-      const totals = {
-        salvaged: sum(rows, "salvaged"),
-        expired: sum(rows, "expired"),
-        total: sum(rows, "total")
-      };
+      const snapshot = selectedCalendarSnapshot();
+      const previous = previousCalendarSnapshot();
+      const { rows, salvaged, expired, remaining, total } = summaryTotalsForSnapshot(summaryMonths);
+      const previousTotals = previous ? summaryTotalsForSnapshot(summaryMonths, previous.id) : null;
+      const urgentValue = riskBandRowsForSummary().filter(row => row.label === "Already expired" || row.label === "0-30 days").reduce((sumValue, row) => sumValue + row.value, 0);
+      const productsReviewed = new Set(rows.flatMap(row => row.records.map(item => item.sku || item.commodity))).size;
+      const batchesReviewed = rows.reduce((count, row) => count + row.batches, 0);
       const rangeLabel = summaryRangeLabel(summaryMonths);
-      const summaryMarkup = rows.map(row => `
+      const deltaText = value => {
+        if (!previousTotals || !isNumber(value)) return `First available snapshot`;
+        const sign = value >= 0 ? "Increase" : "Decrease";
+        return `${sign} of ${moneyExact(Math.abs(value))} since ${previous.label}`;
+      };
+      const summaryMarkup = rows.map(row => {
+        const salvageRate = preciseRate(row.salvaged, row.total);
+        const expiryRate = preciseRate(row.expired, row.total);
+        const remainingRate = preciseRate(row.remaining, row.total);
+        return `
         <tr>
           <td class="commodity">${monthLabels[row.month]}</td>
+          <td>${moneyExact(row.originalValue)}</td>
           <td>${moneyExact(row.salvaged)}</td>
           <td>${moneyExact(row.expired)}</td>
-          <td>${moneyExact(row.total)}</td>
-          <td>${row.rate}%</td>
-        </tr>`).join("") + `
+          <td>${moneyExact(row.remaining)}</td>
+          <td>${salvageRate}%</td>
+          <td>${expiryRate}%</td>
+          <td>${remainingRate}%</td>
+          <td>${row.products || ""}</td>
+          <td>${row.batches || ""}</td>
+          <td>${escapeHtml(row.status)}</td>
+        </tr>`;
+      }).join("") + `
         <tr>
           <td class="commodity">Total</td>
-          <td><strong>${moneyExact(totals.salvaged)}</strong></td>
-          <td><strong>${moneyExact(totals.expired)}</strong></td>
-          <td><strong>${moneyExact(totals.total)}</strong></td>
-          <td><strong>${preciseRate(totals.salvaged, totals.total)}%</strong></td>
+          <td><strong>${moneyExact(sum(rows, "originalValue"))}</strong></td>
+          <td><strong>${moneyExact(salvaged)}</strong></td>
+          <td><strong>${moneyExact(expired)}</strong></td>
+          <td><strong>${moneyExact(remaining)}</strong></td>
+          <td><strong>${preciseRate(salvaged, total)}%</strong></td>
+          <td><strong>${preciseRate(expired, total)}%</strong></td>
+          <td><strong>${preciseRate(remaining, total)}%</strong></td>
+          <td><strong>${productsReviewed}</strong></td>
+          <td><strong>${batchesReviewed}</strong></td>
+          <td><strong>As-of ${escapeHtml(snapshot.label)}</strong></td>
         </tr>`;
-      ["national-summary-table", "institution-national-summary-table"].forEach(id => {
-        const table = document.getElementById(id);
-        if (table) table.innerHTML = summaryMarkup;
-      });
+      const summaryTable = document.getElementById("national-summary-table");
+      if (summaryTable) summaryTable.innerHTML = summaryMarkup;
+      const institutionSummary = document.getElementById("institution-national-summary-table");
+      if (institutionSummary) {
+        institutionSummary.innerHTML = rows.map(row => `<tr><td class="commodity">${monthLabels[row.month]}</td><td>${moneyExact(row.salvaged)}</td><td>${moneyExact(row.expired)}</td><td>${moneyExact(row.total)}</td><td>${preciseRate(row.salvaged, row.total)}%</td></tr>`).join("") +
+          `<tr><td class="commodity">Total</td><td><strong>${moneyExact(salvaged)}</strong></td><td><strong>${moneyExact(expired)}</strong></td><td><strong>${moneyExact(total)}</strong></td><td><strong>${preciseRate(salvaged, total)}%</strong></td></tr>`;
+      }
       const kpis = [
-        ["Total Salvaged", moneyExact(totals.salvaged), rangeLabel, "success"],
-        ["Total Expired", moneyExact(totals.expired), rangeLabel, "warning"],
-        ["Total Reviewed", moneyExact(totals.total), "Filtered total value for selected months", ""],
-        ["Salvage Percentage", `${preciseRate(totals.salvaged, totals.total)}%`, `Filtered percentage for ${rangeLabel}`, "success"]
+        ["Total Reviewed", moneyExact(total), `${rangeLabel} · as of ${snapshot.label}`, ""],
+        ["Cumulative Salvaged", moneyExact(salvaged), deltaText(previousTotals ? salvaged - previousTotals.salvaged : null), "success"],
+        ["Cumulative Expired", moneyExact(expired), deltaText(previousTotals ? expired - previousTotals.expired : null), "warning"],
+        ["Remaining Risk", moneyExact(remaining), deltaText(previousTotals ? remaining - previousTotals.remaining : null), "danger"],
+        ["Salvage Rate", `${preciseRate(salvaged, total)}%`, `Salvaged ÷ reviewed; denominator ${moneyExact(total)}`, "success"],
+        ["Expiry-Loss Rate", `${preciseRate(expired, total)}%`, `Expired ÷ reviewed; denominator ${moneyExact(total)}`, "warning"],
+        ["Urgent Action Value", moneyExact(urgentValue), `Already expired or ≤30 days from ${snapshot.label}`, "danger"],
+        ["Products / Batches", `${productsReviewed} / ${batchesReviewed}`, `${sourceData.pricingGaps?.rowsMissingUnitPrice || 0} rows missing unit price`, ""]
       ];
       const kpiTarget = document.getElementById("national-summary-kpis");
       if (kpiTarget) {
@@ -4844,7 +5105,100 @@
           `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`
         ).join("");
       }
+      const narrative = document.getElementById("national-summary-narrative");
+      if (narrative) {
+        const previousText = previousTotals
+          ? ` Since ${previous.label}, ${moneyExact(Math.max(0, salvaged - previousTotals.salvaged))} was newly salvaged, ${moneyExact(Math.max(0, expired - previousTotals.expired))} newly expired, and remaining risk ${remaining <= previousTotals.remaining ? "reduced" : "increased"} by ${moneyExact(Math.abs(remaining - previousTotals.remaining))}.`
+          : " This is the first available calendar review snapshot.";
+        narrative.innerHTML = `<strong>Management narrative</strong><p>As of ${escapeHtml(snapshot.label)}, ${moneyExact(total)} in short-dated stock had been reviewed for ${escapeHtml(rangeLabel)}. ${moneyExact(salvaged)} had been salvaged, ${moneyExact(expired)} had expired, and ${moneyExact(remaining)} remained at risk. Of the remaining risk, ${moneyExact(urgentValue)} requires urgent action within 30 days or is already expired.${previousText}</p>`;
+      }
+      const reconciliation = document.getElementById("national-summary-reconciliation");
+      if (reconciliation) {
+        const previousRemaining = previousTotals?.remaining ?? null;
+        const movementRows = [
+          ["Opening remaining risk", previousRemaining === null ? "" : moneyExact(previousRemaining), previous ? previous.label : "First available snapshot"],
+          ["Newly salvaged", previousTotals ? `-${moneyExact(Math.max(0, salvaged - previousTotals.salvaged))}` : "", `Through ${snapshot.label}`],
+          ["Newly expired", previousTotals ? `-${moneyExact(Math.max(0, expired - previousTotals.expired))}` : "", `Through ${snapshot.label}`],
+          ["Value adjustments / restatement", priceVerificationNotes.EM2991.title, "Lamotrigine contract price applied"],
+          ["Closing remaining risk", moneyExact(remaining), snapshot.label]
+        ];
+        reconciliation.innerHTML = movementRows.map(([label, value, note]) => `<div class="compact-list-item"><div><strong>${escapeHtml(label)}</strong><span>${escapeHtml(note)}</span></div><b>${escapeHtml(value)}</b></div>`).join("");
+      }
+      const priorities = document.getElementById("national-summary-priorities");
+      if (priorities) {
+        const priorityRows = expiryRecords
+          .filter(item => !isExpiredRecord(item) && !isHistoricalMonth(item.month))
+          .sort((a, b) => (b.value || 0) - (a.value || 0))
+          .slice(0, 10);
+        priorities.innerHTML = priorityRows.map(item => `<button class="compact-list-item" type="button" data-summary-profile-id="${item.id}"><div><strong>${escapeHtml(item.commodity)}</strong><span>${escapeHtml(item.sku)} · ${formatDate(item.expiryDate)} · ${daysToExpiryFromCalendarSnapshot(item)} days · ${escapeHtml(item.institution || "No institution supplied")}</span></div><b>${moneyExact(item.value)}</b></button>`).join("");
+        priorities.querySelectorAll("[data-summary-profile-id]").forEach(button => button.addEventListener("click", () => openCommodityProfile(button.dataset.summaryProfileId)));
+      }
+      const bandTarget = document.getElementById("national-summary-risk-bands");
+      if (bandTarget) {
+        bandTarget.innerHTML = riskBandRowsForSummary().map(row => `<tr><td class="commodity">${escapeHtml(row.label)}</td><td>${row.products}</td><td>${row.batches}</td><td>${row.quantity ? row.quantity.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.value)}</td><td>${row.share.toFixed(2)}%</td></tr>`).join("");
+      }
+      const notesTarget = document.getElementById("national-summary-notes");
+      if (notesTarget) {
+        notesTarget.innerHTML = summaryDataSources().map(([source, cutoff, records, limitation]) => `<tr><td class="commodity">${escapeHtml(source)}</td><td>${escapeHtml(cutoff)}</td><td>${escapeHtml(records)}</td><td>${escapeHtml(limitation)}</td></tr>`).join("");
+      }
+      const snapshotSelect = document.getElementById("national-summary-snapshot-select");
+      if (snapshotSelect) {
+        snapshotSelect.innerHTML = calendarSnapshots.map(item => `<option value="${item.id}" ${item.id === selectedCalendarSnapshotId ? "selected" : ""}>${item.label}</option>`).join("");
+        snapshotSelect.onchange = () => {
+          selectedCalendarSnapshotId = snapshotSelect.value;
+          renderAllSnapshotViews();
+        };
+      }
+      const snapshotSummary = document.getElementById("national-summary-snapshot-summary");
+      if (snapshotSummary) {
+        snapshotSummary.innerHTML = `<div><span>Review date</span><strong>${escapeHtml(snapshot.label)}</strong></div><div><span>Reviewed value</span><strong>${moneyExact(total)}</strong></div><div><span>Basis</span><strong>${escapeHtml(snapshot.note)}</strong></div>`;
+      }
+      const summaryCsv = document.getElementById("national-summary-csv");
+      if (summaryCsv) summaryCsv.onclick = exportNationalSummaryCsv;
       renderSummaryRangeControls();
+    }
+
+    function exportNationalSummaryCsv() {
+      const months = summaryRangeMonths();
+      const snapshot = selectedCalendarSnapshot();
+      const { rows, salvaged, expired, remaining, total } = summaryTotalsForSnapshot(months);
+      const headers = ["Review Date", "Month", "Original Value", "Value Salvaged", "Value Expired", "Remaining Risk", "Salvage Rate", "Expiry-Loss Rate", "Remaining-Risk Rate", "Products", "Batches", "Status"];
+      const csvRows = rows.map(row => [
+        snapshot.label,
+        row.month,
+        row.originalValue ?? "",
+        row.salvaged ?? "",
+        row.expired ?? "",
+        row.remaining ?? "",
+        `${preciseRate(row.salvaged, row.total)}%`,
+        `${preciseRate(row.expired, row.total)}%`,
+        `${preciseRate(row.remaining, row.total)}%`,
+        row.products || "",
+        row.batches || "",
+        row.status
+      ]);
+      csvRows.push([
+        snapshot.label,
+        "Total",
+        sum(rows, "originalValue"),
+        salvaged,
+        expired,
+        remaining,
+        `${preciseRate(salvaged, total)}%`,
+        `${preciseRate(expired, total)}%`,
+        `${preciseRate(remaining, total)}%`,
+        new Set(rows.flatMap(row => row.records.map(item => item.sku || item.commodity))).size,
+        rows.reduce((count, row) => count + row.batches, 0),
+        `As-of ${snapshot.label}`
+      ]);
+      const csv = [headers, ...csvRows]
+        .map(values => values.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `zammsa-national-summary-${snapshot.id}-${summaryRangeMonths().join("-").toLowerCase()}.csv`;
+      link.click();
+      URL.revokeObjectURL(link.href);
     }
 
     function renderAllSnapshotViews() {
