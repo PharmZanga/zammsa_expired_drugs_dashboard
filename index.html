@@ -3636,6 +3636,7 @@
           .filter(item => item.month === month && item.status === "Expired")
           .reduce((total, item) => total + (typeof item.value === "number" && Number.isFinite(item.value) ? item.value : 0), 0);
         const totalReviewed = salvaged + expired;
+        const isLatest = index === monthDates.length - 1;
         const atRisk = totalReviewed;
         const snapshotRate = atRisk ? (salvaged / atRisk) * 100 : 0;
         return {
