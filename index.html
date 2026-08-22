@@ -799,6 +799,36 @@
       font-size: 11px;
     }
 
+    .data-source-panel summary {
+      cursor: pointer;
+      color: var(--ink);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+    }
+
+    .definition-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .definition-grid span {
+      display: block;
+      padding: 10px 12px;
+      border: 1px solid rgba(19, 74, 61, 0.14);
+      border-radius: 12px;
+      background: rgba(243, 248, 246, 0.88);
+    }
+
+    .definition-grid strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
     .price-audit {
       display: inline-flex;
       align-items: center;
@@ -1985,7 +2015,6 @@
     body[data-active-view="commodity-register"] .shared-monitor,
     body[data-active-view="warning-centre"] .shared-monitor,
     body[data-active-view="salvage-tracker"] .shared-monitor,
-    body[data-active-view="shipment-register"] .shared-monitor,
     body[data-active-view="action-tracker"] .shared-monitor,
     body[data-active-view="root-cause-analysis"] .shared-monitor,
     body[data-active-view="institution-performance"] .shared-monitor,
@@ -2002,8 +2031,6 @@
     body[data-active-view="warning-centre"] .shared-monitor .calendar,
     body[data-active-view="salvage-tracker"] .shared-monitor .section-heading,
     body[data-active-view="salvage-tracker"] .shared-monitor .calendar,
-    body[data-active-view="shipment-register"] .shared-monitor .section-heading,
-    body[data-active-view="shipment-register"] .shared-monitor .calendar,
     body[data-active-view="action-tracker"] .shared-monitor .section-heading,
     body[data-active-view="action-tracker"] .shared-monitor .calendar,
     body[data-active-view="root-cause-analysis"] .shared-monitor .section-heading,
@@ -2018,7 +2045,6 @@
     body[data-active-view="commodity-register"] .dashboard-content main,
     body[data-active-view="warning-centre"] .dashboard-content main,
     body[data-active-view="salvage-tracker"] .dashboard-content main,
-    body[data-active-view="shipment-register"] .dashboard-content main,
     body[data-active-view="action-tracker"] .dashboard-content main,
     body[data-active-view="root-cause-analysis"] .dashboard-content main,
     body[data-active-view="institution-performance"] .dashboard-content main,
@@ -2532,6 +2558,10 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .definition-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .detail-grid {
         grid-template-columns: 1fr;
       }
@@ -2675,6 +2705,7 @@
       }
 
       .forecast-kpi-strip,
+      .definition-grid,
       .risk-band-chart {
         grid-template-columns: 1fr;
       }
@@ -2922,7 +2953,6 @@
         <a class="nav-link" href="#commodity-register" data-view="commodity-register"><span class="nav-icon">Rx</span><span class="nav-text">Commodity Register</span></a>
         <a class="nav-link" href="#warning-centre" data-view="warning-centre"><span class="nav-icon">!</span><span class="nav-text">Warning Centre</span></a>
         <a class="nav-link" href="#salvage-tracker" data-view="salvage-tracker"><span class="nav-icon">↻</span><span class="nav-text">Salvage Tracker</span></a>
-        <a class="nav-link" href="#shipment-register" data-view="shipment-register"><span class="nav-icon">⇄</span><span class="nav-text">Shipment Register</span></a>
         <a class="nav-link" href="#action-tracker" data-view="action-tracker"><span class="nav-icon">☷</span><span class="nav-text">Action Tracker</span></a>
         <a class="nav-link" href="#root-cause-analysis" data-view="root-cause-analysis"><span class="nav-icon">↗</span><span class="nav-text">Root Cause Analysis</span></a>
         <a class="nav-link" href="#historical-snapshots" data-view="historical-snapshots"><span class="nav-icon">◷</span><span class="nav-text">Historical Snapshots</span></a>
@@ -3112,11 +3142,12 @@
     </div>
 
     <div class="dashboard-view" id="view-salvage-tracker" data-view="salvage-tracker">
-    <div class="view-header"><div><h2>Salvage Tracker</h2></div><div class="view-actions"><p>What value has been saved, when, and through which institution?</p><button class="export-button" type="button" data-export-view="salvage-tracker" data-export-target="salvage-month-list">Export PDF</button></div></div>
+    <div class="view-header"><div><h2>Salvage Tracker</h2></div><div class="view-actions"><p>What value has been saved, when, and through which institution?</p><button class="export-button" type="button" id="salvage-products-csv">Export CSV</button><button class="export-button" type="button" data-export-view="salvage-tracker" data-export-target="salvage-month-list">Export PDF</button></div></div>
     <div class="subtab-layout" data-subtabs="salvage-tracker">
       <nav class="subtab-nav" aria-label="Salvage tracker sections">
         <button class="subtab-button active" type="button" data-subtab-target="salvage-overview">Monthly Overview</button>
         <button class="subtab-button" type="button" data-subtab-target="salvage-products">Product List</button>
+        <button class="subtab-button" type="button" data-subtab-target="salvage-evidence">Shipment Evidence</button>
       </nav>
       <div>
     <section class="subtab-panel active" data-subtab-panel="salvage-overview">
@@ -3138,20 +3169,20 @@
           <tbody id="salvage-month-products"></tbody>
         </table>
       </div>
-      <div class="table-footer"><span id="salvage-month-product-count"></span><span id="salvage-month-product-total"></span><a class="export-button" href="#shipment-register">Open Shipment Register</a></div>
+      <div class="table-footer"><span id="salvage-month-product-count"></span><span id="salvage-month-product-total"></span><button class="export-button" type="button" data-open-salvage-evidence>Open Shipment Evidence</button></div>
     </section>
     </section>
-      </div>
-    </div>
-    </div>
-
-    <div class="dashboard-view" id="view-shipment-register" data-view="shipment-register">
-    <div class="view-header"><div><h2>Shipment Register</h2></div><div class="view-actions"><p>Permanent recipient-level salvage shipment evidence by selected expiry month.</p><button class="export-button" type="button" data-export-view="shipment-register">Export PDF</button></div></div>
+    <section class="subtab-panel" data-subtab-panel="salvage-evidence">
     <div class="section-heading">
       <h2 id="salvage-register-title">May detailed shipment evidence</h2>
       <p id="salvage-register-copy">Permanent recipient-level movement evidence filtered to the selected expiry month.</p>
     </div>
     <section class="card tracker">
+      <div class="toolbar">
+        <button class="export-button" type="button" id="salvage-evidence-csv">Export Evidence CSV</button>
+        <button class="export-button" type="button" data-export-view="salvage-tracker" data-export-target="salvage-evidence-panel">Export Evidence PDF</button>
+      </div>
+      <div id="salvage-evidence-panel">
       <div class="table-wrap">
         <table>
           <thead><tr><th>Commodity</th><th>Batch</th><th>Quantity Shipped</th><th>Value Salvaged</th><th>Shipped Date</th><th>Expiry Date</th><th>Recipient Institution</th></tr></thead>
@@ -3159,7 +3190,11 @@
         </table>
       </div>
       <div class="table-footer"><span id="salvage-register-count"></span><span id="salvage-register-scope"></span></div>
+      </div>
     </section>
+    </section>
+      </div>
+    </div>
     </div>
 
     <div class="dashboard-view" id="view-institution-performance" data-view="institution-performance">
@@ -3307,11 +3342,11 @@
     <section class="subtab-panel" data-subtab-panel="snapshot-trend-panel">
     <div class="section-heading">
       <h2>Salvage performance trend</h2>
-      <p>Bi-weekly movement shows whether remaining risk is declining while cumulative salvage increases.</p>
+      <p>Bi-weekly movement shows how the reviewed portfolio, cumulative salvage, and salvage rate change over time.</p>
     </div>
     <section class="card">
-      <div class="card-header"><div><h3>TWG performance, Jan-July 2026</h3><p>Values in ZMW millions; salvage rate recalculates by selected snapshot</p></div></div>
-      <div class="trend-legend"><span><i style="background:#b73a3a"></i>Value at risk</span><span><i style="background:#28715f"></i>Value salvaged</span><span><i style="background:#2c6fa5"></i>Salvage rate</span></div>
+      <div class="card-header"><div><h3>TWG performance, Jan-August 2026</h3><p>Values in ZMW millions; salvage rate recalculates by selected snapshot</p></div></div>
+      <div class="trend-legend"><span><i style="background:#b73a3a"></i>Total reviewed</span><span><i style="background:#28715f"></i>Value salvaged</span><span><i style="background:#2c6fa5"></i>Salvage rate</span></div>
       <div class="chart-body" id="performance-chart"></div>
     </section>
     </section>
@@ -3319,7 +3354,7 @@
     <section class="card">
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Review date</th><th>At risk</th><th>Salvaged</th><th>Remaining</th><th>Salvage Rate</th></tr></thead>
+          <thead><tr><th>Review date</th><th>Total reviewed</th><th>Salvaged</th><th>Expired</th><th>Salvage Rate</th></tr></thead>
           <tbody id="performance-table"></tbody>
         </table>
       </div>
@@ -3385,7 +3420,7 @@
     </div>
 
     <div class="dashboard-view" id="view-commodity-register" data-view="commodity-register">
-    <div class="view-header"><div><h2>Commodity Register</h2></div><p>Search the full line list by month, product, status, province, institution, or risk band.</p></div>
+    <div class="view-header"><div><h2>Commodity Register</h2></div><div class="view-actions"><p>Search the full line list by month, product, status, province, institution, or risk band.</p><button class="export-button" type="button" id="commodity-register-csv">Export CSV</button></div></div>
     <div class="section-heading">
       <h2>National expiring commodities register</h2>
       <p>Search and filter all short-dated commodities by month, current status, and days-to-expiry risk band.</p>
@@ -3411,7 +3446,11 @@
     </section>
     </div>
 
-    <p class="source-note" id="global-source-note"></p>
+    <details class="source-note data-source-panel">
+      <summary>Data sources, definitions and pricing notes</summary>
+      <div id="global-definitions-note"></div>
+      <p id="global-source-note"></p>
+    </details>
   </main>
 
   <footer>
@@ -3874,7 +3913,7 @@
       select.innerHTML = snapshots.map(snapshot => `<option value="${snapshot.id}" ${snapshot.id === selectedSnapshotId ? "selected" : ""}>${snapshot.label}</option>`).join("");
       const snapshot = selectedSnapshot();
       document.getElementById("snapshot-summary").innerHTML = `
-        <div><span>Value at risk</span><strong>${moneyExact(snapshot.atRisk)}</strong></div>
+        <div><span>Total reviewed</span><strong>${moneyExact(snapshot.atRisk)}</strong></div>
         <div><span>Value salvaged</span><strong>${moneyExact(snapshot.salvaged)}</strong></div>
         <div><span>Expired value</span><strong>${moneyExact(snapshot.expired)}</strong></div>
         <div><span>Salvage rate</span><strong>${snapshot.salvageRate.toFixed(2)}%</strong></div>`;
@@ -4018,6 +4057,7 @@
 
     function renderGlobalSourceNote() {
       const target = document.getElementById("global-source-note");
+      const definitions = document.getElementById("global-definitions-note");
       if (!target) return;
       const snapshot = selectedCalendarSnapshot();
       const shipmentText = selectedCalendarSnapshotId === "2026-06-30"
@@ -4042,6 +4082,14 @@
             ? "Expired values include months closed by 31 July 2026, including the July expired register."
             : "Expired values include months closed by 15 August 2026; August remains an active future/current expiry month until month-end closure.";
       target.innerHTML = `<strong>Source note:</strong> Selected review date: ${escapeHtml(snapshot.label)}. Stock position: ${stockText} Shipment cut-off: ${shipmentText} ${expiredText} Products expiring after 2026 are excluded. Values are calculated only where a verified, historical, or corrected unit price is available; otherwise value fields remain blank. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up.`;
+      if (definitions) {
+        definitions.innerHTML = `<div class="definition-grid">
+          <span><strong>S.O.H</strong>Stock on hand still available at ZAMMSA or source location.</span>
+          <span><strong>Remaining risk</strong>S.O.H value still expected to expire after confirmed salvage reductions.</span>
+          <span><strong>Total reviewed</strong>Salvaged value + expired value + remaining risk for the selected snapshot.</span>
+          <span><strong>Salvage rate</strong>Value salvaged divided by total reviewed value.</span>
+        </div>`;
+      }
     }
 
     function monthlySummaryRows(months) {
@@ -4471,14 +4519,47 @@
     function exportFilteredExpiryCsv() {
       const rows = filteredExpiryExportRows();
       const headers = ["SKU", "Commodity", "Risk", "Days", "Shipped Units", "Salvaged Value", "S.O.H", "Value at Risk", "Trend", "Expiry Date", "Price Verification Note"];
-      const csv = [headers, ...rows.map(row => [row.sku, row.commodity, row.risk, row.days ?? "", row.shippedUnits ?? "", row.salvagedValue ?? "", row.soh ?? "", row.valueAtRisk ?? "", row.trend, row.expiryDate, row.priceNote])]
+      downloadCsv(`zammsa-expiry-forecast-${selectedMonth.toLowerCase()}-${selectedForecastRiskBand.toLowerCase().replace(/\s+/g, "-")}.csv`, headers, rows.map(row => [row.sku, row.commodity, row.risk, row.days ?? "", row.shippedUnits ?? "", row.salvagedValue ?? "", row.soh ?? "", row.valueAtRisk ?? "", row.trend, row.expiryDate, row.priceNote]));
+    }
+
+    function downloadCsv(filename, headers, rows) {
+      const csv = [headers, ...rows]
         .map(values => values.map(value => `"${String(value ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
-      link.download = `zammsa-expiry-forecast-${selectedMonth.toLowerCase()}-${selectedForecastRiskBand.toLowerCase().replace(/\s+/g, "-")}.csv`;
+      link.download = filename;
       link.click();
       URL.revokeObjectURL(link.href);
+    }
+
+    function exportSalvageProductsCsv() {
+      const rows = salvagedProductsForMonth(selectedMonth)
+        .filter(item => !salvageProductSearch.trim() || `${item.commodity} ${item.sku}`.toLowerCase().includes(salvageProductSearch.trim().toLowerCase()))
+        .sort((a, b) => (b.value || 0) - (a.value || 0));
+      downloadCsv(
+        `zammsa-salvage-products-${selectedMonth.toLowerCase()}-${selectedCalendarSnapshotId}.csv`,
+        ["Review Date", "Expiry Month", "SKU", "Commodity", "Shipped Units", "Total Expiring", "Value Salvaged", "Remaining Risk", "Expiry Date", "Institution"],
+        rows.map(item => [selectedCalendarSnapshot().label, selectedMonth, item.sku, item.commodity, item.quantity ?? "", item.exposureValue ?? "", item.value ?? "", item.remainingRisk ?? "", item.expiryDate, item.institution])
+      );
+    }
+
+    function exportSalvageEvidenceCsv() {
+      const rows = salvageEventsForMonth(selectedMonth);
+      downloadCsv(
+        `zammsa-shipment-evidence-${selectedMonth.toLowerCase()}-${selectedCalendarSnapshotId}.csv`,
+        ["Review Date", "Expiry Month", "SKU", "Commodity", "Batch", "Quantity Shipped", "Value Salvaged", "Shipped Date", "Shipment Period", "Expiry Date", "Recipient Institution", "Province", "Source Workbook"],
+        rows.map(event => [selectedCalendarSnapshot().label, selectedMonth, event.sku, event.commodity, event.batch, event.quantity ?? "", event.value ?? "", event.shippedDate, event.shipmentPeriod, event.expiryDate, event.institution, event.province, event.sourceWorkbook])
+      );
+    }
+
+    function exportCommodityRegisterCsv() {
+      const { records } = filteredExpiryRegisterRecords();
+      downloadCsv(
+        `zammsa-commodity-register-${selectedCalendarSnapshotId}.csv`,
+        ["Review Date", "SKU", "Commodity", "Batch", "S.O.H Quantity", "Unit Price", "Value at Risk", "Shipped Units", "Salvaged Value", "Expiry Date", "Days", "Risk", "Status", "Warehouse", "Province", "Facility", "Institution"],
+        records.map(item => [selectedCalendarSnapshot().label, item.sku, item.commodity, item.batch, item.quantity ?? "", item.unitPrice ?? "", item.value ?? "", recordShippedQuantity(item) ?? "", recordSalvagedValue(item) ?? "", item.expiryDate, daysToExpiry(item) ?? "", expiryRiskBand(item), currentRecordStatus(item), item.warehouse, item.province, item.facility, item.institution])
+      );
     }
 
     function exportFilteredExpiryPdf() {
@@ -4689,6 +4770,13 @@
           renderSalvageMonthSummary();
         };
       }
+      const salvageCsvButton = document.getElementById("salvage-products-csv");
+      if (salvageCsvButton) salvageCsvButton.onclick = exportSalvageProductsCsv;
+      const evidenceButton = document.querySelector("[data-open-salvage-evidence]");
+      if (evidenceButton) evidenceButton.onclick = () => {
+        activateSubtab("salvage-tracker", "salvage-evidence");
+        document.getElementById("salvage-register-title")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
     }
 
     function renderSalvageRegister() {
@@ -4703,6 +4791,8 @@
         `${events.length} ${selectedMonth} shipment record${events.length === 1 ? "" : "s"}`;
       document.getElementById("salvage-register-scope").textContent =
         `Filtered by ${selectedMonth} expiry`;
+      const exportButton = document.getElementById("salvage-evidence-csv");
+      if (exportButton) exportButton.onclick = exportSalvageEvidenceCsv;
     }
 
     function renderSalvageKpis() {
@@ -4842,7 +4932,7 @@
       const line = field => snapshots.map((item, index) => `${x(index)},${y(item[field] / 1000000)}`).join(" ");
       const rateY = item => bottom - ((item.salvageRate || 0) / 100) * (bottom - top);
       document.getElementById("performance-chart").innerHTML = `
-        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly value at risk, value salvaged, and salvage rate trend">
+        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly total reviewed, value salvaged, and salvage rate trend">
           ${[0, max / 3, max * 2 / 3, max].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="18" y="${y(value) + 4}">${Math.round(value)}M</text>`).join("")}
           <polyline points="${line("atRisk")}" fill="none" stroke="#b73a3a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
           <polyline points="${line("salvaged")}" fill="none" stroke="#28715f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -5007,7 +5097,7 @@
       return "badge-pending";
     }
 
-    function renderExpiryRegister() {
+    function filteredExpiryRegisterRecords() {
       const monthFilter = document.getElementById("expiry-month-filter");
       if (monthFilter.options.length === 1) {
         monthFilter.innerHTML += monthOrder.map(month => `<option value="${month}">${month} 2026</option>`).join("");
@@ -5034,6 +5124,11 @@
           if (sort === "commodity") return a.commodity.localeCompare(b.commodity);
           return a.expiryDate.localeCompare(b.expiryDate) || a.commodity.localeCompare(b.commodity);
         });
+      return { records, baseRecords, query, month, status, risk };
+    }
+
+    function renderExpiryRegister() {
+      const { records, baseRecords, query, month, status, risk } = filteredExpiryRegisterRecords();
 
       document.getElementById("expiry-register-body").innerHTML = records.length ? records.map(item => {
         const statusValue = currentRecordStatus(item);
@@ -5072,6 +5167,8 @@
         const element = document.getElementById(id);
         element[id === "expiry-search" ? "oninput" : "onchange"] = renderExpiryRegister;
       });
+      const exportButton = document.getElementById("commodity-register-csv");
+      if (exportButton) exportButton.onclick = exportCommodityRegisterCsv;
     }
 
     function summaryRangeMonths() {
@@ -5339,7 +5436,6 @@
       "commodity-register",
       "warning-centre",
       "salvage-tracker",
-      "shipment-register",
       "action-tracker",
       "root-cause-analysis",
       "historical-snapshots",
@@ -5348,7 +5444,8 @@
     ];
 
     function activateView(viewName, updateHash = false) {
-      const view = dashboardViews.includes(viewName) ? viewName : "executive-summary";
+      const requestedView = viewName === "shipment-register" ? "salvage-tracker" : viewName;
+      const view = dashboardViews.includes(requestedView) ? requestedView : "executive-summary";
       document.body.dataset.activeView = view;
       document.querySelectorAll(".dashboard-view").forEach(section => {
         section.classList.toggle("active", section.dataset.view === view);
@@ -5362,6 +5459,7 @@
       const activeLink = document.querySelector(`.nav-link[data-view="${view}"]`);
       document.title = `${activeLink?.querySelector(".nav-text")?.textContent || "Dashboard"} | National Short Expiry and Salvage Dashboard`;
       if (updateHash && window.location.hash !== `#${view}`) history.pushState(null, "", `#${view}`);
+      if (viewName === "shipment-register") activateSubtab("salvage-tracker", "salvage-evidence");
       window.scrollTo({ top: document.querySelector(".app-shell").offsetTop - 12, behavior: "smooth" });
     }
 
