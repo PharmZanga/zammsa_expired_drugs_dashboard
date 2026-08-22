@@ -2969,7 +2969,7 @@
       </section>
       <div class="section-heading">
         <h2>Monthly expiry calendar</h2>
-        <p>January-June show actual expired value from historical summaries; July-December show remaining risk at the selected review date.</p>
+        <p>These cards are month-level values: January-June show expired value from closed historical summaries; July-December show remaining risk at the selected review date. The Executive Summary below shows the national total across all months.</p>
       </div>
       <section class="snapshot-bar" aria-label="Monthly calendar date filter">
         <label><span>Calendar review date</span><select class="control" id="calendar-snapshot-select"></select></label>
@@ -4163,12 +4163,19 @@
       const totals = summaryTotalsForSnapshot(monthOrder);
       const previousTotals = previous ? summaryTotalsForSnapshot(monthOrder, previous.id) : null;
       const urgentValue = riskBandRowsForSummary().filter(row => row.label === "Already expired" || row.label === "0-30 days").reduce((value, row) => value + row.value, 0);
+      const selectedStats = monthStats(selectedMonth);
+      const selectedHistorical = isHistoricalMonth(selectedMonth);
+      const selectedMonthValue = selectedHistorical ? selectedStats.expired : selectedStats.remaining;
+      const selectedMonthNote = selectedHistorical
+        ? `${selectedMonth} is a closed historical month: the calendar card shows ${moneyExact(selectedMonthValue)} expired out of ${moneyExact(selectedStats.reviewed)} reviewed, with ${moneyExact(selectedStats.salvaged)} salvaged.`
+        : `${selectedMonth} is still an active future/current expiry month: the calendar card shows ${moneyExact(selectedMonthValue)} remaining at risk as of ${escapeHtml(snapshot.label)}.`;
       const movementText = previousTotals
         ? `Compared with ${previous.label}, remaining risk ${totals.remaining <= previousTotals.remaining ? "reduced" : "increased"} by ${moneyExact(Math.abs(totals.remaining - previousTotals.remaining))}, while ${moneyExact(Math.max(0, totals.salvaged - previousTotals.salvaged))} was newly salvaged and ${moneyExact(Math.max(0, totals.expired - previousTotals.expired))} newly expired.`
         : "No previous approved review is available for comparison.";
       target.innerHTML = `
         <p>The National Short Expiry and Salvage Dashboard provides review-date visibility of pharmaceutical and medical commodities at risk of expiry across the national health supply chain.</p>
         <p>As of <strong>${escapeHtml(snapshot.label)}</strong>, ${moneyExact(totals.total)} had been reviewed. ${moneyExact(totals.salvaged)} had been successfully salvaged, ${moneyExact(totals.expired)} had expired, and ${moneyExact(totals.remaining)} remained at risk.</p>
+        <p><strong>How this relates to the selected calendar card:</strong> ${selectedMonthNote} The national totals above combine all months from January to December 2026.</p>
         <p><strong>Current Reporting Period:</strong> ${movementText} Of the remaining risk, ${moneyExact(urgentValue)} is already expired or due within 30 days of ${escapeHtml(snapshot.label)}.</p>`;
       if (source) {
         source.innerHTML = `<strong>Snapshot source:</strong> ${escapeHtml(snapshot.note)}. Shipment, expiry and remaining-risk values are filtered to ${escapeHtml(snapshot.label)}; later movements are excluded from this Executive Summary view.`;
@@ -4206,7 +4213,7 @@
           : stats.records.length
             ? `${stats.records.length} rows · ${quantity.toLocaleString("en-ZM")} units`
             : "";
-        const valueLabel = historical ? "Expired" : selectedCalendarSnapshot().label;
+        const valueLabel = historical ? "Expired value" : `Remaining risk · ${selectedCalendarSnapshot().label}`;
         return `<button class="month-card ${month === selectedMonth ? "active" : ""}" type="button" data-month="${month}" aria-pressed="${month === selectedMonth}"><span>${month}</span><strong>${money(displayValue)}</strong><small>${escapeHtml(valueLabel)} · ${detail}</small></button>`;
       }).join("");
       document.querySelectorAll(".month-card").forEach(button => button.addEventListener("click", () => {
