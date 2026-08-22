@@ -4158,24 +4158,9 @@
       const source = document.getElementById("executive-brief-source");
       if (!target) return;
       const snapshot = selectedCalendarSnapshot();
-      const previous = previousCalendarSnapshot();
-      const totals = summaryTotalsForSnapshot(monthOrder);
-      const previousTotals = previous ? summaryTotalsForSnapshot(monthOrder, previous.id) : null;
-      const urgentValue = riskBandRowsForSummary().filter(row => row.label === "Already expired" || row.label === "0-30 days").reduce((value, row) => value + row.value, 0);
-      const selectedStats = monthStats(selectedMonth);
-      const selectedHistorical = isHistoricalMonth(selectedMonth);
-      const selectedMonthValue = selectedHistorical ? selectedStats.expired : selectedStats.remaining;
-      const selectedMonthNote = selectedHistorical
-        ? `${selectedMonth} is a closed historical month: the calendar card shows ${moneyExact(selectedMonthValue)} expired out of ${moneyExact(selectedStats.reviewed)} reviewed, with ${moneyExact(selectedStats.salvaged)} salvaged.`
-        : `${selectedMonth} is still an active future/current expiry month: the calendar card shows ${moneyExact(selectedMonthValue)} remaining at risk as of ${escapeHtml(snapshot.label)}.`;
-      const movementText = previousTotals
-        ? `Compared with ${previous.label}, remaining risk ${totals.remaining <= previousTotals.remaining ? "reduced" : "increased"} by ${moneyExact(Math.abs(totals.remaining - previousTotals.remaining))}, while ${moneyExact(Math.max(0, totals.salvaged - previousTotals.salvaged))} was newly salvaged and ${moneyExact(Math.max(0, totals.expired - previousTotals.expired))} newly expired.`
-        : "No previous approved review is available for comparison.";
       target.innerHTML = `
         <p>The National Short Expiry and Salvage Dashboard provides review-date visibility of pharmaceutical and medical commodities at risk of expiry across the national health supply chain.</p>
-        <p><strong>July 2026 baseline context:</strong> As of July 2026, the cumulative value of pharmaceutical and medical commodities identified as short-dated had risen to ZMW 49,725,881.51, comprising commodities expiring in May (ZMW 10,128,032.59), June (ZMW 13,184,644.56), and July (ZMW 26,413,204.36). This represented a substantial risk of financial loss and commodity wastage within the national health supply chain, underscoring the need for continued salvage interventions and strengthened preventive measures. In response, the National Technical Working Group (TWG) undertook a detailed review of commodities approaching expiry and assessed the underlying factors contributing to the accumulation of short-dated stock.</p>
-        <p><strong>How this relates to the selected calendar card:</strong> ${selectedMonthNote}</p>
-        <p><strong>Current Reporting Period:</strong> ${movementText} Of the remaining risk, ${moneyExact(urgentValue)} is already expired or due within 30 days of ${escapeHtml(snapshot.label)}.</p>`;
+        <p><strong>July 2026 baseline context:</strong> As of July 2026, the cumulative value of pharmaceutical and medical commodities identified as short-dated had risen to ZMW 49,725,881.51, comprising commodities expiring in May (ZMW 10,128,032.59), June (ZMW 13,184,644.56), and July (ZMW 26,413,204.36). This represented a substantial risk of financial loss and commodity wastage within the national health supply chain, underscoring the need for continued salvage interventions and strengthened preventive measures. In response, the National Technical Working Group (TWG) undertook a detailed review of commodities approaching expiry and assessed the underlying factors contributing to the accumulation of short-dated stock.</p>`;
       if (source) {
         source.innerHTML = `<strong>Snapshot source:</strong> ${escapeHtml(snapshot.note)}. Shipment, expiry and remaining-risk values are filtered to ${escapeHtml(snapshot.label)}; later movements are excluded from this Executive Summary view.`;
       }
