@@ -3498,9 +3498,21 @@
     const sourceData = window.ZAMMSA_SOURCE_DATA;
     const monthOrder = sourceData.monthOrder;
     const monthlyTargets = sourceData.monthlyValueAtRisk;
-    const rawExpiryRecords = sourceData.expiryRecords;
+    function isLabCommodity(item) {
+      const sku = String(item?.sku || "").toUpperCase();
+      const commodity = String(item?.commodity || "").toLowerCase();
+      const labSku = /^(LAB|HTK|IMAG)/.test(sku);
+      const labTerms = [
+        "laboratory", "reagent", "rapid test", "hiv 1/2", "determine hiv", "chase buffer",
+        "genexpert", "xpert", "sysmex", "mindray", "pentra", "aptima", "i-chroma",
+        "ichroma", "calcium kit", "triglycerides kit", "cholesterol direct", "cea reagent",
+        "cartridge", "alkaline phosphatase", "deproteinizer", "cervical specimen collection"
+      ];
+      return labSku || labTerms.some(term => commodity.includes(term));
+    }
+    const rawExpiryRecords = sourceData.expiryRecords.filter(item => !isLabCommodity(item));
     const expiryRecords = aggregateBatchRecords(rawExpiryRecords);
-    const salvageEvents = sourceData.salvageShipments;
+    const salvageEvents = sourceData.salvageShipments.filter(item => !isLabCommodity(item));
     const isExpiredRecord = item => item.status === "Expired";
     const activeRiskRecords = () => expiryRecords.filter(item => !isExpiredRecord(item));
     const snapshots = buildSnapshots();
@@ -3616,11 +3628,15 @@
       let salvaged = 0;
       let expired = 0;
       return monthDates.map(([month, id, label], index) => {
-        salvaged += sourceData.monthlyValueSalvaged?.[month] || 0;
-        expired += sourceData.monthlyValueExpired?.[month] || 0;
+        const monthNameFromValue = value => value ? new Intl.DateTimeFormat("en-US", { month: "long" }).format(new Date(`${value}T12:00:00+02:00`)) : "";
+        salvaged += salvageEvents
+          .filter(event => monthNameFromValue(event.expiryDate) === month)
+          .reduce((total, event) => total + (typeof event.value === "number" && Number.isFinite(event.value) ? event.value : 0), 0);
+        expired += expiryRecords
+          .filter(item => item.month === month && item.status === "Expired")
+          .reduce((total, item) => total + (typeof item.value === "number" && Number.isFinite(item.value) ? item.value : 0), 0);
         const totalReviewed = salvaged + expired;
-        const isLatest = index === monthDates.length - 1;
-        const atRisk = isLatest ? (totalReviewed || sourceData.summary.historicalReviewedValue || sourceData.summary.valueAtRisk) : totalReviewed;
+        const atRisk = totalReviewed;
         const snapshotRate = atRisk ? (salvaged / atRisk) * 100 : 0;
         return {
           id,
@@ -3685,6 +3701,23 @@
     const salvagedForRecord = () => null;
     const monthRecords = month => expiryRecords.filter(item => item.month === month);
     const remainingRiskRecordsForSnapshot = () => expiryRecords.filter(item => !isExpiredRecord(item) && !isHistoricalMonth(item.month));
+    const salvageEventsForSnapshotMonth = (month, snapshotId = selectedCalendarSnapshotId) =>
+      eventsThroughSnapshot(snapshotId).filter(event => monthNameFromDate(event.expiryDate) === month);
+    const filteredSalvagedValueForMonth = (month, snapshotId = selectedCalendarSnapshotId) =>
+      sum(salvageEventsForSnapshotMonth(month, snapshotId), "value");
+    const filteredShippedUnitsForMonth = (month, snapshotId = selectedCalendarSnapshotId) =>
+      sum(salvageEventsForSnapshotMonth(month, snapshotId), "quantity");
+    const filteredExpiredValueForMonth = month => sum(monthRecords(month).filter(isExpiredRecord), "value");
+    const filteredReviewedValueForMonth = (month, snapshotId = selectedCalendarSnapshotId) =>
+      filteredSalvagedValueForMonth(month, snapshotId) + filteredExpiredValueForMonth(month);
+    const filteredLatestRemainingForMonth = month => sum(monthRecords(month).filter(item => !isExpiredRecord(item)), "value");
+    const shipmentValueAfterSnapshotForMonth = (month, snapshotId) =>
+      sum(salvageEvents.filter(event => {
+        const cutoff = inferredShipmentCutoff(event);
+        return monthNameFromDate(event.expiryDate) === month &&
+          cutoff &&
+          new Date(`${cutoff}T12:00:00+02:00`) > new Date(`${snapshotId}T12:00:00+02:00`);
+      }), "value");
     const monthEndDates = {
       January: "2026-01-31",
       February: "2026-02-28",
@@ -3700,51 +3733,26 @@
       December: "2026-12-31"
     };
     const isHistoricalMonth = month => {
-      const expired = sourceData.monthlyValueExpired?.[month];
+      const expired = filteredExpiredValueForMonth(month);
       const endDate = monthEndDates[month];
       return isNumber(expired) && endDate && new Date(`${selectedCalendarSnapshotId}T12:00:00+02:00`) >= new Date(`${endDate}T12:00:00+02:00`);
     };
     const futureRemainingForSnapshot = month => {
       if (isHistoricalMonth(month)) return null;
-      const audit = sourceData.calculationAudit || {};
-      if (selectedCalendarSnapshotId === "2026-06-30") {
-        const original = audit.originalSohValueByMonth?.[month];
-        const latest = audit.lastTwoWeekShippedValuesByMonth?.[month] || 0;
-        return isNumber(original) ? Math.max(original - latest, 0) : sourceData.monthlyValueAtRisk?.[month] ?? null;
-      }
-      if (selectedCalendarSnapshotId === "2026-07-15") {
-        const original = audit.originalSohValueByMonth?.[month];
-        const first = audit.lastTwoWeekShippedValuesByMonth?.[month] || 0;
-        const second = audit.salvagePeriodsByExpiryMonth?.[month]?.["1-15 Jul"] || 0;
-        return isNumber(original) ? Math.max(original - first - second, 0) : sourceData.monthlyValueAtRisk?.[month] ?? null;
-      }
-      if (selectedCalendarSnapshotId === "2026-07-31") {
-        const current = audit.verifiedCurrentSohValueByMonth?.[month];
-        const aug = audit.salvagePeriodsByExpiryMonth?.[month]?.["1-15 Aug"] || 0;
-        return isNumber(current) ? current + aug : sourceData.monthlyValueAtRisk?.[month] ?? null;
-      }
-      return audit.verifiedCurrentSohValueByMonth?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
+      const latest = filteredLatestRemainingForMonth(month);
+      const afterSnapshot = shipmentValueAfterSnapshotForMonth(month, selectedCalendarSnapshotId);
+      return isNumber(latest) ? latest + afterSnapshot : null;
     };
     const futureSalvagedForSnapshot = month => {
-      if (isHistoricalMonth(month)) return sourceData.monthlyValueSalvaged?.[month] ?? null;
-      const current = sourceData.monthlyValueSalvaged?.[month] ?? null;
-      const periods = sourceData.calculationAudit?.salvagePeriodsByExpiryMonth?.[month] || {};
-      const excluded = selectedCalendarSnapshotId === "2026-06-30"
-        ? (periods["1-15 Jul"] || 0) + (periods["16-31 Jul"] || 0) + (periods["1-15 Aug"] || 0)
-        : selectedCalendarSnapshotId === "2026-07-15"
-          ? (periods["16-31 Jul"] || 0) + (periods["1-15 Aug"] || 0)
-          : selectedCalendarSnapshotId === "2026-07-31"
-            ? (periods["1-15 Aug"] || 0)
-          : 0;
-      return isNumber(current) ? Math.max(current - excluded, 0) : current;
+      return filteredSalvagedValueForMonth(month, selectedCalendarSnapshotId);
     };
     const monthStats = month => {
       const records = monthRecords(month);
-      const historical = isHistoricalMonth(month) ? sourceData.monthlyHistoricalReviewed?.[month] ?? null : null;
+      const historical = isHistoricalMonth(month) ? filteredReviewedValueForMonth(month) : null;
       const remaining = futureRemainingForSnapshot(month);
-      const total = historical ?? remaining ?? sourceData.monthlyTotalExpiring?.[month] ?? monthlyTargets[month];
+      const total = historical ?? remaining ?? filteredLatestRemainingForMonth(month) ?? monthlyTargets[month];
       const salvaged = futureSalvagedForSnapshot(month);
-      const expired = sourceData.monthlyValueExpired?.[month] ?? null;
+      const expired = filteredExpiredValueForMonth(month);
       const reviewed = historical;
       const remainingValue = isNumber(remaining) ? remaining : isNumber(monthlyTargets[month]) ? monthlyTargets[month] : total;
       const allExpired = records.length > 0 && records.every(isExpiredRecord);
@@ -3935,13 +3943,11 @@
     }
 
     function monthSummaryPosition(month) {
-      const salvaged = sourceData.monthlyValueSalvaged?.[month] ?? null;
-      const expired = sourceData.monthlyValueExpired?.[month] ?? null;
-      const remaining = sourceData.monthlyValueAtRisk?.[month] ?? null;
-      const historical = sourceData.monthlyHistoricalReviewed?.[month] ?? null;
-      const total = isNumber(expired)
-        ? (isNumber(historical) ? historical : (salvaged || 0) + expired)
-        : (salvaged || 0) + (remaining || 0);
+      const salvaged = futureSalvagedForSnapshot(month);
+      const expired = filteredExpiredValueForMonth(month);
+      const remaining = futureRemainingForSnapshot(month);
+      const historical = isHistoricalMonth(month) ? filteredReviewedValueForMonth(month) : null;
+      const total = isNumber(historical) ? historical : (salvaged || 0) + (remaining || 0);
       return { month, salvaged, expired, remaining, total };
     }
 
@@ -3951,14 +3957,13 @@
       const snapshotDate = new Date(`${snapshotId}T12:00:00+02:00`);
       const monthEnd = monthEndDates[month] ? new Date(`${monthEndDates[month]}T12:00:00+02:00`) : null;
       const records = monthRecords(month);
-      const isExpiredBySnapshot = monthEnd && snapshotDate >= monthEnd && isNumber(sourceData.monthlyValueExpired?.[month]);
-      const originalValue = isNumber(sourceData.monthlyHistoricalReviewed?.[month])
-        ? sourceData.monthlyHistoricalReviewed[month]
-        : sourceData.calculationAudit?.originalSohValueByMonth?.[month] ?? sourceData.monthlyValueAtRisk?.[month] ?? null;
-      const originalQty = isNumber(sourceData.monthlyUnitsAtRisk?.[month]) ? sourceData.monthlyUnitsAtRisk[month] : null;
+      const expiredValue = filteredExpiredValueForMonth(month);
+      const isExpiredBySnapshot = monthEnd && snapshotDate >= monthEnd && isNumber(expiredValue);
+      const originalValue = isExpiredBySnapshot ? filteredReviewedValueForMonth(month, snapshotId) : (futureRemainingForSnapshot(month) ?? filteredLatestRemainingForMonth(month));
+      const originalQty = sum(records, "quantity") + filteredShippedUnitsForMonth(month, snapshotId);
       const salvaged = futureSalvagedForSnapshot(month) ?? 0;
-      const expired = isExpiredBySnapshot ? (sourceData.monthlyValueExpired?.[month] ?? 0) : 0;
-      const remaining = isExpiredBySnapshot ? 0 : (futureRemainingForSnapshot(month) ?? sourceData.monthlyValueAtRisk?.[month] ?? 0);
+      const expired = isExpiredBySnapshot ? (expiredValue ?? 0) : 0;
+      const remaining = isExpiredBySnapshot ? 0 : (futureRemainingForSnapshot(month) ?? filteredLatestRemainingForMonth(month) ?? 0);
       const total = (salvaged || 0) + (expired || 0) + (remaining || 0);
       const status = isExpiredBySnapshot
         ? "Closed / expired register loaded"
@@ -4077,7 +4082,7 @@
           : selectedCalendarSnapshotId === "2026-07-31"
             ? "Expired values include months closed by 31 July 2026, including the July expired register."
             : "Expired values include months closed by 15 August 2026; August remains an active future/current expiry month until month-end closure.";
-      target.innerHTML = `<strong>Source note:</strong> Selected review date: ${escapeHtml(snapshot.label)}. Stock position: ${stockText} Shipment cut-off: ${shipmentText} ${expiredText} Products expiring after 2026 are excluded. Values are calculated only where a verified, historical, or corrected unit price is available; otherwise value fields remain blank. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up.`;
+      target.innerHTML = `<strong>Source note:</strong> Selected review date: ${escapeHtml(snapshot.label)}. Stock position: ${stockText} Shipment cut-off: ${shipmentText} ${expiredText} Laboratory and diagnostic commodities are temporarily excluded from this presentation view. Products expiring after 2026 are excluded. Values are calculated only where a verified, historical, or corrected unit price is available; otherwise value fields remain blank. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up.`;
       if (definitions) {
         definitions.innerHTML = `<div class="definition-grid">
           <span><strong>S.O.H</strong>Stock on hand still available at ZAMMSA or source location.</span>
@@ -4225,14 +4230,14 @@
         ? stats.allExpired
           ? `Expired product lines supplied for ${selectedMonth}: ${moneyExact(stats.expired)} expired out of ${moneyExact(stats.reviewed)} reviewed.`
           : `Available value still expiring at ${selectedCalendarSnapshot().label}: ${moneyExact(stats.remaining)}.${stats.records.some(isExpiredRecord) ? ` Expired historical product lines are also shown for ${selectedMonth}.` : ""}`
-        : isNumber(sourceData.monthlyHistoricalReviewed?.[selectedMonth])
-          ? `Historical reviewed value: ${moneyExact(sourceData.monthlyHistoricalReviewed[selectedMonth])}. Product-level available-unit records are not supplied for this month.`
+        : isNumber(filteredReviewedValueForMonth(selectedMonth))
+          ? `Historical reviewed value after excluding lab commodities: ${moneyExact(filteredReviewedValueForMonth(selectedMonth))}. Product-level available-unit records are not supplied for this month.`
         : "No monetary value was supplied for this month.";
       const thirdMetric = stats.allExpired
         ? ["Expired", money(stats.expired)]
         : stats.records.length
           ? ["Remaining Risk", money(stats.remaining)]
-          : ["Expired", money(sourceData.monthlyValueExpired?.[selectedMonth])];
+          : ["Expired", money(filteredExpiredValueForMonth(selectedMonth))];
       document.getElementById("month-summary").innerHTML = [
         [isHistoricalMonth(selectedMonth) ? "Total Reviewed" : `Remaining Risk (${selectedCalendarSnapshot().label})`, money(isHistoricalMonth(selectedMonth) ? stats.total : stats.remaining)],
         ["Salvaged", money(stats.salvaged)],
@@ -4403,15 +4408,15 @@
         ? stats.allExpired
           ? `Expired product lines supplied for ${selectedMonth}: ${moneyExact(stats.expired)} expired out of ${moneyExact(stats.reviewed)} reviewed.`
           : `Available value still expiring at ${selectedCalendarSnapshot().label}: ${moneyExact(stats.remaining)}.${stats.records.some(isExpiredRecord) ? ` Expired historical product lines are also shown for ${selectedMonth}.` : ""}`
-        : isNumber(sourceData.monthlyHistoricalReviewed?.[selectedMonth])
-          ? `Historical reviewed value: ${moneyExact(sourceData.monthlyHistoricalReviewed[selectedMonth])}. Product-level available-unit records are not supplied for this month.`
+        : isNumber(filteredReviewedValueForMonth(selectedMonth))
+          ? `Historical reviewed value after excluding lab commodities: ${moneyExact(filteredReviewedValueForMonth(selectedMonth))}. Product-level available-unit records are not supplied for this month.`
         : `No monetary value was supplied for this month. Data as of ${selectedCalendarSnapshot().label}.`;
       renderForecastKpiStrip(stats);
       const thirdMetric = stats.allExpired
         ? ["Expired", money(stats.expired)]
         : stats.records.length
           ? ["Remaining Risk", money(stats.remaining)]
-          : ["Expired", money(sourceData.monthlyValueExpired?.[selectedMonth])];
+          : ["Expired", money(filteredExpiredValueForMonth(selectedMonth))];
       document.getElementById("month-summary").innerHTML = [
         [isHistoricalMonth(selectedMonth) ? "Total Reviewed" : `Remaining Risk (${selectedCalendarSnapshot().label})`, money(isHistoricalMonth(selectedMonth) ? stats.total : stats.remaining)],
         ["Salvaged", money(stats.salvaged)],
@@ -4788,13 +4793,13 @@
     function renderSalvageKpis() {
       const events = eventsThroughSnapshot();
       const commodities = new Set(events.map(event => event.sku).filter(Boolean)).size;
-      const totalReviewed = sourceData.summary.valueSalvaged + sourceData.summary.valueExpired;
+      const totals = summaryTotalsForSnapshot(monthOrder);
       const metrics = [
-        ["Total Reviewed Value", moneyExact(totalReviewed), "Salvaged + expired commodity value", ""],
-        ["Total Value Salvaged", moneyExact(sourceData.summary.valueSalvaged), "Jan-Dec expiry months, shipped before expiry", "success"],
-        ["Historical Salvage Rate", `${sourceData.summary.salvageRate.toFixed(2)}%`, "Salvaged ÷ salvaged plus expired value", "success"],
-        ["Products Salvaged", commodities, `${events.length} Jan-Dec salvage shipment rows`, ""],
-        ["Value Expired", moneyExact(sourceData.summary.valueExpired), "Jan-Jun verified expired value", "warning"]
+        ["Total Reviewed Value", moneyExact(totals.total), "Salvaged + expired + remaining non-lab commodity value", ""],
+        ["Total Value Salvaged", moneyExact(totals.salvaged), "Non-lab Jan-Dec expiry months, shipped before expiry", "success"],
+        ["Historical Salvage Rate", `${preciseRate(totals.salvaged, totals.total)}%`, "Salvaged ÷ total reviewed non-lab value", "success"],
+        ["Products Salvaged", commodities, `${events.length} non-lab salvage shipment rows`, ""],
+        ["Value Expired", moneyExact(totals.expired), "Verified expired non-lab value", "warning"]
       ];
       document.getElementById("salvage-kpis").innerHTML = metrics.map(([label, value, sub, tone]) =>
         `<article class="metric"><span class="metric-label">${label}</span><strong class="metric-value ${tone}">${value}</strong><span class="metric-sub">${sub}</span></article>`
