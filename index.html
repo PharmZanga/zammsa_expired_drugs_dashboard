@@ -3,9 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="National dashboard for monitoring short-expiry medicines, salvage interventions, and redistribution priorities in Zambia.">
+  <meta name="description" content="National dashboard for monitoring short-expiry medicines, wastage-prevention interventions, and redistribution priorities in Zambia.">
   <meta name="theme-color" content="#123f35">
-  <title>National Short Expiry and Salvage Monitoring System | Zambia</title>
+  <title>National Short Expiry and Wastage Prevention Monitoring System | Zambia</title>
   <style>
     :root {
       --ink: #182721;
@@ -2930,7 +2930,7 @@
       <div class="hero-inner">
         <div>
           <p class="eyebrow">National commodity oversight</p>
-          <h1>National Short Expiry<br>&amp; Salvage Monitoring System</h1>
+          <h1>National Short Expiry<br>&amp; Wastage Prevention Monitoring System</h1>
           <p class="hero-copy">
             Bi-Weekly Review Dashboard &middot; Ministry of Health &middot; ZAMMSA &middot; Control Tower
           </p>
@@ -2938,7 +2938,7 @@
         <aside class="reporting-card" aria-label="Reporting period">
           <span>Source reporting period</span>
           <strong>As of 15 August 2026</strong>
-          <p>Loaded from the ZAMMSA July raw query, Jan-15 Jun baseline, 16-30 Jun, 1-15 Jul, 16-31 Jul, and 1-15 Aug salvage updates for 2026 expiries.</p>
+          <p>Loaded from the ZAMMSA July raw query, Jan-15 Jun baseline, 16-30 Jun, 1-15 Jul, 16-31 Jul, and 1-15 Aug shipment updates for 2026 expiries.</p>
         </aside>
       </div>
     </div>
@@ -2952,7 +2952,7 @@
         <a class="nav-link" href="#expiry-forecast" data-view="expiry-forecast"><span class="nav-icon">▣</span><span class="nav-text">Expiry Forecast</span></a>
         <a class="nav-link" href="#commodity-register" data-view="commodity-register"><span class="nav-icon">Rx</span><span class="nav-text">Commodity Register</span></a>
         <a class="nav-link" href="#warning-centre" data-view="warning-centre"><span class="nav-icon">!</span><span class="nav-text">Warning Centre</span></a>
-        <a class="nav-link" href="#salvage-tracker" data-view="salvage-tracker"><span class="nav-icon">↻</span><span class="nav-text">Salvage Tracker</span></a>
+        <a class="nav-link" href="#salvage-tracker" data-view="salvage-tracker"><span class="nav-icon">↻</span><span class="nav-text">Wastage Prevention</span></a>
         <a class="nav-link" href="#historical-snapshots" data-view="historical-snapshots"><span class="nav-icon">◷</span><span class="nav-text">Historical Snapshots</span></a>
       </div>
       <div class="side-nav-credit" aria-label="Dashboard credit">
@@ -3009,7 +3009,7 @@
     <section class="subtab-panel" data-subtab-panel="executive-alerts-panel">
     <div class="section-heading">
       <h2>Changes since last review</h2>
-      <p>Bi-weekly movement in new risk, salvage, expiry outcomes, and institutional engagement.</p>
+      <p>Bi-weekly movement in new risk, wastage prevention, expiry outcomes, and institutional engagement.</p>
     </div>
     <section class="change-grid" id="changes-since-review"></section>
     <section class="alerts" id="executive-alerts" style="margin-top:18px"></section>
@@ -3017,7 +3017,7 @@
 
     <section class="subtab-panel" data-subtab-panel="executive-charts">
     <section class="planning-grid" style="margin-top:18px">
-      <article class="card"><div class="card-header"><div><h3>Value at risk vs salvage</h3><p>Bi-weekly national movement</p></div></div><div class="chart-body" id="executive-trend-chart"></div></article>
+      <article class="card"><div class="card-header"><div><h3>Value at risk vs wastage prevention</h3><p>Bi-weekly national movement</p></div></div><div class="chart-body" id="executive-trend-chart"></div></article>
       <article class="card"><div class="card-header"><div><h3>Expiry forecast by month</h3><p>May-December source coverage</p></div></div><div class="risk-list" id="executive-forecast-chart"></div></article>
     </section>
     <section class="risk-band-panel executive-risk-panel" aria-label="Executive value at risk by month and risk band">
@@ -3046,12 +3046,12 @@
     <section class="subtab-panel active" data-subtab-panel="expiry-overview">
     <div class="section-heading">
       <h2 id="month-detail-title">May 2026 expiry detail</h2>
-      <p id="month-detail-copy">Batch-level exposure and salvage status for the selected month.</p>
+      <p id="month-detail-copy">Batch-level exposure and wastage-prevention status for the selected month.</p>
     </div>
     <section class="card tracker">
       <div class="forecast-kpi-strip" id="expiry-kpi-strip"></div>
       <div class="summary-metrics" id="month-summary"></div>
-      <div class="risk-explain">Value at Risk = S.O.H x Unit Price, excluding already-salvaged stock. Values reflect the selected calendar review date where historical reductions are available. Lamotrigine EM2991 uses the contract reference price while the CSC/Inventory reconciliation note remains visible.</div>
+      <div class="risk-explain">Value at Risk = S.O.H x Unit Price, excluding stock already shipped or otherwise prevented from wastage. Values reflect the selected calendar review date where historical reductions are available. Lamotrigine EM2991 uses the contract reference price while the CSC/Inventory reconciliation note remains visible.</div>
       <section class="risk-band-panel" aria-label="Value at risk by month and risk band">
         <div class="risk-band-head">
           <h3>Value at risk by month</h3>
@@ -3072,7 +3072,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>SKU / Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th></tr></thead>
+          <thead><tr><th>SKU / Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Value Prevented</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th></tr></thead>
           <tbody id="expiry-table-body"></tbody>
         </table>
       </div>
@@ -3083,7 +3083,7 @@
     <section class="subtab-panel" data-subtab-panel="expiry-profile">
     <div class="section-heading">
       <h2>Commodity drill-down</h2>
-      <p>Lifecycle view of the selected commodity, from identification through engagement and salvage outcome.</p>
+      <p>Lifecycle view of the selected commodity, from identification through engagement and wastage-prevention outcome.</p>
     </div>
     <section class="detail-grid">
       <article class="card">
@@ -3091,7 +3091,7 @@
         <div class="profile-list" id="commodity-profile"></div>
       </article>
       <article class="card">
-        <div class="card-header"><div><h3>Salvage timeline</h3><p id="timeline-subtitle">Recorded intervention milestones</p></div></div>
+        <div class="card-header"><div><h3>Intervention timeline</h3><p id="timeline-subtitle">Recorded intervention milestones</p></div></div>
         <div class="timeline graph" id="salvage-timeline"></div>
       </article>
     </section>
@@ -3138,9 +3138,9 @@
     </div>
 
     <div class="dashboard-view" id="view-salvage-tracker" data-view="salvage-tracker">
-    <div class="view-header"><div><h2>Salvage Tracker</h2></div><div class="view-actions"><p>What value has been saved, when, and through which institution?</p><button class="export-button" type="button" id="salvage-products-csv">Export CSV</button><button class="export-button" type="button" data-export-view="salvage-tracker" data-export-target="salvage-month-list">Export PDF</button></div></div>
+    <div class="view-header"><div><h2>Wastage Prevention Tracker</h2></div><div class="view-actions"><p>What value has been prevented from wastage, when, and through which institution?</p><button class="export-button" type="button" id="salvage-products-csv">Export CSV</button><button class="export-button" type="button" data-export-view="salvage-tracker" data-export-target="salvage-month-list">Export PDF</button></div></div>
     <div class="subtab-layout" data-subtabs="salvage-tracker">
-      <nav class="subtab-nav" aria-label="Salvage tracker sections">
+      <nav class="subtab-nav" aria-label="Wastage prevention tracker sections">
         <button class="subtab-button active" type="button" data-subtab-target="salvage-overview">Monthly Overview</button>
         <button class="subtab-button" type="button" data-subtab-target="salvage-products">Product List</button>
         <button class="subtab-button" type="button" data-subtab-target="salvage-evidence">Shipment Evidence</button>
@@ -3149,19 +3149,19 @@
     <section class="subtab-panel active" data-subtab-panel="salvage-overview">
     <section class="metrics" id="salvage-kpis"></section>
     <div class="section-heading">
-      <h2>Monthly salvage performance</h2>
-      <p>Select a month to compare the total value expiring with the value already salvaged.</p>
+      <h2>Monthly wastage-prevention performance</h2>
+      <p>Select a month to compare the total value expiring with the value already prevented from wastage.</p>
     </div>
-    <section class="salvage-month-grid" id="salvage-month-grid" aria-label="Monthly expiring and salvaged values"></section>
+    <section class="salvage-month-grid" id="salvage-month-grid" aria-label="Monthly expiring and prevented values"></section>
     </section>
     <section class="subtab-panel" data-subtab-panel="salvage-products">
     <section class="card tracker" id="salvage-month-list">
       <div class="toolbar">
-        <label class="search-wrap"><span class="sr-only">Search salvaged commodities</span><input class="control" id="salvage-product-search" type="search" placeholder="Search commodity or SKU..." autocomplete="off"></label>
+        <label class="search-wrap"><span class="sr-only">Search commodities prevented from wastage</span><input class="control" id="salvage-product-search" type="search" placeholder="Search commodity or SKU..." autocomplete="off"></label>
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Commodity</th><th>Shipped Units</th><th>Total Expiring</th><th>Value Salvaged</th><th>Remaining Risk</th><th>Expiry Date</th></tr></thead>
+          <thead><tr><th>Commodity</th><th>Shipped Units</th><th>Total Expiring</th><th>Value Prevented</th><th>Remaining Risk</th><th>Expiry Date</th></tr></thead>
           <tbody id="salvage-month-products"></tbody>
         </table>
       </div>
@@ -3181,7 +3181,7 @@
       <div id="salvage-evidence-panel">
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Commodity</th><th>Batch</th><th>Quantity Shipped</th><th>Value Salvaged</th><th>Shipped Date</th><th>Expiry Date</th><th>Recipient Institution</th></tr></thead>
+          <thead><tr><th>Commodity</th><th>Batch</th><th>Quantity Shipped</th><th>Value Prevented</th><th>Shipped Date</th><th>Expiry Date</th><th>Recipient Institution</th></tr></thead>
           <tbody id="salvage-register"></tbody>
         </table>
       </div>
@@ -3209,7 +3209,7 @@
     <section class="subtab-panel" data-subtab-panel="institution-army">
     <div class="section-heading">
       <h2>Zambia Army initiative tracker</h2>
-      <p>Dedicated institutional follow-up for the June-November 2026 salvage opportunity.</p>
+      <p>Dedicated institutional follow-up for the June-November 2026 wastage-prevention opportunity.</p>
     </div>
     <section class="card tracker">
       <div class="table-wrap">
@@ -3300,7 +3300,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Month</th><th>Original Value</th><th>Value Salvaged</th><th>Value Expired</th><th>Remaining Risk</th><th>Salvage Rate</th><th>Expiry-Loss Rate</th><th>Remaining-Risk Rate</th><th>Products</th><th>Batches</th><th>Status</th></tr></thead>
+          <thead><tr><th>Month</th><th>Original Value</th><th>Value Prevented</th><th>Value Expired</th><th>Remaining Risk</th><th>Prevention Rate</th><th>Expiry-Loss Rate</th><th>Remaining-Risk Rate</th><th>Products</th><th>Batches</th><th>Status</th></tr></thead>
           <tbody id="national-summary-table"></tbody>
         </table>
       </div>
@@ -3337,12 +3337,12 @@
     </section>
     <section class="subtab-panel" data-subtab-panel="snapshot-trend-panel">
     <div class="section-heading">
-      <h2>Salvage performance trend</h2>
-      <p>Bi-weekly movement shows how the reviewed portfolio, cumulative salvage, and salvage rate change over time.</p>
+      <h2>Wastage-prevention performance trend</h2>
+      <p>Bi-weekly movement shows how the reviewed portfolio, cumulative value prevented from wastage, and prevention rate change over time.</p>
     </div>
     <section class="card">
-      <div class="card-header"><div><h3>TWG performance, Jan-August 2026</h3><p>Values in ZMW millions; salvage rate recalculates by selected snapshot</p></div></div>
-      <div class="trend-legend"><span><i style="background:#b73a3a"></i>Total reviewed</span><span><i style="background:#28715f"></i>Value salvaged</span><span><i style="background:#2c6fa5"></i>Salvage rate</span></div>
+      <div class="card-header"><div><h3>TWG performance, Jan-August 2026</h3><p>Values in ZMW millions; prevention rate recalculates by selected snapshot</p></div></div>
+      <div class="trend-legend"><span><i style="background:#b73a3a"></i>Total reviewed</span><span><i style="background:#28715f"></i>Value prevented</span><span><i style="background:#2c6fa5"></i>Prevention rate</span></div>
       <div class="chart-body" id="performance-chart"></div>
     </section>
     </section>
@@ -3350,7 +3350,7 @@
     <section class="card">
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Review date</th><th>Total reviewed</th><th>Salvaged</th><th>Expired</th><th>Salvage Rate</th></tr></thead>
+          <thead><tr><th>Review date</th><th>Total reviewed</th><th>Prevented</th><th>Expired</th><th>Prevention Rate</th></tr></thead>
           <tbody id="performance-table"></tbody>
         </table>
       </div>
@@ -3434,7 +3434,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>SKU / Commodity</th><th>Batch</th><th>S.O.H Quantity</th><th>Unit Price</th><th>Value at Risk</th><th>Shipped Units</th><th>Salvaged Value</th><th>Expiry Date</th><th>Days</th><th>Risk</th></tr></thead>
+          <thead><tr><th>SKU / Commodity</th><th>Batch</th><th>S.O.H Quantity</th><th>Unit Price</th><th>Value at Risk</th><th>Shipped Units</th><th>Value Prevented</th><th>Expiry Date</th><th>Days</th><th>Risk</th></tr></thead>
           <tbody id="expiry-register-body"></tbody>
         </table>
       </div>
@@ -3451,7 +3451,7 @@
 
   <footer>
     <div class="footer-inner">
-      <strong>National Short Expiry and Salvage Monitoring System</strong>
+      <strong>National Short Expiry and Wastage Prevention Monitoring System</strong>
       <span>Bi-Weekly Review &middot; Ministry of Health &middot; ZAMMSA &middot; Control Tower</span>
       <span class="footer-credit">&copy; 2026 Zanga Musakuzi &middot; Principal Pharmacist - Data Analytics</span>
     </div>
@@ -3919,9 +3919,9 @@
       const snapshot = selectedSnapshot();
       document.getElementById("snapshot-summary").innerHTML = `
         <div><span>Total reviewed</span><strong>${moneyExact(snapshot.atRisk)}</strong></div>
-        <div><span>Value salvaged</span><strong>${moneyExact(snapshot.salvaged)}</strong></div>
+        <div><span>Value prevented</span><strong>${moneyExact(snapshot.salvaged)}</strong></div>
         <div><span>Expired value</span><strong>${moneyExact(snapshot.expired)}</strong></div>
-        <div><span>Salvage rate</span><strong>${snapshot.salvageRate.toFixed(2)}%</strong></div>`;
+        <div><span>Prevention rate</span><strong>${snapshot.salvageRate.toFixed(2)}%</strong></div>`;
       select.addEventListener("change", () => {
         selectedSnapshotId = select.value;
         renderAllSnapshotViews();
@@ -4051,7 +4051,7 @@
       return [
         ["Calendar review snapshot", snapshot.label, "Selected as-of review date", snapshot.note],
         ["ZAMMSA available-unit query", stockCutoff, "July-December stock still expiring", audit.sohFormula || "Remaining SOH reconstructed from available source workbooks."],
-        ["Salvage shipment reports", shipmentCutoff, "Confirmed shipment values up to selected date", "Transactions after the selected date are excluded from historical as-of summaries."],
+        ["Wastage-prevention shipment reports", shipmentCutoff, "Confirmed shipment values up to selected date", "Transactions after the selected date are excluded from historical as-of summaries."],
         ["Expired product registers", stockCutoff, "Expired values only where expiry month had closed by selected date", "Future expiry months are not counted as expired before their expiry date."],
         ["Pricing and data quality", sourceData.sourceUpdated, `${sourceData.pricingGaps?.rowsMissingUnitPrice || 0} rows missing unit price`, "Lamotrigine EM2991 restated using contract reference price; unpriced quantities remain excluded from value totals."]
       ];
@@ -4083,13 +4083,13 @@
           : selectedCalendarSnapshotId === "2026-07-31"
             ? "Expired values include months closed by 31 July 2026, including the July expired register."
             : "Expired values include months closed by 15 August 2026; August remains an active future/current expiry month until month-end closure.";
-      target.innerHTML = `<strong>Source note:</strong> Selected review date: ${escapeHtml(snapshot.label)}. Stock position: ${stockText} Shipment cut-off: ${shipmentText} ${expiredText} Laboratory and diagnostic commodities are temporarily excluded from this presentation view. Products expiring after 2026 are excluded. Values are calculated only where a verified, historical, or corrected unit price is available; otherwise value fields remain blank. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up.`;
+      target.innerHTML = `<strong>Source note:</strong> Selected review date: ${escapeHtml(snapshot.label)}. Stock position: ${stockText} Shipment cut-off: ${shipmentText} ${expiredText} Laboratory and diagnostic commodities are temporarily excluded from this presentation view. Products expiring after 2026 are excluded. Values are calculated only where a verified, historical, or corrected unit price is available; otherwise value fields remain blank. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up. Meeting-minutes benchmark: previous minutes reported approximately ZMW 44.79M prevented from wastage for July-December and ZMW 124.30M stock at risk for August 2026-January 2027; those values are retained as historical context and are not directly comparable with this non-lab 2026 presentation view.`;
       if (definitions) {
         definitions.innerHTML = `<div class="definition-grid">
           <span><strong>S.O.H</strong>Stock on hand still available at ZAMMSA or source location.</span>
-          <span><strong>Remaining risk</strong>S.O.H value still expected to expire after confirmed salvage reductions.</span>
-          <span><strong>Total reviewed</strong>Salvaged value + expired value + remaining risk for the selected snapshot.</span>
-          <span><strong>Salvage rate</strong>Value salvaged divided by total reviewed value.</span>
+          <span><strong>Remaining risk</strong>S.O.H value still expected to expire after confirmed shipment or redistribution reductions.</span>
+          <span><strong>Total reviewed</strong>Value prevented from wastage + expired value + remaining risk for the selected snapshot.</span>
+          <span><strong>Prevention rate</strong>Value prevented from wastage divided by total reviewed value.</span>
         </div>`;
       }
     }
@@ -4148,10 +4148,10 @@
       const movement = previousTotals ? `Change since ${previous.label}` : "First available review snapshot";
       const metrics = [
         ["Known value at risk", moneyExact(totals.remaining), `As of ${snapshot.label} · ${rangeLabel}`, "danger"],
-        ["Cumulative salvaged", moneyExact(totals.salvaged), previousTotals ? `${movement}: ${moneyExact(totals.salvaged - previousTotals.salvaged)}` : movement, "success"],
+        ["Prevented from wastage", moneyExact(totals.salvaged), previousTotals ? `${movement}: ${moneyExact(totals.salvaged - previousTotals.salvaged)}` : movement, "success"],
         ["Cumulative expired", moneyExact(totals.expired), previousTotals ? `${movement}: ${moneyExact(totals.expired - previousTotals.expired)}` : movement, "warning"],
-        ["Total reviewed", moneyExact(totals.total), `Salvaged + expired + remaining as of ${snapshot.label}`, ""],
-        ["Salvage rate", `${preciseRate(totals.salvaged, totals.total)}%`, `Salvaged / reviewed · ${snapshot.label}`, "success"],
+        ["Total reviewed", moneyExact(totals.total), `Prevented + expired + remaining as of ${snapshot.label}`, ""],
+        ["Prevention rate", `${preciseRate(totals.salvaged, totals.total)}%`, `Prevented / reviewed · ${snapshot.label}`, "success"],
         ["Expiry-loss rate", `${preciseRate(totals.expired, totals.total)}%`, `Expired / reviewed · ${snapshot.label}`, "warning"],
         ["Remaining-risk rate", `${preciseRate(totals.remaining, totals.total)}%`, `Remaining / reviewed · ${snapshot.label}`, "danger"]
       ];
@@ -4165,8 +4165,9 @@
       if (!target) return;
       const snapshot = selectedCalendarSnapshot();
       target.innerHTML = `
-        <p>The National Short Expiry and Salvage Dashboard provides review-date visibility of pharmaceutical and medical commodities at risk of expiry across the national health supply chain.</p>
-        <p><strong>July 2026 baseline context:</strong> As of July 2026, the cumulative value of pharmaceutical and medical commodities identified as short-dated had risen to ZMW 49,725,881.51, comprising commodities expiring in May (ZMW 10,128,032.59), June (ZMW 13,184,644.56), and July (ZMW 26,413,204.36). This represented a substantial risk of financial loss and commodity wastage within the national health supply chain, underscoring the need for continued salvage interventions and strengthened preventive measures. In response, the National Technical Working Group (TWG) undertook a detailed review of commodities approaching expiry and assessed the underlying factors contributing to the accumulation of short-dated stock.</p>`;
+        <p>The National Short Expiry and Wastage Prevention Dashboard provides review-date visibility of pharmaceutical and medical commodities at risk of expiry across the national health supply chain.</p>
+        <p><strong>July 2026 baseline context:</strong> As of July 2026, the cumulative value of pharmaceutical and medical commodities identified as short-dated had risen to ZMW 49,725,881.51, comprising commodities expiring in May (ZMW 10,128,032.59), June (ZMW 13,184,644.56), and July (ZMW 26,413,204.36). This represented a substantial risk of financial loss and commodity wastage within the national health supply chain, underscoring the need for continued wastage-prevention interventions and strengthened preventive measures. In response, the National Technical Working Group (TWG) undertook a detailed review of commodities approaching expiry and assessed the underlying factors contributing to the accumulation of short-dated stock.</p>
+        <p><strong>Leadership language:</strong> The previous TWG minutes frame successful movement as value prevented from wastage. The dashboard now uses that wording while keeping shipment records as the operational evidence for each reduction.</p>`;
       if (source) {
         source.innerHTML = `<strong>Snapshot source:</strong> ${escapeHtml(snapshot.note)}. Shipment, expiry and remaining-risk values are filtered to ${escapeHtml(snapshot.label)}; later movements are excluded from this Executive Summary view.`;
       }
@@ -4182,7 +4183,7 @@
       const totals = summaryTotalsForSnapshot(monthOrder);
       document.getElementById("calendar-snapshot-summary").innerHTML = `
         <div><span>Review date</span><strong>${escapeHtml(snapshot.label)}</strong></div>
-        <div><span>Salvaged to date</span><strong>${moneyExact(totals.salvaged)}</strong></div>
+        <div><span>Prevented from wastage</span><strong>${moneyExact(totals.salvaged)}</strong></div>
         <div><span>Jul-Dec remaining risk</span><strong>${moneyExact(remaining)}</strong></div>
         <div><span>Basis</span><strong>${escapeHtml(snapshot.note)}</strong></div>`;
       select.onchange = () => {
@@ -4201,9 +4202,9 @@
         const historical = isHistoricalMonth(month);
         const displayValue = historical ? stats.expired : stats.remaining;
         const detail = historical
-          ? `Reviewed ${money(stats.reviewed)} · Salvaged ${money(stats.salvaged)}`
+          ? `Reviewed ${money(stats.reviewed)} · Prevented ${money(stats.salvaged)}`
           : stats.records.length
-            ? `Salvaged ${money(stats.salvaged)} · ${stats.records.length} rows · ${quantity.toLocaleString("en-ZM")} units`
+            ? `Prevented ${money(stats.salvaged)} · ${stats.records.length} rows · ${quantity.toLocaleString("en-ZM")} units`
             : "";
         const valueLabel = historical ? "Expired value" : `Remaining risk · ${selectedCalendarSnapshot().label}`;
         return `<button class="month-card ${month === selectedMonth ? "active" : ""}" type="button" data-month="${month}" aria-pressed="${month === selectedMonth}"><span>${month}</span><strong>${money(displayValue)}</strong><small>${escapeHtml(valueLabel)} · ${detail}</small></button>`;
@@ -4241,9 +4242,9 @@
           : ["Expired", money(filteredExpiredValueForMonth(selectedMonth))];
       document.getElementById("month-summary").innerHTML = [
         [isHistoricalMonth(selectedMonth) ? "Total Reviewed" : `Remaining Risk (${selectedCalendarSnapshot().label})`, money(isHistoricalMonth(selectedMonth) ? stats.total : stats.remaining)],
-        ["Salvaged", money(stats.salvaged)],
+        ["Prevented", money(stats.salvaged)],
         thirdMetric,
-        ["Historical Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
+        ["Prevention Rate", stats.rate === "" ? "" : `${stats.rate}%`]
       ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
       const query = expiryForecastSearch.trim().toLowerCase();
       const searchInput = document.getElementById("expiry-forecast-search");
@@ -4330,7 +4331,7 @@
         `<article class="forecast-kpi"><span>Total value at risk this month</span><strong data-animate-money="monthRisk">${money(monthRisk)}</strong><small>${escapeHtml(selectedCalendarSnapshot().label)}</small></article>`,
         `<article class="forecast-kpi"><span>Change vs last review</span><strong class="${changeClass}">${escapeHtml(changeLabel)}</strong><small>${escapeHtml(previousCalendarSnapshotId() ? "Compared with previous snapshot" : "First available snapshot")}</small></article>`,
         `<article class="forecast-kpi"><span>SKUs in Critical band</span><strong data-animate-number="criticalSkus">${criticalSkus.toLocaleString("en-ZM")}</strong><small>30 days or less from review date</small></article>`,
-        `<article class="forecast-kpi"><span>Top salvage-eligible commodity</span><strong>${topCommodity ? escapeHtml(topCommodity.commodity) : "No active commodity"}</strong><small>${topCommodity ? moneyExact(topCommodity.value) : "No row-level record available"}</small></article>`
+        `<article class="forecast-kpi"><span>Top prevention opportunity</span><strong>${topCommodity ? escapeHtml(topCommodity.commodity) : "No active commodity"}</strong><small>${topCommodity ? moneyExact(topCommodity.value) : "No row-level record available"}</small></article>`
       ].join("");
       animateForecastKpis({ monthRisk, criticalSkus });
     }
@@ -4420,9 +4421,9 @@
           : ["Expired", money(filteredExpiredValueForMonth(selectedMonth))];
       document.getElementById("month-summary").innerHTML = [
         [isHistoricalMonth(selectedMonth) ? "Total Reviewed" : `Remaining Risk (${selectedCalendarSnapshot().label})`, money(isHistoricalMonth(selectedMonth) ? stats.total : stats.remaining)],
-        ["Salvaged", money(stats.salvaged)],
+        ["Prevented", money(stats.salvaged)],
         thirdMetric,
-        ["Historical Salvage Rate", stats.rate === "" ? "" : `${stats.rate}%`]
+        ["Prevention Rate", stats.rate === "" ? "" : `${stats.rate}%`]
       ].map(([label, value]) => `<div class="summary-metric"><span>${label}</span><strong>${value}</strong></div>`).join("");
       renderRiskBandChart();
       const searchInput = document.getElementById("expiry-forecast-search");
@@ -4514,7 +4515,7 @@
 
     function exportFilteredExpiryCsv() {
       const rows = filteredExpiryExportRows();
-      const headers = ["SKU", "Commodity", "Risk", "Days", "Shipped Units", "Salvaged Value", "S.O.H", "Value at Risk", "Trend", "Expiry Date", "Price Verification Note"];
+      const headers = ["SKU", "Commodity", "Risk", "Days", "Shipped Units", "Value Prevented", "S.O.H", "Value at Risk", "Trend", "Expiry Date", "Price Verification Note"];
       downloadCsv(`zammsa-expiry-forecast-${selectedMonth.toLowerCase()}-${selectedForecastRiskBand.toLowerCase().replace(/\s+/g, "-")}.csv`, headers, rows.map(row => [row.sku, row.commodity, row.risk, row.days ?? "", row.shippedUnits ?? "", row.salvagedValue ?? "", row.soh ?? "", row.valueAtRisk ?? "", row.trend, row.expiryDate, row.priceNote]));
     }
 
@@ -4535,7 +4536,7 @@
         .sort((a, b) => (b.value || 0) - (a.value || 0));
       downloadCsv(
         `zammsa-salvage-products-${selectedMonth.toLowerCase()}-${selectedCalendarSnapshotId}.csv`,
-        ["Review Date", "Expiry Month", "SKU", "Commodity", "Shipped Units", "Total Expiring", "Value Salvaged", "Remaining Risk", "Expiry Date", "Institution"],
+        ["Review Date", "Expiry Month", "SKU", "Commodity", "Shipped Units", "Total Expiring", "Value Prevented", "Remaining Risk", "Expiry Date", "Institution"],
         rows.map(item => [selectedCalendarSnapshot().label, selectedMonth, item.sku, item.commodity, item.quantity ?? "", item.exposureValue ?? "", item.value ?? "", item.remainingRisk ?? "", item.expiryDate, item.institution])
       );
     }
@@ -4544,7 +4545,7 @@
       const rows = salvageEventsForMonth(selectedMonth);
       downloadCsv(
         `zammsa-shipment-evidence-${selectedMonth.toLowerCase()}-${selectedCalendarSnapshotId}.csv`,
-        ["Review Date", "Expiry Month", "SKU", "Commodity", "Batch", "Quantity Shipped", "Value Salvaged", "Shipped Date", "Shipment Period", "Expiry Date", "Recipient Institution", "Province", "Source Workbook"],
+        ["Review Date", "Expiry Month", "SKU", "Commodity", "Batch", "Quantity Shipped", "Value Prevented", "Shipped Date", "Shipment Period", "Expiry Date", "Recipient Institution", "Province", "Source Workbook"],
         rows.map(event => [selectedCalendarSnapshot().label, selectedMonth, event.sku, event.commodity, event.batch, event.quantity ?? "", event.value ?? "", event.shippedDate, event.shipmentPeriod, event.expiryDate, event.institution, event.province, event.sourceWorkbook])
       );
     }
@@ -4553,7 +4554,7 @@
       const { records } = filteredExpiryRegisterRecords();
       downloadCsv(
         `zammsa-commodity-register-${selectedCalendarSnapshotId}.csv`,
-        ["Review Date", "SKU", "Commodity", "Batch", "S.O.H Quantity", "Unit Price", "Value at Risk", "Shipped Units", "Salvaged Value", "Expiry Date", "Days", "Risk", "Status", "Warehouse", "Province", "Facility", "Institution"],
+        ["Review Date", "SKU", "Commodity", "Batch", "S.O.H Quantity", "Unit Price", "Value at Risk", "Shipped Units", "Value Prevented", "Expiry Date", "Days", "Risk", "Status", "Warehouse", "Province", "Facility", "Institution"],
         records.map(item => [selectedCalendarSnapshot().label, item.sku, item.commodity, item.batch, item.quantity ?? "", item.unitPrice ?? "", item.value ?? "", recordShippedQuantity(item) ?? "", recordSalvagedValue(item) ?? "", item.expiryDate, daysToExpiry(item) ?? "", expiryRiskBand(item), currentRecordStatus(item), item.warehouse, item.province, item.facility, item.institution])
       );
     }
@@ -4563,7 +4564,7 @@
       const title = `${selectedMonth} 2026 Expiry Forecast - ${selectedForecastRiskBand === "All" ? "All Risk Bands" : selectedForecastRiskBand}`;
       const html = `<!doctype html><html><head><title>${escapeHtml(title)}</title><style>
         body{font-family:Arial,sans-serif;margin:24px;color:#10231d}h1{font-size:22px}p{color:#5f716b;font-size:12px}table{width:100%;border-collapse:collapse;font-size:10px}th,td{border-bottom:1px solid #d9e3df;padding:8px;text-align:left}th{background:#f2f6f4;text-transform:uppercase;font-size:9px}.critical{color:#c73939}.high{color:#a56300}.medium{color:#166b51}
-      </style></head><body><h1>${escapeHtml(title)}</h1><p>Data as of ${escapeHtml(selectedCalendarSnapshot().label)}. Value at Risk = S.O.H x Unit Price, excluding already-salvaged stock. Lamotrigine EM2991 uses the contract reference price and remains noted for CSC/Inventory audit follow-up.</p><table><thead><tr><th>SKU</th><th>Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Salvaged Value</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th><th>Price Note</th></tr></thead><tbody>${rows.map(row => `<tr><td>${escapeHtml(row.sku)}</td><td>${escapeHtml(row.commodity)}</td><td>${escapeHtml(row.risk)}</td><td>${row.days ?? ""}</td><td>${isNumber(row.shippedUnits) ? row.shippedUnits.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.salvagedValue)}</td><td>${isNumber(row.soh) ? row.soh.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.valueAtRisk)}</td><td>${escapeHtml(row.trend)}</td><td>${formatDate(row.expiryDate)}</td><td>${escapeHtml(row.priceNote)}</td></tr>`).join("")}</tbody></table></body></html>`;
+      </style></head><body><h1>${escapeHtml(title)}</h1><p>Data as of ${escapeHtml(selectedCalendarSnapshot().label)}. Value at Risk = S.O.H x Unit Price, excluding stock already shipped or otherwise prevented from wastage. Lamotrigine EM2991 uses the contract reference price and remains noted for CSC/Inventory audit follow-up.</p><table><thead><tr><th>SKU</th><th>Commodity</th><th>Risk</th><th>Days</th><th>Shipped Units</th><th>Value Prevented</th><th>S.O.H</th><th>Value at Risk</th><th>Trend</th><th>Expiry Date</th><th>Price Note</th></tr></thead><tbody>${rows.map(row => `<tr><td>${escapeHtml(row.sku)}</td><td>${escapeHtml(row.commodity)}</td><td>${escapeHtml(row.risk)}</td><td>${row.days ?? ""}</td><td>${isNumber(row.shippedUnits) ? row.shippedUnits.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.salvagedValue)}</td><td>${isNumber(row.soh) ? row.soh.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(row.valueAtRisk)}</td><td>${escapeHtml(row.trend)}</td><td>${formatDate(row.expiryDate)}</td><td>${escapeHtml(row.priceNote)}</td></tr>`).join("")}</tbody></table></body></html>`;
       const printWindow = window.open("", "_blank");
       if (!printWindow) return;
       printWindow.document.write(html);
@@ -4586,7 +4587,7 @@
       const profile = [
         ["SKU", item.sku], ["Commodity", item.commodity], ["Batch", item.batch], ["Total Quantity", isNumber(item.quantity) ? item.quantity.toLocaleString("en-ZM") : ""],
         ["Unit Price", moneyExact(item.unitPrice)], ["Shipped Units", isNumber(recordShippedQuantity(item)) ? recordShippedQuantity(item).toLocaleString("en-ZM") : ""],
-        ["Value at Risk", moneyExact(item.value)], ["Value Salvaged", moneyExact(recordSalvagedValue(item))], ["Expiry Date", formatDate(item.expiryDate)],
+        ["Value at Risk", moneyExact(item.value)], ["Value Prevented", moneyExact(recordSalvagedValue(item))], ["Expiry Date", formatDate(item.expiryDate)],
         ["Lead Institution", item.institution], ["Status", item.status], ["Warehouse", item.warehouse], ["Province", item.province],
         ["Facility", item.facility], ["Date Identified", item.identified]
       ];
@@ -4703,7 +4704,7 @@
         return `<button class="salvage-month-card ${month === selectedMonth ? "active" : ""}" type="button" data-salvage-month="${month}" aria-pressed="${month === selectedMonth}">
           <span>${month}</span>
           <div><small>Total Expiring</small><strong>${money(stats.total)}</strong></div>
-          <div><small>Salvaged</small><strong>${money(stats.salvaged)}</strong></div>
+          <div><small>Prevented</small><strong>${money(stats.salvaged)}</strong></div>
         </button>`;
       }).join("");
       document.querySelectorAll("[data-salvage-month]").forEach(button => button.addEventListener("click", () => {
@@ -4739,13 +4740,13 @@
           <td>${moneyExact(item.remainingRisk)}</td>
           <td>${formatDate(item.expiryDate)}${item.expiryDateNote ? `<br><span class="metric-sub">${escapeHtml(item.expiryDateNote)}</span>` : ""}</td>
         </tr>`;
-      }).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">${query ? `No salvaged products match "${escapeHtml(salvageProductSearch)}" for ${selectedMonth} 2026.` : `No salvaged product records were supplied for commodities expiring in ${selectedMonth} 2026.`}</td></tr>`;
+      }).join("") : `<tr><td colspan="6" class="empty-state" style="display:table-cell">${query ? `No prevented-from-wastage products match "${escapeHtml(salvageProductSearch)}" for ${selectedMonth} 2026.` : `No prevented-from-wastage product records were supplied for commodities expiring in ${selectedMonth} 2026.`}</td></tr>`;
       document.getElementById("salvage-month-product-count").textContent =
-        `${rankedProducts.length} salvaged ${selectedMonth} product${rankedProducts.length === 1 ? "" : "s"}${query ? ` matching "${salvageProductSearch}"` : ""} · showing ${pageProducts.length ? start + 1 : 0}-${Math.min(start + pageProducts.length, rankedProducts.length)}`;
+        `${rankedProducts.length} prevented ${selectedMonth} product${rankedProducts.length === 1 ? "" : "s"}${query ? ` matching "${salvageProductSearch}"` : ""} · showing ${pageProducts.length ? start + 1 : 0}-${Math.min(start + pageProducts.length, rankedProducts.length)}`;
       document.getElementById("salvage-month-product-total").textContent =
         "";
       document.getElementById("salvage-month-product-total").innerHTML = `
-        <span>Total expiring: ${moneyExact(stats.total)} | Salvaged: ${moneyExact(stats.salvaged)}</span>
+        <span>Total expiring: ${moneyExact(stats.total)} | Prevented: ${moneyExact(stats.salvaged)}</span>
         <span class="pagination-controls">
           <button class="pager-button" type="button" id="salvage-prev" ${salvageProductPage <= 1 ? "disabled" : ""}>Previous</button>
           <span>Page ${salvageProductPage} of ${totalPages}</span>
@@ -4779,7 +4780,7 @@
       const events = salvageEventsForMonth(selectedMonth);
       document.getElementById("salvage-register-title").textContent = `${selectedMonth} detailed shipment evidence`;
       document.getElementById("salvage-register-copy").textContent =
-        `Shipment evidence for products expiring in ${selectedMonth} 2026, including quantity, value salvaged, shipped date, expiry date, and institution where supplied.`;
+        `Shipment evidence for products expiring in ${selectedMonth} 2026, including quantity, value prevented from wastage, shipped date, expiry date, and institution where supplied.`;
       document.getElementById("salvage-register").innerHTML = events.length ? events.map(event =>
         `<tr><td class="commodity">${escapeHtml(event.commodity)}</td><td>${escapeHtml(event.batch)}</td><td>${isNumber(event.quantity) ? event.quantity.toLocaleString("en-ZM") : ""}</td><td>${moneyExact(event.value)}</td><td>${formatDate(event.shippedDate) || escapeHtml(event.shipmentPeriod || "")}</td><td>${formatDate(event.expiryDate)}</td><td>${escapeHtml(event.institution)}</td></tr>`
       ).join("") : `<tr><td colspan="7" class="empty-state" style="display:table-cell">No shipment records were supplied for products expiring in ${selectedMonth} 2026.</td></tr>`;
@@ -4796,10 +4797,10 @@
       const commodities = new Set(events.map(event => event.sku).filter(Boolean)).size;
       const totals = summaryTotalsForSnapshot(monthOrder);
       const metrics = [
-        ["Total Reviewed Value", moneyExact(totals.total), "Salvaged + expired + remaining non-lab commodity value", ""],
-        ["Total Value Salvaged", moneyExact(totals.salvaged), "Non-lab Jan-Dec expiry months, shipped before expiry", "success"],
-        ["Historical Salvage Rate", `${preciseRate(totals.salvaged, totals.total)}%`, "Salvaged ÷ total reviewed non-lab value", "success"],
-        ["Products Salvaged", commodities, `${events.length} non-lab salvage shipment rows`, ""],
+        ["Total Reviewed Value", moneyExact(totals.total), "Prevented + expired + remaining non-lab commodity value", ""],
+        ["Value Prevented from Wastage", moneyExact(totals.salvaged), "Non-lab Jan-Dec expiry months, shipped before expiry", "success"],
+        ["Prevention Rate", `${preciseRate(totals.salvaged, totals.total)}%`, "Prevented ÷ total reviewed non-lab value", "success"],
+        ["Products Prevented", commodities, `${events.length} non-lab shipment rows`, ""],
         ["Value Expired", moneyExact(totals.expired), "Verified expired non-lab value", "warning"]
       ];
       document.getElementById("salvage-kpis").innerHTML = metrics.map(([label, value, sub, tone]) =>
@@ -4834,7 +4835,7 @@
       const x = index => snapshots.length === 1 ? left : left + index * ((right - left) / (snapshots.length - 1));
       const y = value => bottom - (value / max) * (bottom - top);
       document.getElementById("executive-trend-chart").innerHTML = `
-        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly value at risk and salvage trend">
+        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly value at risk and wastage-prevention trend">
           ${[0, max / 3, max * 2 / 3, max].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="12" y="${y(value) + 4}">${Math.round(value)}M</text>`).join("")}
           <polyline points="${snapshots.map((item, index) => `${x(index)},${y(item.atRisk / 1000000)}`).join(" ")}" fill="none" stroke="#b73a3a" stroke-width="4"/>
           <polyline points="${snapshots.map((item, index) => `${x(index)},${y(item.salvaged / 1000000)}`).join(" ")}" fill="none" stroke="#28715f" stroke-width="4"/>
@@ -4928,7 +4929,7 @@
       const line = field => snapshots.map((item, index) => `${x(index)},${y(item[field] / 1000000)}`).join(" ");
       const rateY = item => bottom - ((item.salvageRate || 0) / 100) * (bottom - top);
       document.getElementById("performance-chart").innerHTML = `
-        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly total reviewed, value salvaged, and salvage rate trend">
+        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Bi-weekly total reviewed, value prevented, and prevention-rate trend">
           ${[0, max / 3, max * 2 / 3, max].map(value => `<line x1="${left}" y1="${y(value)}" x2="${right}" y2="${y(value)}" stroke="#e1e8e4"/><text x="18" y="${y(value) + 4}">${Math.round(value)}M</text>`).join("")}
           <polyline points="${line("atRisk")}" fill="none" stroke="#b73a3a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
           <polyline points="${line("salvaged")}" fill="none" stroke="#28715f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
@@ -5020,7 +5021,7 @@
         : 0;
       const cards = [
         { className: "risk", title: "Remaining value at risk", lines: [[moneyExact(totals.remaining), `As of ${snapshot.label}`], [previousTotals ? `${remainingChange >= 0 ? "Increased" : "Reduced"} by ${moneyExact(Math.abs(remainingChange))}` : "No previous approved review", periodLabel]] },
-        { className: "", title: "Successfully salvaged", lines: [[previousTotals ? moneyExact(Math.max(0, totals.salvaged - previousTotals.salvaged)) : moneyExact(totals.salvaged), previousTotals ? "Newly salvaged during period" : "Cumulative salvaged"], [moneyExact(totals.salvaged), `Cumulative as of ${snapshot.label}`]] },
+        { className: "", title: "Prevented from wastage", lines: [[previousTotals ? moneyExact(Math.max(0, totals.salvaged - previousTotals.salvaged)) : moneyExact(totals.salvaged), previousTotals ? "Newly prevented during period" : "Cumulative prevented"], [moneyExact(totals.salvaged), `Cumulative as of ${snapshot.label}`]] },
         { className: "expired", title: "Expired", lines: [[previousTotals ? moneyExact(Math.max(0, totals.expired - previousTotals.expired)) : moneyExact(totals.expired), previousTotals ? "Newly expired during period" : "Cumulative expired"], [moneyExact(totals.expired), `Cumulative as of ${snapshot.label}`]] },
         { className: "partner", title: "Operational movement", lines: [[previousTotals ? String(newlyCritical) : "N/A", previousTotals ? "Products newly entering 30-day warning window" : "No previous approved review"], ["Not available", "Engagement status not captured in selected snapshot"]] }
       ];
@@ -5270,10 +5271,10 @@
       }
       const kpis = [
         ["Total Reviewed", moneyExact(total), `${rangeLabel} · as of ${snapshot.label}`, ""],
-        ["Cumulative Salvaged", moneyExact(salvaged), deltaText(previousTotals ? salvaged - previousTotals.salvaged : null), "success"],
+        ["Cumulative Prevented", moneyExact(salvaged), deltaText(previousTotals ? salvaged - previousTotals.salvaged : null), "success"],
         ["Cumulative Expired", moneyExact(expired), deltaText(previousTotals ? expired - previousTotals.expired : null), "warning"],
         ["Remaining Risk", moneyExact(remaining), deltaText(previousTotals ? remaining - previousTotals.remaining : null), "danger"],
-        ["Salvage Rate", `${preciseRate(salvaged, total)}%`, `Salvaged ÷ reviewed; denominator ${moneyExact(total)}`, "success"],
+        ["Prevention Rate", `${preciseRate(salvaged, total)}%`, `Prevented ÷ reviewed; denominator ${moneyExact(total)}`, "success"],
         ["Expiry-Loss Rate", `${preciseRate(expired, total)}%`, `Expired ÷ reviewed; denominator ${moneyExact(total)}`, "warning"],
         ["Urgent Action Value", moneyExact(urgentValue), `Already expired or ≤30 days from ${snapshot.label}`, "danger"],
         ["Products / Batches", `${productsReviewed} / ${batchesReviewed}`, `${sourceData.pricingGaps?.rowsMissingUnitPrice || 0} rows missing unit price`, ""]
@@ -5287,16 +5288,16 @@
       const narrative = document.getElementById("national-summary-narrative");
       if (narrative) {
         const previousText = previousTotals
-          ? ` Since ${previous.label}, ${moneyExact(Math.max(0, salvaged - previousTotals.salvaged))} was newly salvaged, ${moneyExact(Math.max(0, expired - previousTotals.expired))} newly expired, and remaining risk ${remaining <= previousTotals.remaining ? "reduced" : "increased"} by ${moneyExact(Math.abs(remaining - previousTotals.remaining))}.`
+          ? ` Since ${previous.label}, ${moneyExact(Math.max(0, salvaged - previousTotals.salvaged))} was newly prevented from wastage, ${moneyExact(Math.max(0, expired - previousTotals.expired))} newly expired, and remaining risk ${remaining <= previousTotals.remaining ? "reduced" : "increased"} by ${moneyExact(Math.abs(remaining - previousTotals.remaining))}.`
           : " This is the first available calendar review snapshot.";
-        narrative.innerHTML = `<strong>Management narrative</strong><p>As of ${escapeHtml(snapshot.label)}, ${moneyExact(total)} in short-dated stock had been reviewed for ${escapeHtml(rangeLabel)}. ${moneyExact(salvaged)} had been salvaged, ${moneyExact(expired)} had expired, and ${moneyExact(remaining)} remained at risk. Of the remaining risk, ${moneyExact(urgentValue)} requires urgent action within 30 days or is already expired.${previousText}</p>`;
+        narrative.innerHTML = `<strong>Management narrative</strong><p>As of ${escapeHtml(snapshot.label)}, ${moneyExact(total)} in short-dated stock had been reviewed for ${escapeHtml(rangeLabel)}. ${moneyExact(salvaged)} had been prevented from wastage, ${moneyExact(expired)} had expired, and ${moneyExact(remaining)} remained at risk. Of the remaining risk, ${moneyExact(urgentValue)} requires urgent action within 30 days or is already expired.${previousText}</p>`;
       }
       const reconciliation = document.getElementById("national-summary-reconciliation");
       if (reconciliation) {
         const previousRemaining = previousTotals?.remaining ?? null;
         const movementRows = [
           ["Opening remaining risk", previousRemaining === null ? "" : moneyExact(previousRemaining), previous ? previous.label : "First available snapshot"],
-          ["Newly salvaged", previousTotals ? `-${moneyExact(Math.max(0, salvaged - previousTotals.salvaged))}` : "", `Through ${snapshot.label}`],
+          ["Newly prevented", previousTotals ? `-${moneyExact(Math.max(0, salvaged - previousTotals.salvaged))}` : "", `Through ${snapshot.label}`],
           ["Newly expired", previousTotals ? `-${moneyExact(Math.max(0, expired - previousTotals.expired))}` : "", `Through ${snapshot.label}`],
           ["Value adjustments / restatement", priceVerificationNotes.EM2991.title, "Lamotrigine contract price applied"],
           ["Closing remaining risk", moneyExact(remaining), snapshot.label]
@@ -5341,7 +5342,7 @@
       const months = summaryRangeMonths();
       const snapshot = selectedCalendarSnapshot();
       const { rows, salvaged, expired, remaining, total } = summaryTotalsForSnapshot(months);
-      const headers = ["Review Date", "Month", "Original Value", "Value Salvaged", "Value Expired", "Remaining Risk", "Salvage Rate", "Expiry-Loss Rate", "Remaining-Risk Rate", "Products", "Batches", "Status"];
+      const headers = ["Review Date", "Month", "Original Value", "Value Prevented", "Value Expired", "Remaining Risk", "Prevention Rate", "Expiry-Loss Rate", "Remaining-Risk Rate", "Products", "Batches", "Status"];
       const csvRows = rows.map(row => [
         snapshot.label,
         row.month,
@@ -5449,7 +5450,7 @@
         else link.removeAttribute("aria-current");
       });
       const activeLink = document.querySelector(`.nav-link[data-view="${view}"]`);
-      document.title = `${activeLink?.querySelector(".nav-text")?.textContent || "Dashboard"} | National Short Expiry and Salvage Dashboard`;
+      document.title = `${activeLink?.querySelector(".nav-text")?.textContent || "Dashboard"} | National Short Expiry and Wastage Prevention Dashboard`;
       if (updateHash && window.location.hash !== `#${view}`) history.pushState(null, "", `#${view}`);
       if (viewName === "shipment-register") activateSubtab("salvage-tracker", "salvage-evidence");
       window.scrollTo({ top: document.querySelector(".app-shell").offsetTop - 12, behavior: "smooth" });
@@ -5468,7 +5469,7 @@
       activateView(view, true);
       const currentTitle = document.title;
       const reportName = button.closest(".view-header")?.querySelector("h2")?.textContent || "Dashboard Report";
-      document.title = `${reportName} - National Short Expiry and Salvage Dashboard`;
+      document.title = `${reportName} - National Short Expiry and Wastage Prevention Dashboard`;
       const exportTarget = exportTargetId ? document.getElementById(exportTargetId) : null;
       if (exportTarget) {
         document.body.classList.add("print-section");
