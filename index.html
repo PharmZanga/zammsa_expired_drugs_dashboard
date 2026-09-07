@@ -2937,8 +2937,8 @@
         </div>
         <aside class="reporting-card" aria-label="Reporting period">
           <span>Source reporting period</span>
-          <strong>As of 15 August 2026</strong>
-          <p>Loaded from the ZAMMSA July raw query, Jan-15 Jun baseline, 16-30 Jun, 1-15 Jul, 16-31 Jul, and 1-15 Aug shipment updates for 2026 expiries.</p>
+          <strong>As of 31 August 2026</strong>
+          <p>Loaded from the ZAMMSA July raw query, Jan-15 Jun baseline, 16-30 Jun, 1-15 Jul, 16-31 Jul, 1-15 Aug, and 16-31 Aug shipment updates for 2026 expiries.</p>
         </aside>
       </div>
     </div>
@@ -3459,7 +3459,7 @@
     </div>
   </div>
 
-  <script src="assets/dashboard-data.js?v=20260821-aug15-salvage"></script>
+  <script src="assets/dashboard-data.js?v=20260902-aug31-update"></script>
   <script>
     const demoMonthOrder = ["June", "July", "August", "September", "October", "November", "December"];
     const demoMonthlyTargets = { June: 2400000, July: 4100000, August: 6300000, September: 5800000, October: 7200000, November: 4000000, December: 4000000 };
@@ -3520,7 +3520,8 @@
       { id: "2026-06-30", label: "30 June 2026", note: "Original SOH less 16-30 June shipped values" },
       { id: "2026-07-15", label: "15 July 2026", note: "30 June position less 1-15 July shipped values" },
       { id: "2026-07-31", label: "31 July 2026", note: "15 July position less 16-31 July shipped values; July expired register closed" },
-      { id: "2026-08-15", label: "15 August 2026", note: "31 July position less 1-15 August shipped values" }
+      { id: "2026-08-15", label: "15 August 2026", note: "31 July position less 1-15 August shipped values" },
+      { id: "2026-08-31", label: "31 August 2026", note: "15 August position less 16-31 August shipped values; August expired register closed" }
     ];
     const expiryDates = Object.fromEntries(monthOrder.map(month => [
       month,
@@ -3623,7 +3624,7 @@
         ["May", "2026-05-31", "31 May 2026"],
         ["June", "2026-06-30", "30 June 2026"],
         ["July", "2026-07-31", "31 July 2026"],
-        ["August", sourceData.sourceUpdated, "15 August 2026"]
+        ["August", sourceData.sourceUpdated, "31 August 2026"]
       ];
       let salvaged = 0;
       let expired = 0;
@@ -3681,6 +3682,7 @@
       const period = String(event.shipmentPeriod || "").toLowerCase();
       if (period.includes("16-31 jul")) return "2026-07-31";
       if (period.includes("1-15 aug")) return "2026-08-15";
+      if (period.includes("16-31 aug")) return "2026-08-31";
       if (period.includes("1-15 jul")) return "2026-07-15";
       if (period.includes("16-30 jun")) return "2026-06-30";
       if (period.includes("1 jan-15 jun")) return "2026-06-15";
@@ -3756,7 +3758,7 @@
       const expired = filteredExpiredValueForMonth(month);
       const reviewed = historical;
       const remainingValue = isNumber(remaining) ? remaining : isNumber(monthlyTargets[month]) ? monthlyTargets[month] : total;
-      const allExpired = records.length > 0 && records.every(isExpiredRecord);
+      const allExpired = isHistoricalMonth(month) || (records.length > 0 && records.every(isExpiredRecord));
       return { records, total, salvaged, expired, reviewed, remaining: remainingValue, allExpired, rate: preciseRate(salvaged, reviewed) };
     };
     const alertLevel = value => !isNumber(value) ? "" : value > 1000000 ? "Critical" : value >= 500000 ? "Moderate" : "Controlled";
@@ -4046,8 +4048,8 @@
     function summaryDataSources() {
       const snapshot = selectedCalendarSnapshot();
       const audit = sourceData.calculationAudit || {};
-      const stockCutoff = selectedCalendarSnapshotId === "2026-06-30" ? "30 June 2026" : selectedCalendarSnapshotId === "2026-07-15" ? "15 July 2026" : selectedCalendarSnapshotId === "2026-07-31" ? "31 July 2026" : "15 August 2026";
-      const shipmentCutoff = selectedCalendarSnapshotId === "2026-06-30" ? "30 June 2026" : selectedCalendarSnapshotId === "2026-07-15" ? "15 July 2026" : selectedCalendarSnapshotId === "2026-07-31" ? "31 July 2026" : "15 August 2026";
+      const stockCutoff = selectedCalendarSnapshotId === "2026-06-30" ? "30 June 2026" : selectedCalendarSnapshotId === "2026-07-15" ? "15 July 2026" : selectedCalendarSnapshotId === "2026-07-31" ? "31 July 2026" : selectedCalendarSnapshotId === "2026-08-15" ? "15 August 2026" : "31 August 2026";
+      const shipmentCutoff = selectedCalendarSnapshotId === "2026-06-30" ? "30 June 2026" : selectedCalendarSnapshotId === "2026-07-15" ? "15 July 2026" : selectedCalendarSnapshotId === "2026-07-31" ? "31 July 2026" : selectedCalendarSnapshotId === "2026-08-15" ? "15 August 2026" : "31 August 2026";
       return [
         ["Calendar review snapshot", snapshot.label, "Selected as-of review date", snapshot.note],
         ["ZAMMSA available-unit query", stockCutoff, "July-December stock still expiring", audit.sohFormula || "Remaining SOH reconstructed from available source workbooks."],
@@ -4067,22 +4069,28 @@
         : selectedCalendarSnapshotId === "2026-07-15"
           ? "Jan-15 Jun baseline plus 16-30 Jun and 1-15 Jul shipment updates; 16-31 Jul shipments are excluded."
           : selectedCalendarSnapshotId === "2026-07-31"
-            ? "Jan-15 Jun baseline plus 16-30 Jun, 1-15 Jul, and 16-31 Jul shipment updates; 1-15 Aug shipments are excluded."
-            : "Jan-15 Jun baseline plus 16-30 Jun, 1-15 Jul, 16-31 Jul, and 1-15 Aug shipment updates.";
+            ? "Jan-15 Jun baseline plus 16-30 Jun, 1-15 Jul, and 16-31 Jul shipment updates; August shipments are excluded."
+            : selectedCalendarSnapshotId === "2026-08-15"
+              ? "Jan-15 Jun baseline plus 16-30 Jun, 1-15 Jul, 16-31 Jul, and 1-15 Aug shipment updates; 16-31 Aug shipments are excluded."
+              : "Jan-15 Jun baseline plus 16-30 Jun, 1-15 Jul, 16-31 Jul, 1-15 Aug, and 16-31 Aug shipment updates.";
       const stockText = selectedCalendarSnapshotId === "2026-06-30"
         ? "30 June reconstructed stock position."
         : selectedCalendarSnapshotId === "2026-07-15"
           ? "15 July reconstructed stock position."
           : selectedCalendarSnapshotId === "2026-07-31"
             ? "31 July verified stock position."
-            : "15 August reconstructed stock position from 31 July position less 1-15 August shipped values.";
+            : selectedCalendarSnapshotId === "2026-08-15"
+              ? "15 August reconstructed stock position from 31 July position less 1-15 August shipped values."
+              : "31 August reconstructed stock position after closing the August expired register and subtracting 16-31 August shipped values.";
       const expiredText = selectedCalendarSnapshotId === "2026-06-30"
         ? "Expired values include only months closed by 30 June 2026."
         : selectedCalendarSnapshotId === "2026-07-15"
           ? "Expired values include only months closed by 15 July 2026."
           : selectedCalendarSnapshotId === "2026-07-31"
             ? "Expired values include months closed by 31 July 2026, including the July expired register."
-            : "Expired values include months closed by 15 August 2026; August remains an active future/current expiry month until month-end closure.";
+            : selectedCalendarSnapshotId === "2026-08-15"
+              ? "Expired values include months closed by 15 August 2026; August remains an active future/current expiry month until month-end closure."
+              : "Expired values include months closed by 31 August 2026, including the August expired register.";
       target.innerHTML = `<strong>Source note:</strong> Selected review date: ${escapeHtml(snapshot.label)}. Stock position: ${stockText} Shipment cut-off: ${shipmentText} ${expiredText} Laboratory and diagnostic commodities are temporarily excluded from this presentation view. Products expiring after 2026 are excluded. Values are calculated only where a verified, historical, or corrected unit price is available; otherwise value fields remain blank. Lamotrigine EM2991 has been repriced using the contract reference USD 2.29 per pack at K18.51/USD = ZMW 42.39 instead of the Excel K618.30, with the CSC/Inventory reconciliation note retained for audit follow-up. Meeting-minutes benchmark: previous minutes reported approximately ZMW 44.79M prevented from wastage for July-December and ZMW 124.30M stock at risk for August 2026-January 2027; those values are retained as historical context and are not directly comparable with this non-lab 2026 presentation view.`;
       if (definitions) {
         definitions.innerHTML = `<div class="definition-grid">
@@ -4309,7 +4317,8 @@
     function forecastFilteredRecords() {
       const query = expiryForecastSearch.trim().toLowerCase();
       const stats = monthStats(selectedMonth);
-      return [...stats.records]
+      const displayRecords = isHistoricalMonth(selectedMonth) ? stats.records.filter(isExpiredRecord) : stats.records.filter(item => !isExpiredRecord(item));
+      return [...displayRecords]
         .filter(item => selectedForecastRiskBand === "All" || forecastRiskBand(item) === selectedForecastRiskBand)
         .filter(item => !query || `${item.sku} ${item.commodity} ${item.batch} ${item.expiryDate}`.toLowerCase().includes(query))
         .sort((a, b) => {
@@ -4320,7 +4329,7 @@
     }
 
     function renderForecastKpiStrip(stats) {
-      const records = stats.records.filter(item => !isExpiredRecord(item));
+      const records = isHistoricalMonth(selectedMonth) ? stats.records.filter(isExpiredRecord) : stats.records.filter(item => !isExpiredRecord(item));
       const criticalSkus = new Set(records.filter(item => forecastRiskBand(item) === "Critical").map(item => item.sku || item.commodity)).size;
       const topCommodity = [...records].filter(item => isNumber(item.value)).sort((a, b) => (b.value || 0) - (a.value || 0))[0];
       const monthRisk = isHistoricalMonth(selectedMonth) ? stats.expired : stats.remaining;
