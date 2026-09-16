@@ -4408,8 +4408,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM3063",
       "commodity": "Sodium Chloride Inj 0.9% 10ml Plastic Ampoules(20)",
       "batch": "23437030",
-      "quantity": 2106.0,
-      "value": 161578.19999999995,
+      "quantity": 106,
+      "value": 7694.199999999953,
       "totalExpiringValue": 315923.85199999996,
       "shippedQuantity": 2006.0,
       "unitPrice": 76.942,
@@ -4426,7 +4426,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 4106,
       "lastTwoWeekShippedQuantity": 6,
       "lastTwoWeekSalvagedValue": 461.65199999999993,
-      "calculationNote": "Units Available from Load_Query_July 1_2026 less 16-30 Jun shipped value only.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -4435,8 +4435,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM4062",
       "commodity": "Clomiphene Citrate 50mg Tablet (20)",
       "batch": "3T04024; 3T04025",
-      "quantity": 15482.0,
-      "value": 349686.0015999999,
+      "quantity": 15382,
+      "value": 347082.6215999999,
       "totalExpiringValue": 405658.6715999999,
       "shippedQuantity": 2155.0,
       "unitPrice": 26.033799999999992,
@@ -4453,7 +4453,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 15582,
       "lastTwoWeekShippedQuantity": 2055.0,
       "lastTwoWeekSalvagedValue": 53499.45899999999,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -4975,8 +4975,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2128",
       "commodity": "Dextrose 50% Injection 50ml (1)",
       "batch": "S1552403; S1552401; S1552406 +3 more",
-      "quantity": 667.0,
-      "value": 0,
+      "quantity": 0,
+      "value": 0.0,
       "totalExpiringValue": 1650000.0,
       "shippedQuantity": 53333.0,
       "unitPrice": 50.0,
@@ -4993,7 +4993,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 33000,
       "lastTwoWeekShippedQuantity": 21000.0,
       "lastTwoWeekSalvagedValue": 1050000.0,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -5056,8 +5056,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2376",
       "commodity": "Ferrous Fumerate/Folic Acid 100mg/0.4mg/5ml Syrup 200ml Bottle (1)",
       "batch": "L30404; L30405",
-      "quantity": 2525.0,
-      "value": 0,
+      "quantity": 0,
+      "value": 0.0,
       "totalExpiringValue": 1182330.0,
       "shippedQuantity": 25874.0,
       "unitPrice": 58.0,
@@ -5074,7 +5074,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 20385,
       "lastTwoWeekShippedQuantity": 8014,
       "lastTwoWeekSalvagedValue": 464812.0,
-      "calculationNote": "Units Available from Load_Query_July 1_2026 less 16-30 Jun shipped value only.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -5245,8 +5245,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM4097",
       "commodity": "Permethrin 5%w/w Topical Cream, 30g (1)",
       "batch": "CE160; CE159; CE161",
-      "quantity": 6505.0,
-      "value": 65998.36999999997,
+      "quantity": 0,
+      "value": 0.0,
       "totalExpiringValue": 207488.37999999998,
       "shippedQuantity": 13787.0,
       "unitPrice": 10.33,
@@ -5263,7 +5263,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 20086,
       "lastTwoWeekShippedQuantity": 206.0,
       "lastTwoWeekSalvagedValue": 2127.98,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -5704,8 +5704,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM0872",
       "commodity": "Risperidone 2mg Tablet (100)",
       "batch": "Z-86",
-      "quantity": 11926.0,
-      "value": 1073340.0,
+      "quantity": 11324,
+      "value": 1019160.0,
       "totalExpiringValue": 1308060.0,
       "shippedQuantity": 2608.0,
       "unitPrice": 90.0,
@@ -5722,7 +5722,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 14534,
       "lastTwoWeekShippedQuantity": 0,
       "lastTwoWeekSalvagedValue": 0.0,
-      "calculationNote": "Units Available from Load_Query_July 1_2026 less 16-30 Jun shipped value only.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -5785,8 +5785,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM1686",
       "commodity": "Zinc Sulfate 20mg tablet (100)",
       "batch": "220625; 250625; 210625 +2 more",
-      "quantity": 42953.0,
-      "value": 2724647.8762452356,
+      "quantity": 37023,
+      "value": 2322257.969983331,
       "totalExpiringValue": 3841364.6869285684,
       "shippedQuantity": 16457.0,
       "unitPrice": 67.85664523809518,
@@ -5803,7 +5803,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 56610,
       "lastTwoWeekShippedQuantity": 2800,
       "lastTwoWeekSalvagedValue": 189998.6066666665,
-      "calculationNote": "Units Available from Load_Query_July 1_2026 less 16-30 Jun shipped value only.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -5839,8 +5839,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2128",
       "commodity": "Dextrose 50% Injection 50ml (1)",
       "batch": "S1552417; S1552426; S1552415 +17 more",
-      "quantity": 263100.0,
-      "value": 12764500.0,
+      "quantity": 255500,
+      "value": 12384500.0,
       "totalExpiringValue": 14103400.0,
       "shippedQuantity": 33872.0,
       "unitPrice": 50.0,
@@ -5857,7 +5857,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 282068,
       "lastTwoWeekShippedQuantity": 14904.0,
       "lastTwoWeekSalvagedValue": 745200.0,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -5893,8 +5893,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2992",
       "commodity": "Carvedilol Tablet 6.25mg(20)",
       "batch": "K12006; K12003/A; K12007 +3 more",
-      "quantity": 37694.0,
-      "value": 5240542.279200002,
+      "quantity": 37075,
+      "value": 5127863.976000002,
       "totalExpiringValue": 7246543.735200001,
       "shippedQuantity": 20139.0,
       "unitPrice": 182.0328,
@@ -5911,7 +5911,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 39809,
       "lastTwoWeekShippedQuantity": 18024.0,
       "lastTwoWeekSalvagedValue": 3280959.1872,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -5947,8 +5947,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM3093",
       "commodity": "Risperidone 2mg Tablet (60)",
       "batch": "23L084; 23L082; 23L081 +2 more",
-      "quantity": 62398.0,
-      "value": 1640972.6000000008,
+      "quantity": 62243,
+      "value": 1636888.3500000008,
       "totalExpiringValue": 1648271.5500000007,
       "shippedQuantity": 687.0,
       "unitPrice": 26.350000000000012,
@@ -5965,7 +5965,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 62553,
       "lastTwoWeekShippedQuantity": 532.0,
       "lastTwoWeekSalvagedValue": 14018.200000000008,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -5974,8 +5974,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM4004",
       "commodity": "Multiple Micronutrient Tablets (180)",
       "batch": "482779",
-      "quantity": 45.0,
-      "value": 2065.576499999999,
+      "quantity": 0,
+      "value": 0.0,
       "totalExpiringValue": 18378.3345,
       "shippedQuantity": 312.0,
       "unitPrice": 52.9635,
@@ -5992,7 +5992,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 347,
       "lastTwoWeekShippedQuantity": 10.0,
       "lastTwoWeekSalvagedValue": 529.635,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6271,8 +6271,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM0053",
       "commodity": "Beclomethasone 50mcg Inhaler(1)",
       "batch": "009T022A; 009T021A; 009T020A",
-      "quantity": 16257.0,
-      "value": 808758.0,
+      "quantity": 15072,
+      "value": 744768.0,
       "totalExpiringValue": 1139184.0,
       "shippedQuantity": 15447.0,
       "unitPrice": 54.0,
@@ -6289,7 +6289,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 21096,
       "lastTwoWeekShippedQuantity": 10608.0,
       "lastTwoWeekSalvagedValue": 572832.0,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6298,8 +6298,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM0237",
       "commodity": "Haloperidol 5mg Tablet (1000)",
       "batch": "5E01034; 5E03036; 5E04037",
-      "quantity": 374.0,
-      "value": 12075.0,
+      "quantity": 298,
+      "value": 0.0,
       "totalExpiringValue": 249435.0,
       "shippedQuantity": 1801.0,
       "unitPrice": 172.5,
@@ -6316,7 +6316,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 1446,
       "lastTwoWeekShippedQuantity": 729.0,
       "lastTwoWeekSalvagedValue": 125752.5,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6352,8 +6352,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM0772",
       "commodity": "Haloperidol 5mg/ml injection 1ml amp (10)",
       "batch": "24015051; 24013051; 24014052 +1 more",
-      "quantity": 7308.0,
-      "value": 802191.4949999999,
+      "quantity": 6988,
+      "value": 760874.6949999998,
       "totalExpiringValue": 1205030.295,
       "shippedQuantity": 3404.0,
       "unitPrice": 129.11499999999998,
@@ -6370,7 +6370,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 9333,
       "lastTwoWeekShippedQuantity": 1379.0,
       "lastTwoWeekSalvagedValue": 178049.585,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6379,8 +6379,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM1058",
       "commodity": "Dextrose 5% solution 500ml (20)",
       "batch": "D5G29245; D5G28231; D5G29248 +25 more",
-      "quantity": 894.0,
-      "value": 222307.4816679626,
+      "quantity": 407,
+      "value": 77763.09772630996,
       "totalExpiringValue": 974413.1673109765,
       "shippedQuantity": 2917.0,
       "unitPrice": 296.80571651263375,
@@ -6397,7 +6397,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 3283,
       "lastTwoWeekShippedQuantity": 528.0,
       "lastTwoWeekSalvagedValue": 156713.41831867062,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6406,8 +6406,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM1583",
       "commodity": "Fentanyl 100mcg/2ml injection (10)",
       "batch": "85848; 85847",
-      "quantity": 5626.0,
-      "value": 3094248.0,
+      "quantity": 5203,
+      "value": 2856099.0,
       "totalExpiringValue": 3978158.0,
       "shippedQuantity": 2110.0,
       "unitPrice": 563.0,
@@ -6424,7 +6424,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 7066,
       "lastTwoWeekShippedQuantity": 670.0,
       "lastTwoWeekSalvagedValue": 377210.0,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6433,8 +6433,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM1686",
       "commodity": "Zinc Sulfate 20mg tablet (100)",
       "batch": "030725; 020725; 040725",
-      "quantity": 30556.0,
-      "value": 1991999.6776095224,
+      "quantity": 29756,
+      "value": 1937714.3614190463,
       "totalExpiringValue": 2127712.9680857128,
       "shippedQuantity": 2000.0,
       "unitPrice": 67.85664523809518,
@@ -6451,7 +6451,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 31356,
       "lastTwoWeekShippedQuantity": 1200,
       "lastTwoWeekSalvagedValue": 81427.97428571423,
-      "calculationNote": "Units Available from Load_Query_July 1_2026 less 16-30 Jun shipped value only.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6460,8 +6460,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2050",
       "commodity": "Insulin Soluble Short Acting 100iu,10ml Inj(1)",
       "batch": "24/0034/1; 24/0033/1; 24/0004/1 +2 more",
-      "quantity": 969718.0,
-      "value": 71625773.01978989,
+      "quantity": 966618,
+      "value": 71395208.93878989,
       "totalExpiringValue": 72712547.9719099,
       "shippedQuantity": 20196.0,
       "unitPrice": 74.37550999999989,
@@ -6478,7 +6478,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 977641,
       "lastTwoWeekShippedQuantity": 12273.0,
       "lastTwoWeekSalvagedValue": 912810.6342299987,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6487,8 +6487,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2116",
       "commodity": "Iron 60mg Tablets (100)",
       "batch": "243121073; 243121051; 243121050 +16 more",
-      "quantity": 34646.0,
-      "value": 0,
+      "quantity": 29646,
+      "value": 0.0,
       "totalExpiringValue": 1563453.952,
       "shippedQuantity": 76995.0,
       "unitPrice": 33.248,
@@ -6505,7 +6505,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 47024,
       "lastTwoWeekShippedQuantity": 64617.0,
       "lastTwoWeekSalvagedValue": 2148386.016,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6514,8 +6514,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2128",
       "commodity": "Dextrose 50% Injection 50ml (1)",
       "batch": "S1552417; S1552504; S1552501 +3 more",
-      "quantity": 95528.0,
-      "value": 4776400.0,
+      "quantity": 95307,
+      "value": 4765350.0,
       "totalExpiringValue": 4850000.0,
       "shippedQuantity": 1472.0,
       "unitPrice": 50.0,
@@ -6532,7 +6532,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 97000,
       "lastTwoWeekShippedQuantity": 0,
       "lastTwoWeekSalvagedValue": 0.0,
-      "calculationNote": "Units Available from Load_Query_July 1_2026 less 16-30 Jun shipped value only.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -6595,8 +6595,8 @@ window.ZAMMSA_SOURCE_DATA = {
       "sku": "EM2991",
       "commodity": "Lamotrigine Tablet 50mg(30)",
       "batch": "K12934; K12948; K12923 +32 more",
-      "quantity": 483229.0,
-      "value": 20489780.317199998,
+      "quantity": 482990,
+      "value": 20472931.821000002,
       "totalExpiringValue": 20564744.0124,
       "shippedQuantity": 2535.0,
       "unitPrice": 42.3879,
@@ -6613,7 +6613,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "rawUnitsAvailable": 485156,
       "lastTwoWeekShippedQuantity": 608.0,
       "lastTwoWeekSalvagedValue": 375926.4,
-      "calculationNote": "Reduced by 1-15 Jul 2026 salvage report; quantity is current remaining available balance.",
+      "calculationNote": "Reduced by 16-31 Aug 2026 salvage report; quantity is current remaining available balance.",
       "timeline": []
     },
     {
@@ -17852,7 +17852,7 @@ window.ZAMMSA_SOURCE_DATA = {
       "unitPrice": 7707.52
     },
     {
-      "commodity": "Pipette tips - DNA/RNA Free filtered 5 - 200�l (960)",
+      "commodity": "Pipette tips - DNA/RNA Free filtered 5 - 200\ufffdl (960)",
       "sku": "LAB1313",
       "batch": "",
       "quantity": 12.0,
