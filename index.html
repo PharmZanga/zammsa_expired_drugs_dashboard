@@ -2310,9 +2310,25 @@
       height: 100vh;
       padding: 20px 8px;
       color: #fff;
-      background: #0e342c;
+      background:
+        linear-gradient(180deg, rgba(6, 43, 35, 0.92) 0%, rgba(8, 54, 44, 0.84) 48%, rgba(5, 37, 30, 0.97) 100%),
+        url("assets/medical-supply-header.png") 68% center / auto 100% no-repeat,
+        #0e342c;
       border-right: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 12px 0 32px rgba(8, 48, 39, 0.12);
       overflow-y: auto;
+    }
+
+    .side-nav::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, #67dfd7, rgba(240, 173, 57, 0.78), transparent 78%);
+      opacity: 0.75;
+      pointer-events: none;
     }
 
     .side-nav-title {
@@ -2323,6 +2339,53 @@
       font-weight: 800;
       letter-spacing: 0.12em;
       text-transform: uppercase;
+    }
+
+    .side-nav-visual {
+      position: relative;
+      min-height: 92px;
+      margin: 0 4px 14px;
+      padding: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      background:
+        linear-gradient(180deg, rgba(8, 48, 39, 0.05), rgba(6, 39, 32, 0.9)),
+        url("assets/medical-supply-header.png") 72% center / cover no-repeat;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(2, 24, 19, 0.22);
+    }
+
+    .side-nav-visual::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(103, 223, 215, 0.08), transparent 55%);
+      pointer-events: none;
+    }
+
+    .side-nav-visual span,
+    .side-nav-visual strong {
+      position: relative;
+      z-index: 1;
+      display: block;
+    }
+
+    .side-nav-visual span {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 8px;
+      font-weight: 800;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .side-nav-visual strong {
+      margin-top: 2px;
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.25;
     }
 
     .nav-list {
@@ -2353,19 +2416,27 @@
       padding: 9px 9px;
       color: #dcebe6;
       border-radius: 9px;
+      border: 1px solid transparent;
       font-size: 12px;
       font-weight: 650;
       text-decoration: none;
+      transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
     }
 
     .nav-link:hover,
     .nav-link.active {
       color: #fff;
-      background: rgba(255, 255, 255, 0.11);
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.11);
+    }
+
+    .nav-link:hover {
+      transform: translateX(2px);
     }
 
     .nav-link.active {
-      box-shadow: inset 3px 0 0 #67dfd7;
+      background: linear-gradient(90deg, rgba(103, 223, 215, 0.2), rgba(255, 255, 255, 0.1));
+      box-shadow: inset 3px 0 0 #67dfd7, 0 8px 18px rgba(2, 24, 19, 0.16);
     }
 
     .nav-icon {
@@ -2378,6 +2449,10 @@
     .dashboard-content {
       min-width: 0;
       padding: 0 20px 0 16px;
+      background:
+        radial-gradient(circle at 96% 10%, rgba(40, 113, 95, 0.1), transparent 27rem),
+        radial-gradient(circle at 8% 72%, rgba(240, 173, 57, 0.06), transparent 22rem),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.34), transparent 46%);
     }
 
     .dashboard-content main {
@@ -2418,6 +2493,18 @@
         linear-gradient(90deg, #fff 0%, rgba(255, 255, 255, 0.92) 45%, rgba(255, 255, 255, 0.78) 100%),
         url("assets/medical-supply-header.png") right 36% / 48% auto no-repeat;
       opacity: 0.32;
+      pointer-events: none;
+    }
+
+    .view-header::after {
+      content: "";
+      position: absolute;
+      left: 22px;
+      bottom: 0;
+      width: 108px;
+      height: 3px;
+      background: linear-gradient(90deg, #28715f, #67dfd7, #f0ad39);
+      border-radius: 999px 999px 0 0;
       pointer-events: none;
     }
 
@@ -2556,6 +2643,7 @@
       }
 
       .side-nav-title,
+      .side-nav-visual,
       .nav-text {
         display: none;
       }
@@ -2656,6 +2744,10 @@
       }
 
       .side-nav-credit {
+        display: none;
+      }
+
+      .side-nav-visual {
         display: none;
       }
 
@@ -3006,6 +3098,10 @@
   <div class="app-shell">
     <nav class="side-nav" aria-label="Dashboard pages">
       <span class="side-nav-title">Dashboard Pages</span>
+      <div class="side-nav-visual" aria-hidden="true">
+        <span>National portfolio</span>
+        <strong>Bi-weekly review</strong>
+      </div>
       <div class="nav-list">
         <a class="nav-link active" href="#executive-summary" data-view="executive-summary"><span class="nav-icon">▦</span><span class="nav-text">Executive Summary</span></a>
         <a class="nav-link" href="#expiry-forecast" data-view="expiry-forecast"><span class="nav-icon">▣</span><span class="nav-text">Expiry Forecast</span></a>
